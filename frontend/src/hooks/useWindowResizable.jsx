@@ -28,8 +28,8 @@ export const useWindowResizable = (winRef, screen, isMaximized, setSize, setPosi
         screenRect
       }
 
-      window.addEventListener("mousemove", handleMouseMove)
-      window.addEventListener("mouseup", handleMouseUp)
+      window.addEventListener('mousemove', handleMouseMove)
+      window.addEventListener('mouseup', handleMouseUp)
     }
 
     const handleMouseMove = (e) => {
@@ -46,17 +46,17 @@ export const useWindowResizable = (winRef, screen, isMaximized, setSize, setPosi
       }
 
       if (direction === 'left') {
-        let newWidth = startWidth - differenceX;
-        let newLeft = startLeft + differenceX;
+        let newWidth = startWidth - differenceX
+        let newLeft = startLeft + differenceX
 
         if (newWidth < minWindowWidth) {
-          newWidth = minWindowWidth;
-          newLeft = startLeft + (startWidth - minWindowWidth);
+          newWidth = minWindowWidth
+          newLeft = startLeft + (startWidth - minWindowWidth)
         }
 
         if (newLeft < screenRect.left) {
-          newLeft = screenRect.left;
-          newWidth = startLeft + startWidth - screenRect.left;
+          newLeft = screenRect.left
+          newWidth = startLeft + startWidth - screenRect.left
         }
 
         windowRef.style.width = `${newWidth}px`
@@ -69,21 +69,21 @@ export const useWindowResizable = (winRef, screen, isMaximized, setSize, setPosi
       }
 
       if (direction === 'top') {
-        let newHeight = startHeight - differenceY;
-        let newTop = startTop + differenceY - topBarHeight;
+        let newHeight = startHeight - differenceY
+        let newTop = startTop + differenceY - topBarHeight
 
         if (newHeight < minWindowHeight) {
-          newHeight = minWindowHeight;
-          newTop = startTop + (startHeight - minWindowHeight) - topBarHeight;
+          newHeight = minWindowHeight
+          newTop = startTop + (startHeight - minWindowHeight) - topBarHeight
         }
 
         if (newTop < screenRect.top - topBarHeight) {
-          newTop = screenRect.top - topBarHeight;
-          newHeight = startTop + startHeight - (screenRect.top);
+          newTop = screenRect.top - topBarHeight
+          newHeight = startTop + startHeight - (screenRect.top)
         }
 
-        windowRef.style.height = `${newHeight}px`;
-        windowRef.style.top = `${newTop}px`;
+        windowRef.style.height = `${newHeight}px`
+        windowRef.style.top = `${newTop}px`
       }
     }
 

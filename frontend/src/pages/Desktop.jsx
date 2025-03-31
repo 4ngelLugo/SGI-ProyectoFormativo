@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Navbar from '../components/Navbar'
 import RocketDock from '../components/RocketDock'
 import '../styles/desktop.css'
@@ -45,10 +45,6 @@ export default function Desktop () {
       )
     )
   }
-
-  // useEffect(() => {
-  //   console.log(openWindows)
-  // }, [openWindows])
 
   return (
     <main className='mainScreen'>
