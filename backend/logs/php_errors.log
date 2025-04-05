@@ -1,0 +1,4 @@
+[2025-04-05 20:18:14] Connection error: Access denied for user 'rooasat'@'localhost' (using password: NO)
+[2025-04-05 20:18:49] Connection error: Access denied for user 'rooasat'@'localhost' (using password: NO)
+[2025-04-05 21:45:08] Execute failed (Save 'elemento consumible'): Duplicate entry '121312' for key 'PRIMARY'
+[2025-04-05 22:17:45] Execute failed (Save 'elemento consumible'): Duplicate entry '123123' for key 'PRIMARY'

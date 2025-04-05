@@ -6,6 +6,7 @@ import { useWindowMaximize } from '../hooks/useWindowMaximize'
 import { useWindowResizable } from '../hooks/useWindowResizable'
 
 import '../styles/window.css'
+import CreateElementsForm from './CreateElementsForm'
 
 export default function AppWindow ({
   id,
@@ -61,11 +62,14 @@ export default function AppWindow ({
         </ul>
       </aside>
 
-      <article className='window__article'>
-        <header className='window-article__header'>
+      <main className='window__main'>
+        <header className='window-main__header'>
           <span>{title}</span>
         </header>
-      </article>
+        <article className='window-main__article'>
+          {id === 'finder' && (<CreateElementsForm />)}
+        </article>
+      </main>
     </section>
   )
 }
