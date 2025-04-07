@@ -15,7 +15,8 @@ export default function AppWindow ({
   onWindowClick,
   onWindowClose,
   onWindowToggle,
-  isToggled
+  isToggled,
+  setAlert
 }) {
   const winRef = useRef(null)
   const dragRef = useRef(null)
@@ -67,7 +68,7 @@ export default function AppWindow ({
           <span>{title}</span>
         </header>
         <article className='window-main__article'>
-          {id === 'finder' && (<CreateElementsForm />)}
+          {id === 'finder' && (<CreateElementsForm setAlert={setAlert} />)}
         </article>
       </main>
     </section>

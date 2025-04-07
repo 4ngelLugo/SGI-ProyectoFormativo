@@ -1,6 +1,6 @@
 import { useRef, useState } from "react"
 
-export default function CreateElementsForm() {
+export default function CreateElementsForm({ setAlert }) {
   const formRef = useRef(null)
   const [tipo, setTipo] = useState('devolutivo')
 
@@ -18,11 +18,35 @@ export default function CreateElementsForm() {
     })
       .then((res) => res.json())
       .then((response) => {
-        console.log(response)
+        if (response.error) {
+          switch (response.error) {
+            case 'invalid method':
+              setAlert({ type: 'error', message: 'Error en el metodo de envio', active: true })
+              break
+            case 'database connection error':
+              setAlert({ type: 'error', message: 'Error al conectar con la base de datos', active: true })
+              break
+            case 'invalid type':
+              setAlert({ type: 'error', message: 'Tipo de elemento invalido', active: true })
+              break
+            case 'campos vacios':
+              setAlert({ type: 'error', message: 'Por favor llena todos los campos', active: true })
+              break
+            case 'elemento ya existe':
+              setAlert({ type: 'error', message: 'Ya existe un elemento con el mismo codigo', active: true })
+              break
+            case 'error al guardar':
+              setAlert({ type: 'error', message: 'Error al guardar el elemento', active: true })
+              break
+          }
+        } else if (response.success) {
+          setAlert({ type: 'success', message: 'Elemento guardado correctamente', active: true })
+        }
+
       })
-      // .catch((error) => {
-      //   console.error(error)
-      // })
+    .catch((error) => {
+      console.error(error)
+    })
   }
 
   return (
