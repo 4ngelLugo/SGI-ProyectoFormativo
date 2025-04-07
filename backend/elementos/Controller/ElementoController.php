@@ -15,7 +15,7 @@ class ElementoController
     $validate_elemento = $this->getElementoByCodigo($codigo, $this->elementoModel->table_devo);
     if (empty($validate_elemento["error"])) return ["error" => "elemento ya existe"];
 
-    if (empty($codigo) || empty($nombre) || empty($area) || empty($placa) || empty($serial) || empty($marca) || empty($modelo)) return ["error" => "campos vacios"];
+    if (empty($codigo) || empty($nombre) || empty($area) || empty($placa) || empty($serial) || empty($marca) || empty($modelo)) return ["error" => "campos vacios devo"];
 
     $result = $this->elementoModel->saveElementoDevolutivo($codigo, $nombre, $area, $placa, $serial, $marca, $modelo);
     if ($result) return ["success" => true];

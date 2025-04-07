@@ -23,8 +23,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $controller = new ElementoController($connection->connect());
 
-    $codigo = $_POST["ele_cod"] ?? null;
-    $nombre = $_POST["ele_nom"] ?? null;
+    $codigo = $_POST["ele_codigo"] ?? null;
+    $nombre = $_POST["ele_nombre"] ?? null;
     $area = $_POST["ele_area"] ?? null;
 
     switch ($_POST["tipo"]) {
