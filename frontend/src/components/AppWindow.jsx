@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useWindowDraggable } from '../hooks/useWindowDraggable'
 import { useWindowZIndex } from '../hooks/useWindowZIndex'
 import { useWindowVisibility } from '../hooks/useWindowVisibility'
@@ -7,8 +7,9 @@ import { useWindowResizable } from '../hooks/useWindowResizable'
 import DataTable from './DataTable'
 
 import '../styles/window.css'
+import { windowContents } from '../data/windowContents'
 
-export default function AppWindow ({
+export default function AppWindow({
   id,
   title,
   isTop,
@@ -16,14 +17,15 @@ export default function AppWindow ({
   onWindowClose,
   onWindowToggle,
   isToggled,
-  windowType
+  setAlert
 }) {
+  // #region Window Config
   const winRef = useRef(null)
   const dragRef = useRef(null)
   const screen = document.querySelector('.screen')
 
   const [windowPosition, setWindowPosition] = useState({ x: '50%', y: '50%' })
-  const [windowSize, setWindowSize] = useState({ width: 700, height: 400 })
+  const [windowSize, setWindowSize] = useState({ width: 900, height: 532 })
   const topBarHeight = 35.2
 
   // Sample data for the table - in a real app, you'd fetch this or pass it as props
@@ -55,24 +57,42 @@ export default function AppWindow ({
   useWindowVisibility(winRef, isToggled)
 
   useWindowResizable(winRef, screen, isMaximized, setWindowSize, setWindowPosition, topBarHeight)
+  // #endregion
 
-  // Render different content based on windowType
-  const renderWindowContent = () => {
-    switch (windowType) {
-      case 'dataTable':
-        return <DataTable data={tableData} columns={tableColumns} />
-      case 'settings':
-        return <div className="window-content">Settings content here</div>
-      default:
-        return (
-          <div className="window-content">
-            <p>Default window content</p>
-          </div>
-        )
+  // #region Window Content
+  const [activeView, setActiveView] = useState()
+
+  const content = windowContents[id]
+
+  useEffect(() => {
+    if (content?.sidebar?.length > 0) {
+      setActiveView(content.sidebar[0].key)
     }
+
+  }, [id])
+
+  const renderSidebarContent = () => {
+    if (!content?.sidebar) return
+
+    return (
+      <ul className='window__menu'>
+        {content.sidebar?.map(item => (
+          <li key={item.key} onClick={() => setActiveView(item.key)} className={`window__menu--item ${activeView === item.key ? 'window__menu--item--active' : ''}`}>
+            <i className={item.icon} />
+            <span>{item.label}</span>
+          </li>
+        ))}
+      </ul>
+    )
   }
 
-  
+  const renderMainContent = () => {
+    if (!content?.views) return
+
+    const ViewComponent = content.views?.[activeView]
+    return ViewComponent ? ViewComponent({ setAlert }) : ''
+  }
+  // #endregion
 
   return (
     <section ref={winRef} className='window' id={id} onClick={() => onWindowClick(id)}>
@@ -85,26 +105,17 @@ export default function AppWindow ({
       </header>
 
       <aside className='window__sidebar'>
-        <ul className='window__menu'>
-          <li>
-            <i className='fas fa-desktop' />
-            <span>Pantalla</span>
-          </li>
-          <li>
-            <i className='fas fa-video' />
-            <span>Animaciones</span>
-          </li>
-        </ul>
+        {renderSidebarContent()}
       </aside>
 
-      <article className='window__article'>
-        <header className='window-article__header'>
+      <main className='window__main'>
+        <header className='window-main__header'>
           <span>{title}</span>
         </header>
-        <div className="window-article__content">
-          {renderWindowContent()}
-        </div>
-      </article>
+        <article className='window-main__article'>
+          {renderMainContent()}
+        </article>
+      </main>
     </section>
   )
 }

@@ -1,12 +1,15 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import Navbar from '../components/Navbar'
 import RocketDock from '../components/RocketDock'
 import '../styles/desktop.css'
 import AppWindow from '../components/AppWindow'
+import Alert from '../components/Alert'
 
-export default function Desktop () {
+export default function Desktop() {
   const [openWindows, setOpenWindows] = useState([])
   const [isTop, setIsTop] = useState()
+  const [alert, setAlert] = useState({ type: '', message: '', active: false })
+  const alertRef = useRef(null)
 
   // Abre una ventana al hacer click en un icono y la lleva al frente
   const onIconClick = (name) => {
@@ -60,9 +63,16 @@ export default function Desktop () {
             onWindowClose={onWindowClose}
             onWindowToggle={() => onWindowToggle(window.id)}
             isToggled={window.isToggled}
+            setAlert={setAlert}
           />
         ))}
         <RocketDock onIconClick={onIconClick} />
+        <Alert
+          alertRef={alertRef}
+          type={alert.type}
+          message={alert.message}
+          active={alert.active}
+          setAlert={setAlert} />
       </div>
     </main>
   )
