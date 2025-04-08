@@ -4,6 +4,7 @@ import useGetTime from '../hooks/useGetTime'
 import logoSena from '../assets/images/logoSena.png'
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router'
+import { tryConnect } from '../components/aspectos_generales/tryConnect';
 
 export default function Login () {
   const [loading, setLoading] = useState(true)
@@ -11,6 +12,9 @@ export default function Login () {
   const timestamp = useRef(null)
   const form = useRef(null)
   const navigate = useNavigate()
+  const [documentNumber, setDocumentNumber] = useState('') // 
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState(null)
 
   const showLogin = () => {
     const timestampRef = timestamp.current
@@ -29,14 +33,31 @@ export default function Login () {
   useEffect(() => {
     if (loading) return
 
-    document.addEventListener('click', showLogin)
-    document.addEventListener('keydown', showLogin)
+    window.document.addEventListener('click', showLogin)
+    window.document.addEventListener('keydown', showLogin)
 
     return () => {
-      document.removeEventListener('click', showLogin)
-      document.removeEventListener('keydown', showLogin)
+      window.document.removeEventListener('click', showLogin)
+      window.document.removeEventListener('keydown', showLogin)
     }
   }, [loading])
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setError(null)
+    
+    try {
+      const response = await tryConnect(documentNumber, password)
+      if (response.success) {
+        navigate('/desktop')
+      } else {
+        setError(response.message || 'Error de autenticación')
+      }
+    } catch (err) {
+      setError('Error de conexión. Intente nuevamente.')
+      console.error(err)
+    }
+  }
 
   return (
     <>
@@ -55,10 +76,25 @@ export default function Login () {
           <div className='login-form__logo'>
             <img src={logoSena} alt='Logo SENA' />
           </div>
-          <form action={() => navigate('/desktop')}>
-            <input className='login-form__input' type='number' placeholder='Número de documento' />
-            <input className='login-form__input' type='password' placeholder='Contraseña' />
-            <button type='submit' />
+          <form onSubmit={handleSubmit}>
+            <input 
+              className='login-form__input' 
+              type='number' 
+              placeholder='Número de documento' 
+              value={documentNumber}
+              onChange={(e) => setDocumentNumber(e.target.value)}
+              required
+            />
+            <input 
+              className='login-form__input' 
+              type='password' 
+              placeholder='Contraseña' 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            {error && <div className="login-form__error">{error}</div>}
+            <button type='submit'>Ingresar</button>
           </form>
         </section>
       </div>

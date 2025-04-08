@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/4ngelLugo/SGI-ProyectoFormativo/issues"
   },
-  "homepage": "https://github.com/4ngelLugo/SGI-ProyectoFormativo#readme"
+  "homepage": "https://github.com/4ngelLugo/SGI-ProyectoFormativo#readme",
+  "dependencies": {
+    "sgi-proyectoformativo": "file:"
+  }
 }
