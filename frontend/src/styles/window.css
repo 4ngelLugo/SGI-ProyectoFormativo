@@ -141,3 +141,12 @@
 .resizer--right {
   right: -2px;
 }
+
+
+/* Add this to your existing window.css file */
+
+.window-article__content {
+  height: calc(100% - 40px); /* Adjust based on your header height */
+  overflow: auto;
+  padding: 0;
+}
