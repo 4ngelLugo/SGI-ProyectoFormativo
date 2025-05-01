@@ -176,15 +176,45 @@
 }
 
 /* posicionamiento de cada uno */
-.resizer--top { top: 0; left: 0; }
-.resizer--bottom { bottom: 0; left: 0; }
-.resizer--left { top: 0; left: 0; }
-.resizer--right { top: 0; right: 0; }
+.resizer--top {
+  top : 0;
+  left: 0;
+}
 
-.resizer--top-left { top: 0; left: 0; }
-.resizer--top-right { top: 0; right: 0; }
-.resizer--bottom-left { bottom: 0; left: 0; }
-.resizer--bottom-right { bottom: 0; right: 0; }
+.resizer--bottom {
+  bottom: 0;
+  left  : 0;
+}
+
+.resizer--left {
+  top : 0;
+  left: 0;
+}
+
+.resizer--right {
+  top  : 0;
+  right: 0;
+}
+
+.resizer--top-left {
+  top : 0;
+  left: 0;
+}
+
+.resizer--top-right {
+  top  : 0;
+  right: 0;
+}
+
+.resizer--bottom-left {
+  bottom: 0;
+  left  : 0;
+}
+
+.resizer--bottom-right {
+  bottom: 0;
+  right : 0;
+}
 
 
 .isMinimizing {
@@ -341,13 +371,18 @@
 }
 
 .table__body td {
-  padding: 0.75rem;
+  max-width: 100px;
+  padding  : 0.75rem;
 
   vertical-align: middle;
 
   color: #1d1d1f;
 
   font-size: 1.1rem;
+
+  overflow     : hidden;
+  white-space  : nowrap;
+  text-overflow: ellipsis;
 }
 
 .table__row--alt {

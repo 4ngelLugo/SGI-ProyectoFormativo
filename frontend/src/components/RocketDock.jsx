@@ -1,6 +1,9 @@
-const images = import.meta.glob('../assets/images/rocketDockIcons/*.{png,jpg,jpeg,svg,webp}', { eager: true })
 import { useRef, useEffect, useCallback, useState } from 'react'
 
+//Importa dinamicamente las imágenes del RocketDock
+const images = import.meta.glob('../assets/images/rocketDockIcons/*.{png,jpg,jpeg,svg,webp}', { eager: true })
+
+//Convierte las imágenes en una lista ordenada de objetos { name, src }
 const imageList = Object.entries(images)
   .map(([path, img]) => {
     const fileName = path.split('/').pop().replace(/\.\w+$/, '')
@@ -18,6 +21,7 @@ const imageList = Object.entries(images)
 
 export default function RocketDock({ onIconClick, openWindows }) {
 
+  //Estado para controlar la visivilidad del RocketDock
   const [isVisible, setIsVisible] = useState(true)
   const rocketDock = useRef(null)
 
@@ -25,40 +29,41 @@ export default function RocketDock({ onIconClick, openWindows }) {
     if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === "d") {
       event.preventDefault()
 
-      setIsVisible(prev => {
-        const newVisibility = !prev
-        if (rocketDock.current) {
-          rocketDock.current.style.bottom = newVisibility ? '' : '-100%'
-        }
-        return newVisibility
-      })
+      setIsVisible(prev => !prev)
     }
   }, [])
 
+  //Añade el manejador para el evento 'keydown'
   useEffect(() => {
     document.addEventListener("keydown", hideRocketDock)
     return () => document.removeEventListener("keydown", hideRocketDock)
   }, [hideRocketDock])
 
   return (
-    <section className='rocketDock' ref={rocketDock}>
-      {imageList.map(({ name, src }) => {
-        return (
-          <RocketDockItem
-            key={name}
-            icon={src}
-            onClick={() => onIconClick(name)}
-            open={openWindows.includes(name)} />
-        )
-      })}
+    <section
+      className={`rocketDock ${!isVisible ? 'rocketDock--hidden' : ''}`}
+    >
+      {/* Mapeo de los iconos del RocketDock */}
+      {imageList.map(({ name, src }) => (
+        <RocketDockItem
+          key={name}
+          icon={src}
+          onClick={() => onIconClick(name)}
+          open={openWindows.includes(name)}
+        />
+      ))}
     </section>
   )
 }
 
+//Componente para renderizar cada objeto del RocketDock
 function RocketDockItem({ icon, onClick, open }) {
   return (
-    <div className={`rocketDock--item ${open ? 'rocketDock--item__open' : ''}`} onClick={onClick}>
-      <img src={icon} alt="Dock Icon" className="rocketDock--item__icon" />
+    <div
+      className={`rocketDock--item ${open ? 'rocketDock--item__open' : ''}`}
+      onClick={onClick}
+    >
+      <img src={icon} alt={`${icon} icon`} className="rocketDock--item__icon" />
       {open && <div className="rocketDock--item__indicator" />}
     </div>
   )

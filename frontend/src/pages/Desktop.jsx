@@ -7,15 +7,20 @@ import Alert from '../components/Alert'
 import ContextMenu from '../components/ContextMenu'
 
 export default function Desktop() {
+  //Estado array con los IDs de las ventanas abiertas y su estado (visible o minimizada)
+  //Estado de la ventana que está al frente (ventana abierta o en la que se hizo clic más recientemente)
+  //Estado con la alerta (tipo, mensaje y visibilidad)
   const [openWindows, setOpenWindows] = useState([])
   const [isTop, setIsTop] = useState()
   const [alert, setAlert] = useState({ type: '', message: '', active: false })
+
+  //Referencia a la alerta
   const alertRef = useRef(null)
 
-  // Abre una ventana al hacer click en un icono y la lleva al frente
+  //Abre una ventana al hacer clic en uno de los iconos del RocketDock y la lleva al frente
   const onIconClick = (name) => {
     setOpenWindows((prev) => {
-      // Si la ventana ya esta abierta pero minimizada la restaura
+      //Si la ventana ya está abierta pero minimizada, la restaura
       const existingWindow = prev.find((window) => window.id === name)
 
       if (existingWindow) {
@@ -36,9 +41,20 @@ export default function Desktop() {
     setIsTop(id)
   }
 
-  // Cierra la ventana, eliminandola de la lista de ventanas abiertas
+  //Cierra la ventana, eliminándola de la lista de ventanas abiertas
+  //Actualiza la ventana activa si corresponde
   const onWindowClose = (id) => {
-    setOpenWindows((prev) => prev.filter((window) => window.id !== id))
+    setOpenWindows((prev) => {
+      const updatedWindows = prev.filter((window) => window.id !== id)
+
+      //Si la ventana cerrada era la que estaba al frente
+      if (isTop === id) {
+        //Si hay más ventanas abiertas, ponemos al frente la última abierta
+        setIsTop(updatedWindows.length > 0 ? updatedWindows[updatedWindows.length - 1].id : null)
+      }
+
+      return updatedWindows
+    })
   }
 
   // Minimiza la ventana
@@ -50,6 +66,7 @@ export default function Desktop() {
     )
   }
 
+  //IDs de las ventanas abiertas para enviar al RocketDock y cambiar el estilo de los iconos
   const windowIds = openWindows.map((window) => window.id)
 
   const mainScreen = useRef(null)
@@ -59,6 +76,7 @@ export default function Desktop() {
       <Navbar windowOnTop={isTop} />
       <ContextMenu mainScreen={mainScreen.current} />
       <div className='screen'>
+        {/* Mapeo de las ventanas abiertas, si la ventana está minimizada no se renderiza */}
         {openWindows.map((window) => (
           <AppWindow
             key={window.id}
@@ -78,7 +96,8 @@ export default function Desktop() {
           type={alert.type}
           message={alert.message}
           active={alert.active}
-          setAlert={setAlert} />
+          setAlert={setAlert}
+        />
       </div>
     </main>
   )

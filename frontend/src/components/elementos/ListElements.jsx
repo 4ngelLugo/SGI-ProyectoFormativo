@@ -1,20 +1,34 @@
 import { useEffect, useState } from "react"
 import { FetchElementsEndpoint, DeactivateElementsEndPoint } from "../../config/apiRoutes"
 import danger from '../../assets/icons/danger.svg'
-
 import { Icon } from '@iconify/react'
 
 export default function ListElements({ setAlert, setActiveView, setSearchedElement }) {
-
+  //Estados para manejar los elementos, el elemento a deshabilitar y el estado del modal
   const [elements, setElements] = useState([])
   const [deactivateElement, setDeactivateElement] = useState({ code: null, name: null, type: null })
   const [showModal, setShowModal] = useState(false)
 
+  //Realiza una petición para obtener los elementos de la API
+  useEffect(() => {
+    fetch(FetchElementsEndpoint)
+      .then((res) => res.json())
+      .then((response) => {
+        setElements(response)
+      })
+      .catch((error) => {
+        console.error(error)
+        setAlert({ type: 'error', message: 'Error al cargar los elementos', active: true })
+      })
+  }, [])
+
+  //Maneja la activación del modal para deshabilitar un elemento
   const handleAlert = (codigo, nombre, tipo) => {
     setDeactivateElement({ code: codigo, name: nombre, type: tipo })
     setShowModal(true)
   }
 
+  //Función para deshabilitar un elemento
   const handleDeactivate = () => {
     fetch(DeactivateElementsEndPoint, {
       method: 'POST',
@@ -23,6 +37,7 @@ export default function ListElements({ setAlert, setActiveView, setSearchedEleme
     })
       .then((res) => res.json())
       .then((response) => {
+        //Verifica si la respuesta contiene un error o un mensaje de exito
         if (response.error) {
           switch (response.error) {
             case 'elemento no existe':
@@ -36,6 +51,7 @@ export default function ListElements({ setAlert, setActiveView, setSearchedEleme
               break
           }
         } else if (response.success) {
+          // Si la desactivación fue exitosa, se actualiza el estado de los elementos
           setElements((prevElements) =>
             prevElements.filter(
               (element) => element.codigo !== deactivateElement.code
@@ -45,22 +61,11 @@ export default function ListElements({ setAlert, setActiveView, setSearchedEleme
         }
       })
       .catch((error) => {
+        //En caso de que ocurra un error en la petición, o un error en el servidor, se captura y se muestra un mensaje de error
         console.error(error)
-        setAlert({ type: 'error', message: 'Ocurrio un error al deshabilitar el elemento', active: true })
+        setAlert({ type: 'error', message: 'Ocurrio un error en la petición', active: true })
       })
   }
-
-  useEffect(() => {
-    fetch(FetchElementsEndpoint)
-      .then((res) => res.json())
-      .then((response) => {
-        setElements(response)
-      })
-      .catch((error) => {
-        console.error(error)
-        setAlert({ type: 'error', message: 'Error al cargar los elementos', active: true })
-      })
-  }, [])
 
   return (
     <>
@@ -86,14 +91,15 @@ export default function ListElements({ setAlert, setActiveView, setSearchedEleme
               <td>{tipo}</td>
               <td>{estado}</td>
               <td className="table__body--actions">
+                {/* Iconos de acciones para cada elemento */}
                 <div className="tooltip-container">
                   <Icon
                     icon="system-uicons:eye"
                     width="24" strokeWidth={1.2}
                     onClick={() => {
-                      setActiveView('seeElement')
-                      setSearchedElement(codigo)
-                      setElements([]) // Limpiar la lista de elementos para evitar conflictos
+                      setSearchedElement(codigo); // Guarda el código para la vista
+                      setActiveView('seeElement'); // Cambia la vista
+                      setElements([]); // Limpia la lista de elementos para evitar conflictos
                     }} />
                   <span className="tooltip">Ver</span>
                 </div>
@@ -115,7 +121,7 @@ export default function ListElements({ setAlert, setActiveView, setSearchedEleme
         </tbody>
       </table>
 
-      {/* Modal deshabilitar elemento */}
+      {/* Modal de confirmación para deshabilitar el elemento */}
       <div className={`deactivate__modal--container ${showModal ? 'show' : ''}`}>
         <div className="deactivate__modal">
           {danger && <img src={danger} alt="" width='64px' />}
@@ -123,6 +129,7 @@ export default function ListElements({ setAlert, setActiveView, setSearchedEleme
           <span>{deactivateElement.code} - {deactivateElement.name}</span>
 
           <div>
+            {/* Botones para cancelar o confirmar la desactivación */}
             <button onClick={() => setShowModal(false)} className="deactivate__modal--cancel">Cancelar</button>
             <button
               onClick={() => {
