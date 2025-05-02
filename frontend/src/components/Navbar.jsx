@@ -1,15 +1,15 @@
 import appleLogo from '../assets/images/macIcon.webp'
 
-export default function Navbar({ windowOnTop }) {
-  //Opciones del menú de la barra superior
+export default function Navbar ({ windowOnTop }) {
+  // Opciones del menú de la barra superior
   const options = ['Archivo', 'Editar', 'Ver', 'Ir', 'Ventana', 'Ayuda']
 
-  //Función que capitaliza la primera letra de la palabra y convierte el resto a minúsculas
+  // Función que capitaliza la primera letra de la palabra y convierte el resto a minúsculas
   const capitalizeFirstLetter = (str) => {
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
   }
 
-  //Define el nombre que se mostrará en la barra (ventana activa o nombre por defecto)
+  // Define el nombre que se mostrará en la barra (ventana activa o nombre por defecto)
   const formattedWindowOnTop = windowOnTop ? capitalizeFirstLetter(windowOnTop) : 'SENA'
 
   return (

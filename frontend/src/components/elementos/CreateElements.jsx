@@ -1,20 +1,20 @@
-import { useRef, useState } from "react"
-import { SaveElementsEndpoint } from "../../config/apiRoutes"
+import { useRef, useState } from 'react'
+import { SaveElementsEndpoint } from '../../config/apiRoutes'
 
-export default function CreateElements({ setAlert }) {
-  //Referencia al formulario para acceder a los datos
+export default function CreateElements ({ setAlert }) {
+  // Referencia al formulario para acceder a los datos
   const formRef = useRef(null)
 
-  //Estado para el tipo de elemento que quiera registrar el usuario
+  // Estado para el tipo de elemento que quiera registrar el usuario
   const [tipo, setTipo] = useState('devolutivo')
 
   const handleSubmit = (e) => {
     e.preventDefault()
 
-    //Crea un nuevo objeto FormData a partir del formulario
+    // Crea un nuevo objeto FormData a partir del formulario
     const formData = new FormData(formRef.current)
 
-    //Realiza la peticion al endpoint de guardar elementos, usando el metodo POST y enviando el objeto FormData
+    // Realiza la peticion al endpoint de guardar elementos, usando el metodo POST y enviando el objeto FormData
     fetch(SaveElementsEndpoint, {
       method: 'POST',
       body: formData,
@@ -22,7 +22,7 @@ export default function CreateElements({ setAlert }) {
     })
       .then((res) => res.json())
       .then((response) => {
-        //Verifica si la respuesta contiene un error o un mensaje de exito
+        // Verifica si la respuesta contiene un error o un mensaje de exito
         if (response.error) {
           switch (response.error) {
             case 'invalid method':
@@ -48,7 +48,7 @@ export default function CreateElements({ setAlert }) {
           setAlert({ type: 'success', message: 'Elemento guardado correctamente', active: true })
         }
       })
-      //En caso de que ocurra un error en la petición, o un error en el servidor, se captura y se muestra un mensaje de error
+      // En caso de que ocurra un error en la petición, o un error en el servidor, se captura y se muestra un mensaje de error
       .catch((error) => {
         console.error(error)
         setAlert({ type: 'error', message: 'Ocurrio un error en la petición', active: true })
@@ -57,7 +57,7 @@ export default function CreateElements({ setAlert }) {
 
   return (
     <>
-      <span className="title">Registrar Elemento</span>
+      <span className='title'>Registrar Elemento</span>
 
       {/* Formulario para registrar un nuevo elemento */}
       <form className='form' ref={formRef} onSubmit={handleSubmit}>
@@ -74,7 +74,8 @@ export default function CreateElements({ setAlert }) {
             id='tipo-devolutivo'
             checked={tipo === 'devolutivo'}
             className={tipo === 'devolutivo' ? 'form__type--active' : ''}
-            onChange={() => setTipo('devolutivo')} />
+            onChange={() => setTipo('devolutivo')}
+          />
           <label htmlFor='tipo-devolutivo'>Devolutivo</label>
 
           <input
@@ -84,26 +85,30 @@ export default function CreateElements({ setAlert }) {
             id='tipo-consumible'
             className={tipo === 'consumible' ? 'form__type--active' : ''}
             checked={tipo === 'consumible'}
-            onChange={() => setTipo('consumible')} />
+            onChange={() => setTipo('consumible')}
+          />
           <label htmlFor='tipo-consumible'>Consumible</label>
         </div>
 
         {/* Campos específicos para tipo devolutivo */}
-        {tipo === 'devolutivo' ? (
-          <>
-            <input type='number' placeholder='Placa' name='ele_placa' id='ele_placa' />
-            <input type='text' placeholder='Serial' name='ele_serial' id='ele_serial' />
-            <input type='number' placeholder='Marca' name='ele_marca' id='ele_marca' />
-            <input type='text' placeholder='Modelo' name='ele_modelo' id='ele_modelo' />
-          </>
-        ) : (
-          // Campos específicos para tipo consumible
-          <>
-            <input type='number' placeholder='Cantidad' name='ele_cant' id='ele_cant' />
-            <input type='text' placeholder='Unidad de medida' name='ele_medida' id='ele_medida' />
-          </>
-        )}
-        <button className="form__button" type="submit">Enviar</button>
+        {
+          tipo === 'devolutivo'
+            ? (
+              <>
+                <input type='number' placeholder='Placa' name='ele_placa' id='ele_placa' />
+                <input type='text' placeholder='Serial' name='ele_serial' id='ele_serial' />
+                <input type='number' placeholder='Marca' name='ele_marca' id='ele_marca' />
+                <input type='text' placeholder='Modelo' name='ele_modelo' id='ele_modelo' />
+              </>
+              )
+            : (
+              <>
+                <input type='number' placeholder='Cantidad' name='ele_cant' id='ele_cant' />
+                <input type='text' placeholder='Unidad de medida' name='ele_medida' id='ele_medida' />
+              </>
+              )
+        }
+        <button className='form__button' type='submit'>Enviar</button>
       </form>
     </>
   )
