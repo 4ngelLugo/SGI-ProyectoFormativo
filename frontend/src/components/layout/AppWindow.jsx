@@ -1,13 +1,8 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { Icon } from '@iconify/react'
-import '../../styles/window.css'
+import { useWindowDraggable, useWindowZIndex, useWindowVisibility, useWindowMaximize, useWindowResizable } from '../../hooks'
 import { windowContents } from '../../constants/windowContents'
-
-import { useWindowDraggable } from '../../hooks/useWindowDraggable'
-import { useWindowZIndex } from '../../hooks/useWindowZIndex'
-import { useWindowVisibility } from '../../hooks/useWindowVisibility'
-import { useWindowMaximize } from '../../hooks/useWindowMaximize'
-import { useWindowResizable } from '../../hooks/useWindowResizable'
+import '../../styles/window.css'
+import { Icon } from '@iconify/react'
 
 /**
  * Componente para una ventana interactiva, que incluye la capacidad de maximizar, minimizar, cambiar el tamaño, y mostrar diferentes vistas y contenidos
@@ -61,7 +56,7 @@ export default function AppWindow ({
   // Estado para manejar el contenido de la ventana, según la paestaña del menú lateral seleccionada
   const [activeView, setActiveView] = useState()
 
-  // TODO: Validar ID de la ventana antes de vrear el estado searchedElement
+  // TODO: Validar ID de la ventana antes de crear el estado searchedElement
   const [searchedElement, setSearchedElement] = useState(null)
 
   // Array de referencias para las pestañas del menú lateral
@@ -125,6 +120,7 @@ export default function AppWindow ({
         break
       case 'seeElement':
         props.searchElement = searchedElement
+        props.setSearchedElement = setSearchedElement
     }
 
     return <ViewComponent {...props} />

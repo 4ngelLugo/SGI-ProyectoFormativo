@@ -1,71 +1,37 @@
-import { useEffect, useState } from 'react'
-import { FetchElementsEndpoint, DeactivateElementsEndPoint } from '../../../config/apiRoutes'
+import { useFetchElements, useDeactivateElement } from '../../../hooks'
 import TooltipCell from '../../common/TooltipCell'
+import ConfirmModal from '../../common/ConfirmModal'
 import danger from '../../../assets/icons/danger.svg'
+import '../../../styles/globals/tables.css'
 import { Icon } from '@iconify/react'
 
-export default function ListElements ({ setAlert, setActiveView, setSearchedElement }) {
-  // Estados para manejar los elementos, el elemento a deshabilitar y el estado del modal
-  const [elements, setElements] = useState([])
-  const [deactivateElement, setDeactivateElement] = useState({ code: null, name: null, type: null })
-  const [showModal, setShowModal] = useState(false)
+export default function ListElements({ setAlert, setActiveView, setSearchedElement }) {
+  // Hook para manejar la lista de elementos
+  const {
+    elements,
+    setElements,
+  } = useFetchElements(setAlert)
 
-  // Realiza una petición para obtener los elementos de la API
-  useEffect(() => {
-    fetch(FetchElementsEndpoint)
-      .then((res) => res.json())
-      .then((response) => {
-        setElements(response)
-      })
-      .catch((error) => {
-        console.error(error)
-        setAlert({ type: 'error', message: 'Error al cargar los elementos', active: true })
-      })
-  }, [])
+  // Hook para manejar la lógica de desactivación de elementos
+  const {
+    deactivateElement,
+    setDeactivateElement,
+    showModal,
+    setShowModal,
+    handleDeactivate
+  } = useDeactivateElement(setAlert)
+
+  // Maneja la activación de la vista para ver detalles de un elemento específico
+  const handleView = (codigo) => {
+    setSearchedElement(codigo) // Guarda el código para la vista
+    setActiveView('seeElement') // Cambia la vista
+    setElements([]) // Limpia la lista de elementos para evitar conflictos
+  }
 
   // Maneja la activación del modal para deshabilitar un elemento
   const handleAlert = (codigo, nombre, tipo) => {
-    setDeactivateElement({ code: codigo, name: nombre, type: tipo })
-    setShowModal(true)
-  }
-
-  // Función para deshabilitar un elemento
-  const handleDeactivate = () => {
-    fetch(DeactivateElementsEndPoint, {
-      method: 'POST',
-      body: JSON.stringify(deactivateElement),
-      credentials: 'include'
-    })
-      .then((res) => res.json())
-      .then((response) => {
-        // Verifica si la respuesta contiene un error o un mensaje de exito
-        if (response.error) {
-          switch (response.error) {
-            case 'elemento no existe':
-              setAlert({ type: 'error', message: 'El elemento a deshabilitar no existe', active: true })
-              break
-            case 'error al deshabilitar el elemento':
-              setAlert({ type: 'error', message: 'Ocurrio un error al deshabilitar el elemento', active: true })
-              break
-            case 'database connection error':
-              setAlert({ type: 'error', message: 'Error al conectar con la base de datos', active: true })
-              break
-          }
-        } else if (response.success) {
-          // Si la desactivación fue exitosa, se actualiza el estado de los elementos
-          setElements((prevElements) =>
-            prevElements.filter(
-              (element) => element.codigo !== deactivateElement.code
-            )
-          )
-          setAlert({ type: 'success', message: 'Elemento desactivado correctamente', active: true })
-        }
-      })
-      .catch((error) => {
-        // En caso de que ocurra un error en la petición, o un error en el servidor, se captura y se muestra un mensaje de error
-        console.error(error)
-        setAlert({ type: 'error', message: 'Ocurrio un error en la petición', active: true })
-      })
+    setDeactivateElement({ code: codigo, name: nombre, type: tipo }) // Configura el elemento a deshabilitar
+    setShowModal(true) // Muestra el modal de confirmación
   }
 
   return (
@@ -96,15 +62,7 @@ export default function ListElements ({ setAlert, setActiveView, setSearchedElem
               <td className='table__body--actions'>
                 {/* Iconos de acciones para cada elemento */}
                 <div className='tooltip-container'>
-                  <Icon
-                    icon='system-uicons:eye'
-                    width='24' strokeWidth={1.2}
-                    onClick={() => {
-                      setSearchedElement(codigo) // Guarda el código para la vista
-                      setActiveView('seeElement') // Cambia la vista
-                      setElements([]) // Limpia la lista de elementos para evitar conflictos
-                    }}
-                  />
+                  <Icon icon='system-uicons:eye' width='24' strokeWidth={1.2} onClick={() => handleView(codigo)} />
                   <span className='tooltip'>Ver</span>
                 </div>
                 <div className='tooltip-container'>
@@ -125,28 +83,14 @@ export default function ListElements ({ setAlert, setActiveView, setSearchedElem
         </tbody>
       </table>
 
-      {/* Modal de confirmación para deshabilitar el elemento */}
-      <div className={`deactivate__modal--container ${showModal ? 'show' : ''}`}>
-        <div className='deactivate__modal'>
-          {danger && <img src={danger} alt='' width='64px' />}
-          <p>¿Está seguro que desea deshabilitar este elemento?</p>
-          <span>{deactivateElement.code} - {deactivateElement.name}</span>
-
-          <div>
-            {/* Botones para cancelar o confirmar la desactivación */}
-            <button onClick={() => setShowModal(false)} className='deactivate__modal--cancel'>Cancelar</button>
-            <button
-              onClick={() => {
-                setShowModal(false)
-                handleDeactivate()
-              }}
-              className='deactivate__modal--confirm'
-            >
-              Confirmar
-            </button>
-          </div>
-        </div>
-      </div>
+      <ConfirmModal
+        icon={danger}
+        title='¿Está seguro que desea deshabilitar este elemento?'
+        message={`${deactivateElement.code} - ${deactivateElement.name}`}
+        showModal={showModal}
+        setShowModal={setShowModal}
+        action={handleDeactivate}
+      />
     </>
   )
 }

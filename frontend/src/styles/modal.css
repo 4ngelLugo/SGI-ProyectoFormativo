@@ -1,0 +1,98 @@
+.modal--container {
+  width : 100dvw;
+  height: 100dvh;
+
+  position: fixed;
+  top     : 0;
+  left    : 0;
+
+  display      : grid;
+  place-content: center;
+
+  background-color: rgba(0, 0, 0, 0.2);
+
+  opacity       : 0;
+  pointer-events: none;
+  transition    : opacity 0.25s ease;
+  z-index       : 1000;
+}
+
+.modal--container.show {
+  opacity       : 1;
+  pointer-events: auto;
+}
+
+.modal {
+  width    : 100%;
+  max-width: 25em;
+  padding  : 1.4em;
+
+  background   : #fefefe;
+  box-shadow   : 0 1em 2.5em rgba(0, 0, 0, 0.2);
+  border-radius: 1rem;
+
+  text-align: center;
+}
+
+.modal img {
+  margin-bottom: 1em;
+}
+
+.modal p {
+  margin-bottom: 0.5em;
+
+  color: #333;
+
+  font-size  : 1em;
+  font-weight: 500;
+}
+
+.modal span {
+  margin-bottom: 0.3em;
+
+  color: #555;
+
+  font-size  : 0.875em;
+  font-weight: 500;
+}
+
+.modal div {
+  margin-top: 1.5em;
+
+  display        : flex;
+  justify-content: space-between;
+  gap            : 0.75em;
+}
+
+.modal--cancel,
+.modal--confirm {
+  padding: 0.75em 1em;
+
+  flex: 1;
+
+  border       : none;
+  border-radius: 0.5rem;
+
+  font-size: 0.875em;
+
+  cursor    : pointer;
+  transition: background 0.2s ease;
+}
+
+.modal--cancel {
+  background: #e0e0e0;
+  color     : #333;
+}
+
+.modal--cancel:hover {
+  background: #d0d0d0;
+}
+
+.modal--confirm {
+  background: #007aff;
+  color     : white;
+}
+
+.modal--confirm:hover {
+  background: #006ae6;
+}

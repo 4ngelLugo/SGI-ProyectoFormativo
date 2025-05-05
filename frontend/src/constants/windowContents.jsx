@@ -1,4 +1,4 @@
-import CreateElements from '../components/features/elementos/CreateElements'
+import CreateElement from '../components/features/elementos/CreateElement'
 import ListElements from '../components/features/elementos/ListElements'
 import SeeElements from '../components/features/elementos/SeeElements'
 
@@ -11,8 +11,8 @@ export const windowContents = {
     ],
     views: {
       listElement: ({ setAlert, setActiveView, setSearchedElement }) => <ListElements setAlert={setAlert} setActiveView={setActiveView} setSearchedElement={setSearchedElement} />,
-      createElement: ({ setAlert }) => <CreateElements setAlert={setAlert} />,
-      seeElement: ({ setAlert, searchElement }) => <SeeElements setAlert={setAlert} searchElement={searchElement} />
+      createElement: ({ setAlert }) => <CreateElement setAlert={setAlert} />,
+      seeElement: ({ setAlert, searchElement, setSearchedElement }) => <SeeElements setAlert={setAlert} searchElement={searchElement} setSearchedElement={setSearchedElement} />
     }
   }
 }
