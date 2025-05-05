@@ -1,7 +1,7 @@
 import { useCreateElement } from '../../../hooks'
 import '../../../styles/globals/forms.css'
 
-export default function CreateElements({ setAlert }) {
+export default function CreateElements ({ setAlert }) {
   // Hook para manejar la creación de elementos, incluyendo la lógica para el formulario y el tipo de elemento
   const { formRef, tipo, setTipo, handleSubmit } = useCreateElement(setAlert)
 
@@ -50,13 +50,13 @@ export default function CreateElements({ setAlert }) {
                 <input type='number' placeholder='Marca' name='ele_marca' id='ele_marca' />
                 <input type='text' placeholder='Modelo' name='ele_modelo' id='ele_modelo' />
               </>
-            )
+              )
             : (
               <>
                 <input type='number' placeholder='Cantidad' name='ele_cant' id='ele_cant' />
                 <input type='text' placeholder='Unidad de medida' name='ele_medida' id='ele_medida' />
               </>
-            )
+              )
         }
         <button className='form__button' type='submit'>Enviar</button>
       </form>

@@ -2,13 +2,15 @@ import { useState } from 'react'
 import { useFetchElementByCode } from '../../../hooks'
 import '../../../styles/globals/lists.css'
 
-export default function SeeElements({ setAlert, searchElement, setSearchedElement }) {
+export default function SeeElements ({ setAlert, searchElement, setSearchedElement }) {
   const [inputCode, setInputCode] = useState(searchElement || '')
 
   const {
     loading,
     typing,
-    element
+    element,
+    setElement,
+    setLoading
   } = useFetchElementByCode({ setAlert, codeToSearch: inputCode })
 
   const handleOnChange = (e) => {
@@ -37,20 +39,22 @@ export default function SeeElements({ setAlert, searchElement, setSearchedElemen
         </div>
       </span>
 
-      {loading ? (<p>Cargando...</p>) :
-        element && element.tipo === 'devolutivo' ? (
-          <div className='element-info__container'>
-            <Info label='Nombre' value={element.nombre} />
-            <Info label='Placa' value={element.placa} />
-            <Info label='Marca' value={element.marca} />
-            <Info label='Modelo' value={element.modelo} />
-            <Info label='Serial' value={element.serial} />
-            <Info label='Área' value={element.area} />
-            <Info label='Tipo' value={element.tipo} />
-            <Info label='Estado' value={element.estado} />
-          </div>
-        ) :
-          element && element.tipo === 'consumible' && (
+      {loading
+        ? (<p>Cargando...</p>)
+        : element && element.tipo === 'devolutivo'
+          ? (
+            <div className='element-info__container'>
+              <Info label='Nombre' value={element.nombre} />
+              <Info label='Placa' value={element.placa} />
+              <Info label='Marca' value={element.marca} />
+              <Info label='Modelo' value={element.modelo} />
+              <Info label='Serial' value={element.serial} />
+              <Info label='Área' value={element.area} />
+              <Info label='Tipo' value={element.tipo} />
+              <Info label='Estado' value={element.estado} />
+            </div>
+            )
+          : element && element.tipo === 'consumible' && (
             <div className='element-info__container'>
               <Info label='Nombre' value={element.nombre} />
               <Info label='Cantidad' value={`${element.cantidad} ${element.medida}`} />
@@ -65,7 +69,7 @@ export default function SeeElements({ setAlert, searchElement, setSearchedElemen
 }
 
 // Componente reutilizable para mostrar información del elemento
-function Info({ label, value }) {
+function Info ({ label, value }) {
   return (
     <div className='element-info'>
       <span className='element-info__title'>{label}</span>

@@ -5,11 +5,11 @@ import danger from '../../../assets/icons/danger.svg'
 import '../../../styles/globals/tables.css'
 import { Icon } from '@iconify/react'
 
-export default function ListElements({ setAlert, setActiveView, setSearchedElement }) {
+export default function ListElements ({ setAlert, setActiveView, setSearchedElement }) {
   // Hook para manejar la lista de elementos
   const {
     elements,
-    setElements,
+    setElements
   } = useFetchElements(setAlert)
 
   // Hook para manejar la lógica de desactivación de elementos
@@ -19,7 +19,7 @@ export default function ListElements({ setAlert, setActiveView, setSearchedEleme
     showModal,
     setShowModal,
     handleDeactivate
-  } = useDeactivateElement(setAlert)
+  } = useDeactivateElement(setAlert, setElements)
 
   // Maneja la activación de la vista para ver detalles de un elemento específico
   const handleView = (codigo) => {

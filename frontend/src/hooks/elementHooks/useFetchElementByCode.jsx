@@ -67,6 +67,8 @@ export const useFetchElementByCode = ({ setAlert, codeToSearch }) => {
   return {
     loading,
     typing,
-    element
+    element,
+    setElement,
+    setLoading
   }
 }

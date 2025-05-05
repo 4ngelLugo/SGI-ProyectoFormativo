@@ -8,7 +8,7 @@ import { DeactivateElementsEndPoint } from '../../config/apiRoutes'
  *
  * @returns {Object} - Objeto con el estado del elemento a desactivar, el estado de visivilidad del modal y la funcion para desactivar el elemento.
  */
-export const useDeactivateElement = (setAlert) => {
+export const useDeactivateElement = ({ setAlert, setElements }) => {
   const [deactivateElement, setDeactivateElement] = useState({ code: null, name: null, type: null })
   const [showModal, setShowModal] = useState(false)
 
