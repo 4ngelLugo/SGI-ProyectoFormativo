@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import macIcon from '../assets/images/macIcon.webp'
+import macIcon from '../../assets/images/macIcon.webp'
 
 export default function LoadingScreen ({ setLoading }) {
   const loadingScreen = useRef()

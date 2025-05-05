@@ -1,9 +1,9 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import './index.css'
-import Desktop from './pages/Desktop'
-import Login from './pages/Login'
+import './styles/globals/index.css'
+import Desktop from './views/Desktop'
+import Login from './views/Login'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { SaveElementsEndpoint } from '../../config/apiRoutes'
+import { SaveElementsEndpoint } from '../../../config/apiRoutes'
 
 export default function CreateElements ({ setAlert }) {
   // Referencia al formulario para acceder a los datos

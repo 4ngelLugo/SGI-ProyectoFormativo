@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { FetchElementByCodeEndpoint } from '../../config/apiRoutes'
+import { FetchElementByCodeEndpoint } from '../../../config/apiRoutes'
 
 export default function SeeElements ({ setAlert, searchElement }) {
   // Estado para almacenar los datos del elemento

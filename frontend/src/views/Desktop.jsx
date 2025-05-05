@@ -1,10 +1,10 @@
 import { useRef, useState } from 'react'
-import Navbar from '../components/Navbar'
-import RocketDock from '../components/RocketDock'
+import Navbar from '../components/common/Navbar'
+import RocketDock from '../components/layout/RocketDock'
+import AppWindow from '../components/layout/AppWindow'
+import Alert from '../components/common/Alert'
+import ContextMenu from '../components/common/ContextMenu'
 import '../styles/desktop.css'
-import AppWindow from '../components/AppWindow'
-import Alert from '../components/Alert'
-import ContextMenu from '../components/ContextMenu'
 
 export default function Desktop () {
   // Estado array con los IDs de las ventanas abiertas y su estado (visible o minimizada)

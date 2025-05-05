@@ -1,7 +1,7 @@
 import { useEffect, useCallback, useState } from 'react'
 
 // Importa dinamicamente las imágenes del RocketDock
-const images = import.meta.glob('../assets/images/rocketDockIcons/*.{png,jpg,jpeg,svg,webp}', { eager: true })
+const images = import.meta.glob('../../assets/images/rocketDock/*.{png,jpg,jpeg,svg,webp}', { eager: true })
 
 // Convierte las imágenes en una lista ordenada de objetos { name, src }
 const imageList = Object.entries(images)

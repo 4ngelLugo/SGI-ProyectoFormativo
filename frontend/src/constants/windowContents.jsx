@@ -1,6 +1,6 @@
-import CreateElements from '../components/Elementos/CreateElements'
-import ListElements from '../components/elementos/ListElements'
-import SeeElements from '../components/elementos/SeeElements'
+import CreateElements from '../components/features/elementos/CreateElements'
+import ListElements from '../components/features/elementos/ListElements'
+import SeeElements from '../components/features/elementos/SeeElements'
 
 export const windowContents = {
   finder: {

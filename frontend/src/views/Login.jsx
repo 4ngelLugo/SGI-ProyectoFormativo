@@ -1,5 +1,5 @@
 import '../styles/login.css'
-import LoadingScreen from '../components/LoadingScreen'
+import LoadingScreen from '../components/common/LoadingScreen'
 import useGetTime from '../hooks/useGetTime'
 import logoSena from '../assets/images/logoSena.png'
 import { useEffect, useRef, useState } from 'react'

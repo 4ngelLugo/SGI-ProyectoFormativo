@@ -1,4 +1,4 @@
-import appleLogo from '../assets/images/macIcon.webp'
+import appleLogo from '../../assets/images/macIcon.webp'
 
 export default function Navbar ({ windowOnTop }) {
   // Opciones del menú de la barra superior

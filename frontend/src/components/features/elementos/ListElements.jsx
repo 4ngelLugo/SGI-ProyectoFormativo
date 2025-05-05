@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
-import { FetchElementsEndpoint, DeactivateElementsEndPoint } from '../../config/apiRoutes'
-import danger from '../../assets/icons/danger.svg'
+import { FetchElementsEndpoint, DeactivateElementsEndPoint } from '../../../config/apiRoutes'
+import TooltipCell from '../../common/TooltipCell'
+import danger from '../../../assets/icons/danger.svg'
 import { Icon } from '@iconify/react'
 
 export default function ListElements ({ setAlert, setActiveView, setSearchedElement }) {
@@ -85,11 +86,13 @@ export default function ListElements ({ setAlert, setActiveView, setSearchedElem
         <tbody className='table__body'>
           {elements && elements.map(({ codigo, nombre, area, tipo, estado }, index) => (
             <tr key={index} className={`table__row ${index % 2 === 1 ? 'table__row--alt' : ''}`}>
-              <td>{codigo}</td>
-              <td>{nombre}</td>
-              <td>{area}</td>
-              <td>{tipo}</td>
-              <td>{estado}</td>
+
+              <TooltipCell text={codigo} />
+              <TooltipCell text={nombre} />
+              <TooltipCell text={area} />
+              <TooltipCell text={tipo} />
+              <TooltipCell text={estado} />
+
               <td className='table__body--actions'>
                 {/* Iconos de acciones para cada elemento */}
                 <div className='tooltip-container'>

@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
-import danger from '../assets/icons/danger.svg'
-import success from '../assets/icons/success.svg'
+import danger from '../../assets/icons/danger.svg'
+import success from '../../assets/icons/success.svg'
 
 export default function Alert ({ alertRef, type, message, active, setAlert }) {
   useEffect(() => {

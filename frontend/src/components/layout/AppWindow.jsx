@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { Icon } from '@iconify/react'
-import '../styles/window.css'
-import { windowContents } from '../data/windowContents'
+import '../../styles/window.css'
+import { windowContents } from '../../constants/windowContents'
 
-import { useWindowDraggable } from '../hooks/useWindowDraggable'
-import { useWindowZIndex } from '../hooks/useWindowZIndex'
-import { useWindowVisibility } from '../hooks/useWindowVisibility'
-import { useWindowMaximize } from '../hooks/useWindowMaximize'
-import { useWindowResizable } from '../hooks/useWindowResizable'
+import { useWindowDraggable } from '../../hooks/useWindowDraggable'
+import { useWindowZIndex } from '../../hooks/useWindowZIndex'
+import { useWindowVisibility } from '../../hooks/useWindowVisibility'
+import { useWindowMaximize } from '../../hooks/useWindowMaximize'
+import { useWindowResizable } from '../../hooks/useWindowResizable'
 
 /**
  * Componente para una ventana interactiva, que incluye la capacidad de maximizar, minimizar, cambiar el tamaño, y mostrar diferentes vistas y contenidos
