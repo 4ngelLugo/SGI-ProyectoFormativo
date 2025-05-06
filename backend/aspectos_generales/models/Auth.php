@@ -23,13 +23,14 @@ class Auth {
     public function authenticate() {
         $sql = "SELECT * FROM usuario WHERE Numero_Documento = ?";
         $stmt = $this->connection->executeQuery($sql, [$this->document]);
-        $user = $stmt->fetch();
+        $result = $stmt->get_result();
+        $user = $result->fetch_assoc();
         
         if (!$user) {
             return false;
         }
         
-        if ($this->password === $user['Contrasena']) {
+        if (password_verify($this->password, $user['Contrasena'])) {
             $this->userData = $user;
             return true;
         }

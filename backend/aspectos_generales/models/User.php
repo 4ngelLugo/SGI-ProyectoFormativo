@@ -14,12 +14,14 @@ class User {
     
     public function __construct($userData) {
         $this->userData = $userData;
-        
-        // Create a connection with user-specific database credentials
+         
         if (isset($userData['db_username']) && isset($userData['db_password'])) {
             $this->connection = new Database(
-                $userData['db_username'],
-                $userData['db_password']
+                // $userData['db_username'],
+                // $userData['db_password']
+                "root",
+                ""
+
             );
         } else {
             throw new Exception("User database credentials not provided");
@@ -28,7 +30,7 @@ class User {
     
     public function getUserInfo() {
         return $this->userData;
-    }
+    }   
     
     
     public function closeConnection() {

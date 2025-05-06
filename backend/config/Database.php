@@ -21,7 +21,7 @@ class Database
   private $host = "localhost";
   private $user = "root";
   private $password = "";
-  private $database = "sgisena";
+  private $database = "sistema_prestamos";
   public $conn = null;
 
   public function __construct($username = null, $password = null) {
@@ -33,18 +33,24 @@ class Database
     }
 
     try {
-      $this->conn = new PDO(
-        "mysql:host=$this->host;dbname=$this->database;charset=utf8",
+      $this->conn = new mysqli(
+        $this->host,
         $this->user,
-        $this->password
+        $this->password,
+        $this->database
       );
-      $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-      $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-    } catch(PDOException $e) {
+
+      if ($this->conn->connect_error) {
+        throw new Exception("Connection failed: " . $this->conn->connect_error);
+      }
+
+      $this->conn->set_charset("utf8");
+    } catch(Exception $e) {
       // Registrar error en archivo
       error_log("[" . date("Y-m-d H:i:s") . "] Connection error: " . $e->getMessage() . PHP_EOL, 3, __DIR__ . "/../logs/php_errors.log");
       die("Connection failed: " . $e->getMessage());
     }
+    echo password_hash('1230', PASSWORD_DEFAULT);
   }
 
   public function connect() {
@@ -58,15 +64,24 @@ class Database
   public function executeQuery($sql, $params = []) {
     try {
       $stmt = $this->conn->prepare($sql);
-      $stmt->execute($params);
+      
+      if ($params) {
+        $types = str_repeat('s', count($params));
+        $stmt->bind_param($types, ...$params);
+      }
+      
+      $stmt->execute();
       return $stmt;
-    } catch(PDOException $e) {
+    } catch(Exception $e) {
       error_log("[" . date("Y-m-d H:i:s") . "] Query error: " . $e->getMessage() . PHP_EOL, 3, __DIR__ . "/../logs/php_errors.log");
       die("Query execution failed: " . $e->getMessage());
     }
   }
 
   public function closeConnection() {
-    $this->conn = null;
+    if ($this->conn) {
+      $this->conn->close();
+      $this->conn = null;
+    }
   }
 }
