@@ -4,7 +4,7 @@ import { SaveElementsEndpoint } from "../../config/apiRoutes"
 export default function CreateElements({ setAlert }) {
   const formRef = useRef(null)
   const [tipo, setTipo] = useState('devolutivo')
-  
+
   const handleSubmit = (e) => {
     e.preventDefault()
 
@@ -35,22 +35,22 @@ export default function CreateElements({ setAlert }) {
               setAlert({ type: 'error', message: 'Ya existe un elemento con el mismo codigo', active: true })
               break
             case 'error al guardar':
-              setAlert({ type: 'error', message: 'Error al guardar el elemento', active: true })
+              setAlert({ type: 'error', message: 'Ocurrio un error al guardar el elemento', active: true })
               break
           }
         } else if (response.success) {
           setAlert({ type: 'success', message: 'Elemento guardado correctamente', active: true })
         }
-
       })
       .catch((error) => {
         console.error(error)
+        setAlert({ type: 'error', message: 'Ocurrio un error al guardar el elemento', active: true })
       })
   }
 
   return (
     <>
-      <span className="form__title">Registrar Elemento</span>
+      <span className="title">Registrar Elemento</span>
       <form className='form' ref={formRef} onSubmit={handleSubmit}>
         <input type='number' placeholder='Codigo' name='ele_codigo' id='ele_codigo' />
         <input type='text' placeholder='Nombre' name='ele_nombre' id='ele_nombre' />
@@ -84,7 +84,10 @@ export default function CreateElements({ setAlert }) {
             <input type='text' placeholder='Modelo' name='ele_modelo' id='ele_modelo' />
           </>
         ) : (
-          <input type='number' placeholder='Cantidad' name='ele_cant' id='ele_cant' />
+          <>
+            <input type='number' placeholder='Cantidad' name='ele_cant' id='ele_cant' />
+            <input type='text' placeholder='Unidad de medida' name='ele_medida' id='ele_medida' />
+          </>
         )}
         <button className="form__button" type="submit">Enviar</button>
       </form>

@@ -1,5 +1,4 @@
 <?php
-
 require_once '../../config/Database.php';
 require_once '../Controller/ElementoController.php';
 
@@ -31,8 +30,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       case "consumible":
 
         $cantidad = $_POST["ele_cant"] ?? null;
+        $medida = $_POST["ele_medida"] ?? null;
 
-        $result = $controller->saveElementoConsumible($codigo, $nombre, $area, $cantidad);
+        $result = $controller->saveElementoConsumible($codigo, $nombre, $area, $cantidad, $medida);
 
         if ($result) $output = $result;
         break;

@@ -4,7 +4,7 @@ import useGetTime from '../hooks/useGetTime'
 import logoSena from '../assets/images/logoSena.png'
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router'
-import tryConnect from '../components/aspectos_generales/tryConnect';
+import tryConnect from '../components/aspectos_generales/tryConnect'
 
 export default function Login () {
   const [loading, setLoading] = useState(true)
@@ -12,7 +12,7 @@ export default function Login () {
   const timestamp = useRef(null)
   const form = useRef(null)
   const navigate = useNavigate()
-  const [documentNumber, setDocumentNumber] = useState('') // 
+  const [documentNumber, setDocumentNumber] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
 

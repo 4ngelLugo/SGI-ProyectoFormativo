@@ -4,6 +4,7 @@ import RocketDock from '../components/RocketDock'
 import '../styles/desktop.css'
 import AppWindow from '../components/AppWindow'
 import Alert from '../components/Alert'
+import ContextMenu from '../components/ContextMenu'
 
 export default function Desktop() {
   const [openWindows, setOpenWindows] = useState([])
@@ -23,7 +24,7 @@ export default function Desktop() {
         )
       }
 
-      // Si no abre una nueva instancia de la ventana
+      // Si no, abre una nueva instancia de la ventana
       return [...prev, { id: name, isToggled: true }]
     })
 
@@ -49,9 +50,14 @@ export default function Desktop() {
     )
   }
 
+  const windowIds = openWindows.map((window) => window.id)
+
+  const mainScreen = useRef(null)
+
   return (
-    <main className='mainScreen'>
-      <Navbar />
+    <main className='mainScreen' ref={mainScreen}>
+      <Navbar windowOnTop={isTop} />
+      <ContextMenu mainScreen={mainScreen.current} />
       <div className='screen'>
         {openWindows.map((window) => (
           <AppWindow
@@ -66,7 +72,7 @@ export default function Desktop() {
             setAlert={setAlert}
           />
         ))}
-        <RocketDock onIconClick={onIconClick} />
+        <RocketDock onIconClick={onIconClick} openWindows={windowIds} />
         <Alert
           alertRef={alertRef}
           type={alert.type}
