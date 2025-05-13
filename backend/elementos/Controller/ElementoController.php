@@ -30,8 +30,8 @@ class ElementoController
     $validate_elemento = $this->getElementoByCodigo($codigo);
     if (empty($validate_elemento["error"])) return ["error" => "elemento ya existe"];
 
-    if ($medida === "m") $medida = "metros";
-    else if ($medida === "und") $medida = "unidades";
+    // if ($medida === "m") $medida = "metros";
+    // else if ($medida === "und") $medida = "unidades";
 
     $medida = strtolower($medida);
 
@@ -59,6 +59,32 @@ class ElementoController
     if ($get_elemento) return $get_elemento;
 
     return ["error" => "elemento no existe"];
+  }
+
+  public function updateElemento($codigo, $nombre, $area, $tipo, $placa = null, $serial = null, $marca = null, $modelo = null, $cantidad = null, $medida = null)
+  {
+    if (empty($codigo) || empty($nombre) || empty($area) || empty($tipo)) return ["error" => "campos vacios"];
+
+    $validate_elemento = $this->getElementoByCodigo($codigo);
+    if (!$validate_elemento) return ["error" => "elemento no existe"];
+
+    if ($tipo === "devolutivo") {
+      if (empty($placa) || empty($serial) || empty($marca) || empty($modelo)) {
+        return ["error" => "campos vacios"];
+      }
+
+      $result = $this->elemento_model->updateElemento($codigo, $nombre, $area, $tipo, $placa, $serial, $marca, $modelo);
+      if ($result) return ["success" => true];
+    } else if ($tipo === "consumible") {
+      if (empty($cantidad) || empty($medida)) {
+        return ["error" => "campos vacios"];
+      }
+
+      $result = $this->elemento_model->updateElemento($codigo, $nombre, $area, $cantidad, $medida);
+      if ($result) return ["success" => true];
+
+      return ["error" => "error al actualizar"];
+    }
   }
 
   public function deactivateElemento($codigo, $tipo)

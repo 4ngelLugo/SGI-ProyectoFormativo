@@ -118,9 +118,13 @@ export default function AppWindow ({
         props.setActiveView = setActiveView
         props.setSearchedElement = setSearchedElement
         break
-      case 'seeElement':
+      case 'searchElement':
         props.searchElement = searchedElement
         props.setSearchedElement = setSearchedElement
+        break
+      case 'editElement':
+        props.searchElement = searchedElement
+        break
     }
 
     return <ViewComponent {...props} />

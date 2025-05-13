@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useFetchElementByCode } from '../../../hooks'
 import '../../../styles/globals/lists.css'
 
-export default function SeeElements ({ setAlert, searchElement, setSearchedElement }) {
+export default function SearchElements ({ setAlert, searchElement, setSearchedElement }) {
   const [inputCode, setInputCode] = useState(searchElement || '')
 
   const {

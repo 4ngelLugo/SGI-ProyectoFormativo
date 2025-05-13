@@ -22,9 +22,9 @@ export default function ListElements ({ setAlert, setActiveView, setSearchedElem
   } = useDeactivateElement(setAlert, setElements)
 
   // Maneja la activación de la vista para ver detalles de un elemento específico
-  const handleView = (codigo) => {
-    setSearchedElement(codigo) // Guarda el código para la vista
-    setActiveView('seeElement') // Cambia la vista
+  const handleView = (codigo, view) => {
+    setSearchedElement(codigo)// Guarda el código para la vista
+    setActiveView(view) // Cambia la vista
     setElements([]) // Limpia la lista de elementos para evitar conflictos
   }
 
@@ -62,20 +62,16 @@ export default function ListElements ({ setAlert, setActiveView, setSearchedElem
               <td className='table__body--actions'>
                 {/* Iconos de acciones para cada elemento */}
                 <div className='tooltip-container'>
-                  <Icon icon='system-uicons:eye' width='24' strokeWidth={1.2} onClick={() => handleView(codigo)} />
+                  <Icon icon='system-uicons:eye' width='24' strokeWidth={1.2} onClick={() => handleView(codigo, 'searchElement')} />
                   <span className='tooltip'>Ver</span>
                 </div>
                 <div className='tooltip-container'>
-                  <Icon icon='system-uicons:create' width='24' strokeWidth={1.2} />
+                  <Icon icon='system-uicons:create' width='24' strokeWidth={1.2} onClick={() => handleView(codigo, 'editElement')} />
                   <span className='tooltip'>Editar</span>
                 </div>
                 <div className='tooltip-container'>
                   <Icon icon='system-uicons:trash' width='24' strokeWidth={1.2} onClick={() => handleAlert(codigo, nombre, tipo)} />
                   <span className='tooltip'>Deshabilitar</span>
-                </div>
-                <div className='tooltip-container'>
-                  <Icon icon='system-uicons:settings' width='24' strokeWidth={1.2} />
-                  <span className='tooltip'>Mantenimiento</span>
                 </div>
               </td>
             </tr>

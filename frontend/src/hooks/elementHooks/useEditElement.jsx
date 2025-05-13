@@ -1,19 +1,16 @@
-import { useRef, useState } from 'react'
-import { SaveElementsEndpoint } from '../../config/apiRoutes'
+import { useRef } from 'react'
+import { UpdateElementsEndpoint } from '../../config/apiRoutes'
 
 /**
- * Hook para manejar la creación de un nuevo elemento.
- * Permite gestionar el formulario, el tipo de elemento y el envío de datos al backend.
+ * Hook para manejar la edición de un nuevo elemento.
+ * Permite gestionar el formulario y el envío de datos al backend.
  *
  * @param {Function} setAlert - Función para mostrar alertas.
- * @returns {Object} - Objeto con la referencia al formulario, el tipo de elemento y la función de envío.
+ * @returns {Object} - Objeto con la referencia al formulario y la función de envío.
  */
-export const useCreateElement = (setAlert) => {
+export default function useEditElement(setAlert) {
   // Referencia al formulario para acceder a los datos
   const formRef = useRef(null)
-
-  // Estado para el tipo de elemento que quiera registrar el usuario
-  const [tipo, setTipo] = useState('devolutivo')
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -21,7 +18,7 @@ export const useCreateElement = (setAlert) => {
     const formData = new FormData(formRef.current)
 
     // Realiza la peticion al endpoint de guardar elementos, usando el metodo POST y enviando el objeto FormData
-    fetch(SaveElementsEndpoint, {
+    fetch(UpdateElementsEndpoint, {
       method: 'POST',
       body: formData,
       credentials: 'include'
@@ -34,13 +31,13 @@ export const useCreateElement = (setAlert) => {
             'invalid method': 'Error en el metodo de envio',
             'database connection error': 'Error al conectar con la base de datos',
             'invalid type': 'Tipo de elemento invalido',
-            'campos vacios': 'Por favor llena todos los campos',
-            'elemento ya existe': 'Ya existe un elemento con el mismo codigo',
-            'error al guardar': 'Ocurrio un error al guardar el elemento'
+            'campos vacios': 'Por favor llene todos los campos',
+            'elemento no existe': 'No existe un elemento con ese codigo',
+            'error al actualizar': 'Ocurrio un error al editar el elemento'
           }
           setAlert({ type: 'error', message: messages[response.error] || 'Error desconocido', active: true })
         } else if (response.success) {
-          setAlert({ type: 'success', message: 'Elemento guardado correctamente', active: true })
+          setAlert({ type: 'success', message: 'Elemento editado correctamente', active: true })
         }
       })
       // En caso de que ocurra un error en la petición, o un error en el servidor, se captura y se muestra un mensaje de error
@@ -52,8 +49,6 @@ export const useCreateElement = (setAlert) => {
 
   return {
     formRef,
-    tipo,
-    setTipo,
     handleSubmit
   }
 }

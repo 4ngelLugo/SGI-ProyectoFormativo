@@ -29,7 +29,7 @@ class ElementoModel
   public function saveElementoConsumible($codigo, $nombre, $area, $cantidad, $medida)
   {
     $query = "INSERT INTO {$this->table_cons}
-              (ele_con_codigo, ele_con_nombre, ele_con_cantidad, area_id)
+              (ele_con_codigo, ele_con_nombre, ele_con_cantidad, ele_con_medida, area_id)
               VALUES (?, ?, ?, ?, ?)";
     $stmt = $this->conn->prepare($query);
     $stmt->bind_param("isiii", $codigo, $nombre, $cantidad, $area, $medida);
@@ -120,7 +120,7 @@ class ElementoModel
                   WHERE ele_con_codigo = ?";
     $stmt = $this->conn->prepare($query_cons);
     if (!$stmt) {
-      error_log("Error preparando query de consumible: " . $stmt->error . PHP_EOL, 3, __DIR__ . "/../../logs/php_errors.log");
+      error_log("Error preparando query de consumible: " . $this->conn->error . PHP_EOL, 3, __DIR__ . "/../../logs/php_errors.log");
       return null;
     }
 
@@ -137,6 +137,39 @@ class ElementoModel
       return null;
     }
 
+    return null;
+  }
+
+  public function updateElemento($codigo, $nombre, $area, $tipo, $placa = null, $serial = null, $marca = null, $modelo = null, $cantidad = null, $medida = null)
+  {
+
+    if ($tipo === "devolutivo") {
+      $query = "UPDATE {$this->table_devo} SET ele_dev_nombre = ?, ele_dev_placa = ?, ele_dev_serial = ?, area_id = ?, marca_id = ?, ele_dev_modelo = ? WHERE ele_dev_codigo = ?";
+      $stmt = $this->conn->prepare($query);
+
+      if (!$stmt) {
+        error_log("Error preparando query de devolutivo: " . $this->conn->error . PHP_EOL, 3, __DIR__ . "/../../logs/php_errors.log");
+        return null;
+      }
+
+      $stmt->bind_param("sssiisi", $nombre, $placa, $serial, $area, $marca, $modelo, $codigo);
+      
+    } else if ($tipo === "consumible") {
+      $query = "UPDATE {$this->table_cons} SET ele_con_nombre = ?, ele_con_cantidad = ?, ele_con_medida = ?, area_id = ? WHERE ele_con_codigo = ?";
+      $stmt = $this->conn->prepare($query);
+
+      if (!$stmt) {
+        error_log("Error preparando query de consumible: " . $this->conn->error . PHP_EOL, 3, __DIR__ . "/../../logs/php_errors.log");
+        return null;
+      }
+
+      $stmt->bind_param("sisii", $nombre, $cantidad, $medida, $area, $codigo);
+    }
+
+    if ($stmt->execute()) return true;
+    
+    // Registrar error en archivo
+    error_log("[" . date("Y-m-d H:i:s") . "] Execute failed (Update element): " . $stmt->error . PHP_EOL, 3, __DIR__ . "/../../logs/php_errors.log");
     return null;
   }
 

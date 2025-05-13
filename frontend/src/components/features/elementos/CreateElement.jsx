@@ -40,7 +40,7 @@ export default function CreateElements ({ setAlert }) {
           <label htmlFor='tipo-consumible'>Consumible</label>
         </div>
 
-        {/* Campos específicos para tipo devolutivo */}
+        {/* Campos específicos para tipo devolutivo o consumible*/}
         {
           tipo === 'devolutivo'
             ? (
