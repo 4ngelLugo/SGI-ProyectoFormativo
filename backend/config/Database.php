@@ -1,21 +1,17 @@
-<!--
-POR MARLON REINA
 
-Actualice la clase Database con el siguiente contenido: 
-
-1. Sanitice los datos de la conexión a la base de datos.
-
-2. Maneje apropiadamente la creacion de la conexion directamente desde el constructor.
-
-3. Agregue los metodos connect(), getConnection() y closeConnection().
-
-PENDIENTES:
-1. Setters y getters para cada atributo de la conexion.
-
-2. Servir el $host desde un archivo .env
--->
 
 <?php
+
+// POR MARLON REINA
+// Actualice la clase Database con el siguiente contenido: 
+// 1. Sanitice los datos de la conexión a la base de datos.
+// 2. Maneje apropiadamente la creacion de la conexion directamente desde el constructor.
+// 3. Agregue los metodos connect(), getConnection() y closeConnection().
+// PENDIENTES:
+// 1. Setters y getters para cada atributo de la conexion.
+// 2. Servir el $host desde un archivo .env
+
+
 class Database
 {
   private $host = "localhost";
@@ -50,7 +46,6 @@ class Database
       error_log("[" . date("Y-m-d H:i:s") . "] Connection error: " . $e->getMessage() . PHP_EOL, 3, __DIR__ . "/../logs/php_errors.log");
       die("Connection failed: " . $e->getMessage());
     }
-    echo password_hash('1230', PASSWORD_DEFAULT);
   }
 
   public function connect() {

@@ -6,7 +6,7 @@
  */
 const tryConnect = async (document, password) => {
     try {
-    const apiUrl = "http://localhost/SGI-ProyectoFormativo/backend/aspectos_generales/controllers/sessionValidate.php";
+    const apiUrl = "http://localhost/SGI-ProyectoFormativo/backend/aspectos_generales/login/controllers/sessionValidate.php";
 
     // Crear formato JSON de la petición
     const requestData = {

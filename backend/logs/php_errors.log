@@ -4,3 +4,4 @@
 [2025-05-06 21:37:12] Connection error: Unknown database 'sgisena'
 [2025-05-06 21:37:23] Connection error: Unknown database 'sgisena'
 [2025-05-06 21:37:51] Connection error: Unknown database 'sistema-prestamos'
+[2025-05-23 23:34:20] Query error: Table 'sistema_prestamos.usuario' doesn't exist in engine
