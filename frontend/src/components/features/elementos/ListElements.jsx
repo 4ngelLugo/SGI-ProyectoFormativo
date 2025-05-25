@@ -1,16 +1,20 @@
 import { useFetchElements, useDeactivateElement } from '../../../hooks'
 import TooltipCell from '../../common/TooltipCell'
 import ConfirmModal from '../../common/ConfirmModal'
+import Pagination from '../../common/Pagination'
 import danger from '../../../assets/icons/danger.svg'
 import '../../../styles/globals/tables.css'
 import { Icon } from '@iconify/react'
 
-export default function ListElements ({ setAlert, setActiveView, setSearchedElement }) {
-  // Hook para manejar la lista de elementos
+export default function ListElements ({ setAlert, windowHeight, isMaximized, setActiveView, setSearchedElement }) {
+  // Hook para manejar la lista de elementos y su paginación
   const {
     elements,
-    setElements
-  } = useFetchElements(setAlert)
+    setElements,
+    page,
+    setPage,
+    maxPage
+  } = useFetchElements(setAlert, windowHeight, isMaximized)
 
   // Hook para manejar la lógica de desactivación de elementos
   const {
@@ -78,6 +82,8 @@ export default function ListElements ({ setAlert, setActiveView, setSearchedElem
           ))}
         </tbody>
       </table>
+
+      <Pagination page={page} setPage={setPage} maxPage={maxPage} />
 
       <ConfirmModal
         icon={danger}

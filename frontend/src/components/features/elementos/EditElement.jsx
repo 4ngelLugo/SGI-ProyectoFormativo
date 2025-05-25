@@ -2,7 +2,7 @@ import { useFetchElementByCode } from '../../../hooks'
 import useEditElement from '../../../hooks/elementHooks/useEditElement'
 import '../../../styles/globals/forms.css'
 
-export default function EditElement({ setAlert, searchElement }) {
+export default function EditElement ({ setAlert, searchElement }) {
   // Hook para manejar la edición de elementos, incluyendo la lógica para el formulario y su referencia
   const { formRef, handleSubmit } = useEditElement(setAlert)
 
@@ -39,7 +39,7 @@ export default function EditElement({ setAlert, searchElement }) {
                         />
                         <label htmlFor='tipo-devolutivo'>Devolutivo</label>
                       </>
-                    )
+                      )
                     : (
                       <>
                         <input
@@ -52,10 +52,10 @@ export default function EditElement({ setAlert, searchElement }) {
                         />
                         <label htmlFor='tipo-consumible'>Consumible</label>
                       </>
-                    )}
+                      )}
                 </div>
 
-                {/* Campos específicos para tipo devolutivo o consumible*/}
+                {/* Campos específicos para tipo devolutivo o consumible */}
                 {element.tipo === 'devolutivo'
                   ? (
                     <>
@@ -64,19 +64,19 @@ export default function EditElement({ setAlert, searchElement }) {
                       <input type='number' placeholder='Marca' name='ele_marca' id='ele_marca' defaultValue={element.marca_id} />
                       <input type='text' placeholder='Modelo' name='ele_modelo' id='ele_modelo' defaultValue={element.modelo} />
                     </>
-                  )
+                    )
                   : (
                     <>
                       <input type='number' placeholder='Cantidad' name='ele_cant' id='ele_cant' defaultValue={element.cantidad} />
                       <input type='text' placeholder='Unidad de medida' name='ele_medida' id='ele_medida' defaultValue={element.medida} />
                     </>
-                  )}
+                    )}
                 <button className='form__button' type='submit'>Enviar</button>
               </form>
-            )
+              )
             : (
               <p>No se encontró el elemento</p>
-            )
+              )
       }
     </>
   )

@@ -11,9 +11,16 @@ import { useEffect, useState } from 'react'
  *
  * @returns {Object} - Objeto con el estado de maximización y la función para alternarlo.
  */
-export const useWindowMaximize = (winRef, dragRef, windowPosition, windowSize) => {
+export const useWindowMaximize = (winRef, dragRef, windowPosition, windowSize, setWindowSize) => {
   // Estado que indica si la ventana está maximizada
   const [isMaximized, setIsMaximized] = useState()
+  const [size, setSize] = useState({ width: windowSize.width, height: windowSize.height })
+
+  useEffect(() => {
+    if (isMaximized) return
+
+    setSize({ width: windowSize.width, height: windowSize.height })
+  }, [windowSize])
 
   // Alterna el estado de maximización de la ventana
   const toggleMaximize = () => {
@@ -23,18 +30,31 @@ export const useWindowMaximize = (winRef, dragRef, windowPosition, windowSize) =
   useEffect(() => {
     if (!winRef.current || !dragRef.current) return
 
+    const window = winRef.current
+
     if (isMaximized) {
-      winRef.current.classList.add('maximized_window')
-      winRef.current.style.top = ''
-      winRef.current.style.left = ''
-      winRef.current.style.width = ''
-      winRef.current.style.height = ''
+      window.classList.add('maximized_window')
+      window.style.top = ''
+      window.style.left = ''
+      window.style.width = ''
+      window.style.height = ''
+
+      const windowRect = window.getBoundingClientRect()
+      setWindowSize({
+        width: windowRect.width,
+        height: windowRect.height
+      })
     } else {
-      winRef.current.classList.remove('maximized_window')
-      winRef.current.style.top = `${windowPosition.y}px`
-      winRef.current.style.left = `${windowPosition.x}px`
-      winRef.current.style.width = `${windowSize.width}px`
-      winRef.current.style.height = `${windowSize.height}px`
+      window.classList.remove('maximized_window')
+      window.style.top = `${windowPosition.y}px`
+      window.style.left = `${windowPosition.x}px`
+      window.style.width = `${size.width}px`
+      window.style.height = `${size.height}px`
+
+      setWindowSize({
+        width: size.width,
+        height: size.height
+      })
     }
 
     // Ocultar o mostrar la barra de arrastre dependiendo del estado de maximización

@@ -12,9 +12,11 @@ export const windowContents = {
       { key: 'editElement', icon: 'system-uicons:create', label: 'Editar elemento' }
     ],
     views: {
-      listElement: ({ setAlert, setActiveView, setSearchedElement }) =>
+      listElement: ({ setAlert, windowHeight, isMaximized, setActiveView, setSearchedElement }) =>
         <ListElements
           setAlert={setAlert}
+          windowHeight={windowHeight}
+          isMaximized={isMaximized}
           setActiveView={setActiveView}
           setSearchedElement={setSearchedElement}
         />,

@@ -54,16 +54,17 @@ export default function SearchElements ({ setAlert, searchElement, setSearchedEl
               <Info label='Estado' value={element.estado} />
             </div>
             )
-          : element && element.tipo === 'consumible' && (
-            <div className='element-info__container'>
-              <Info label='Nombre' value={element.nombre} />
-              <Info label='Cantidad' value={`${element.cantidad} ${element.medida}`} />
-              <Info label='Área' value={element.area} />
-              <Info label='Tipo' value={element.tipo} />
-              <Info label='Estado' value={element.estado} />
-            </div>
-          )}
-      {!typing && !element && <p>No se encontró el elemento.</p>}
+          : element && element.tipo === 'consumible'
+            ? (
+              <div className='element-info__container'>
+                <Info label='Nombre' value={element.nombre} />
+                <Info label='Cantidad' value={`${element.cantidad} ${element.medida}`} />
+                <Info label='Área' value={element.area} />
+                <Info label='Tipo' value={element.tipo} />
+                <Info label='Estado' value={element.estado} />
+              </div>
+              )
+            : !typing && (<p>No se encontró el elemento.</p>)}
     </>
   )
 }
