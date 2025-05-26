@@ -1,0 +1,7 @@
+[2025-04-08 22:56:34] Connection error: SQLSTATE[HY000] [1049] Unknown database 'sistema_prestamos'
+[2025-04-08 22:58:09] Connection error: SQLSTATE[HY000] [1049] Unknown database 'sistema_prestamos'
+[2025-04-08 22:58:11] Connection error: SQLSTATE[HY000] [1049] Unknown database 'sistema_prestamos'
+[2025-05-06 21:37:12] Connection error: Unknown database 'sgisena'
+[2025-05-06 21:37:23] Connection error: Unknown database 'sgisena'
+[2025-05-06 21:37:51] Connection error: Unknown database 'sistema-prestamos'
+[2025-05-23 23:34:20] Query error: Table 'sistema_prestamos.usuario' doesn't exist in engine

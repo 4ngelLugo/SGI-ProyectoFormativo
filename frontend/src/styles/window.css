@@ -227,25 +227,15 @@
 }
 
 /* posicionamiento de cada uno */
-.resizer--top {
-  top : 0;
-  left: 0;
-}
+.resizer--top { top: 0; left: 0; }
+.resizer--bottom { bottom: 0; left: 0; }
+.resizer--left { top: 0; left: 0; }
+.resizer--right { top: 0; right: 0; }
 
-.resizer--bottom {
-  bottom: 0;
-  left  : 0;
-}
-
-.resizer--left {
-  top : 0;
-  left: 0;
-}
-
-.resizer--right {
-  top  : 0;
-  right: 0;
-}
+.resizer--top-left { top: 0; left: 0; }
+.resizer--top-right { top: 0; right: 0; }
+.resizer--bottom-left { bottom: 0; left: 0; }
+.resizer--bottom-right { bottom: 0; right: 0; }
 
 .resizer--top-left {
   top : 0;

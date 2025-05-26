@@ -1,6 +1,6 @@
 <?php
-require_once '../../config/Database.php';
-require_once '../Controller/ElementoController.php';
+require_once '../../../config/Database.php';
+require_once '../controller/AreaController.php';
 
 header("Access-Control-Allow-Origin: http://localhost:5173");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
@@ -15,22 +15,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 $output = array();
 
-$connection = new Database();
+$conexion = new Database();
 
-if ($connection) {
-  $controller = new ElementoController($connection->connect());
+if ($conexion) {
+  $controller = new AreaController($conexion->connect());
 
-  if (isset($_GET["codigo"])) {
-    $codigo = (int) $_GET["codigo"];
+  if (isset($_GET["area_id"]) && is_numeric($_GET["area_id"])) {
+    $id = (int) $_GET["area_id"];
 
-    $result = $controller->getElementoByCodigo($codigo);
+    $result = $controller->obtenerAreaPorId($id);
   } else {
-    $result = $controller->getAllElementos();
+    $result = $controller->obtenerTodasLasAreas();
   }
 
   if ($result) $output = $result;
 } else {
-  $output = ["error" => "database connection error"];
+  $output = ["error" => "error de conexion a la base de datos"];
 }
 
 echo json_encode($output);

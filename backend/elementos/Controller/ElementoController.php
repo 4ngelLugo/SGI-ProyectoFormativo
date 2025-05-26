@@ -30,8 +30,8 @@ class ElementoController
     $validate_elemento = $this->getElementoByCodigo($codigo);
     if (empty($validate_elemento["error"])) return ["error" => "elemento ya existe"];
 
-    // if ($medida === "m") $medida = "metros";
-    // else if ($medida === "und") $medida = "unidades";
+    if ($medida === "m") $medida = "metros";
+    else if ($medida === "und") $medida = "unidades";
 
     $medida = strtolower($medida);
 

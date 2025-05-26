@@ -120,7 +120,7 @@ class ElementoModel
                   WHERE ele_con_codigo = ?";
     $stmt = $this->conn->prepare($query_cons);
     if (!$stmt) {
-      error_log("Error preparando query de consumible: " . $this->conn->error . PHP_EOL, 3, __DIR__ . "/../../logs/php_errors.log");
+      error_log("Error preparando query de consumible: " . $stmt->error . PHP_EOL, 3, __DIR__ . "/../../logs/php_errors.log");
       return null;
     }
 
