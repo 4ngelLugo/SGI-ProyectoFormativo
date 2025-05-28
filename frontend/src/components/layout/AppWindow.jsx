@@ -17,7 +17,7 @@ import { Icon } from '@iconify/react'
  * @param {function} setAlert - Función para mostrar alertas.
 */
 
-export default function AppWindow({
+export default function AppWindow ({
   id,
   title,
   isTop,

@@ -22,7 +22,8 @@ export default function EditElement ({ setAlert, searchElement }) {
               <form className='form' ref={formRef} onSubmit={handleSubmit}>
                 <input type='hidden' value={element.codigo} name='ele_codigo' />
                 <input type='text' placeholder='Nombre' name='ele_nombre' id='ele_nombre' defaultValue={element.nombre} />
-                <input type='number' placeholder='Area' name='ele_area' id='ele_area' defaultValue={element.area_id} />
+                <input type='number' placeholder='Categoria' name='ele_categoria' id='ele_categoria' defaultValue={element.categoria} />
+                <input type='number' placeholder='Area' name='ele_area' id='ele_area' defaultValue={element.area} />
 
                 {/* Selección del tipo de elemento (devolutivo o consumible) */}
                 <div className={`form__type ${element.tipo === 'consumible' ? 'form__type--consumible' : ''}`}>
@@ -32,10 +33,11 @@ export default function EditElement ({ setAlert, searchElement }) {
                         <input
                           type='radio'
                           value='devolutivo'
-                          name='tipo'
+                          name='ele_tipo'
                           id='tipo-devolutivo'
                           checked={element.tipo === 'devolutivo'}
                           className={element.tipo === 'devolutivo' ? 'form__type--active' : ''}
+                          readOnly
                         />
                         <label htmlFor='tipo-devolutivo'>Devolutivo</label>
                       </>
@@ -45,10 +47,11 @@ export default function EditElement ({ setAlert, searchElement }) {
                         <input
                           type='radio'
                           value='consumible'
-                          name='tipo'
+                          name='ele_tipo'
                           id='tipo-consumible'
                           checked={element.tipo === 'consumible'}
                           className={element.tipo === 'consumible' ? 'form__type--active' : ''}
+                          readOnly
                         />
                         <label htmlFor='tipo-consumible'>Consumible</label>
                       </>
@@ -61,7 +64,7 @@ export default function EditElement ({ setAlert, searchElement }) {
                     <>
                       <input type='number' placeholder='Placa' name='ele_placa' id='ele_placa' defaultValue={element.placa} />
                       <input type='text' placeholder='Serial' name='ele_serial' id='ele_serial' defaultValue={element.serial} />
-                      <input type='number' placeholder='Marca' name='ele_marca' id='ele_marca' defaultValue={element.marca_id} />
+                      <input type='number' placeholder='Marca' name='ele_marca' id='ele_marca' defaultValue={element.marca} />
                       <input type='text' placeholder='Modelo' name='ele_modelo' id='ele_modelo' defaultValue={element.modelo} />
                     </>
                     )

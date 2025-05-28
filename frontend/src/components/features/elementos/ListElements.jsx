@@ -13,7 +13,8 @@ export default function ListElements ({ setAlert, windowHeight, isMaximized, set
     setElements,
     page,
     setPage,
-    maxPage
+    maxPage,
+    fetchElements
   } = useFetchElements(setAlert, windowHeight, isMaximized)
 
   // Hook para manejar la lógica de desactivación de elementos
@@ -23,7 +24,7 @@ export default function ListElements ({ setAlert, windowHeight, isMaximized, set
     showModal,
     setShowModal,
     handleDeactivate
-  } = useDeactivateElement(setAlert, setElements)
+  } = useDeactivateElement({ setAlert, fetchElements })
 
   // Maneja la activación de la vista para ver detalles de un elemento específico
   const handleView = (codigo, view) => {
@@ -33,8 +34,8 @@ export default function ListElements ({ setAlert, windowHeight, isMaximized, set
   }
 
   // Maneja la activación del modal para deshabilitar un elemento
-  const handleAlert = (codigo, nombre, tipo) => {
-    setDeactivateElement({ code: codigo, name: nombre, type: tipo }) // Configura el elemento a deshabilitar
+  const handleAlert = (codigo, nombre) => {
+    setDeactivateElement({ code: codigo, nombre }) // Configura el elemento a deshabilitar
     setShowModal(true) // Muestra el modal de confirmación
   }
 
@@ -50,11 +51,12 @@ export default function ListElements ({ setAlert, windowHeight, isMaximized, set
             <th>Area</th>
             <th>Tipo</th>
             <th>Estado</th>
+            <th>Cantidad</th>
             <th>Acciones</th>
           </tr>
         </thead>
         <tbody className='table__body'>
-          {elements && elements.map(({ codigo, nombre, area, tipo, estado }, index) => (
+          {elements && elements.length > 0 && elements.map(({ codigo, nombre, area, tipo, estado, cantidad, unidadMedida }, index) => (
             <tr key={index} className={`table__row ${index % 2 === 1 ? 'table__row--alt' : ''}`}>
 
               <TooltipCell text={codigo} />
@@ -62,6 +64,7 @@ export default function ListElements ({ setAlert, windowHeight, isMaximized, set
               <TooltipCell text={area} />
               <TooltipCell text={tipo} />
               <TooltipCell text={estado} />
+              <TooltipCell text={cantidad ? `${cantidad} ${unidadMedida}` : '1 und'} />
 
               <td className='table__body--actions'>
                 {/* Iconos de acciones para cada elemento */}
@@ -88,7 +91,7 @@ export default function ListElements ({ setAlert, windowHeight, isMaximized, set
       <ConfirmModal
         icon={danger}
         title='¿Está seguro que desea deshabilitar este elemento?'
-        message={`${deactivateElement.code} - ${deactivateElement.name}`}
+        message={`${deactivateElement.code} - ${deactivateElement.nombre}`}
         showModal={showModal}
         setShowModal={setShowModal}
         action={handleDeactivate}

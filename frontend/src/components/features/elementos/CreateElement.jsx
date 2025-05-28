@@ -13,6 +13,7 @@ export default function CreateElements ({ setAlert }) {
       <form className='form' ref={formRef} onSubmit={handleSubmit}>
         <input type='number' placeholder='Codigo' name='ele_codigo' id='ele_codigo' />
         <input type='text' placeholder='Nombre' name='ele_nombre' id='ele_nombre' />
+        <input type='number' placeholder='Categoria' name='ele_categoria' id='ele_categoria' />
         <input type='number' placeholder='Area' name='ele_area' id='ele_area' />
 
         {/* Selección del tipo de elemento (devolutivo o consumible) */}
@@ -20,7 +21,7 @@ export default function CreateElements ({ setAlert }) {
           <input
             type='radio'
             value='devolutivo'
-            name='tipo'
+            name='ele_tipo'
             id='tipo-devolutivo'
             checked={tipo === 'devolutivo'}
             className={tipo === 'devolutivo' ? 'form__type--active' : ''}
@@ -31,7 +32,7 @@ export default function CreateElements ({ setAlert }) {
           <input
             type='radio'
             value='consumible'
-            name='tipo'
+            name='ele_tipo'
             id='tipo-consumible'
             className={tipo === 'consumible' ? 'form__type--active' : ''}
             checked={tipo === 'consumible'}
@@ -45,7 +46,7 @@ export default function CreateElements ({ setAlert }) {
           tipo === 'devolutivo'
             ? (
               <>
-                <input type='number' placeholder='Placa' name='ele_placa' id='ele_placa' />
+                <input type='text' placeholder='Placa' name='ele_placa' id='ele_placa' />
                 <input type='text' placeholder='Serial' name='ele_serial' id='ele_serial' />
                 <input type='number' placeholder='Marca' name='ele_marca' id='ele_marca' />
                 <input type='text' placeholder='Modelo' name='ele_modelo' id='ele_modelo' />

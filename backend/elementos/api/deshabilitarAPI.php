@@ -1,4 +1,5 @@
 <?php
+
 require_once '../../config/Database.php';
 require_once '../Controller/ElementoController.php';
 
@@ -13,24 +14,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
   exit();
 }
 
+
 $output = array();
 
-$connection = new Database();
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  $conexion = new Database();
 
-if ($connection) {
-  $controller = new ElementoController($connection->connect());
+  if ($conexion) {
+    $controller = new ElementoController($conexion->connect());
 
-  if (isset($_GET["codigo"])) {
-    $codigo = (int) $_GET["codigo"];
+    $input = json_decode(file_get_contents('php://input'), true);
 
-    $result = $controller->getElementoByCodigo($codigo);
+    $codigo = $input['code'] ?? null;
+
+    $result = $controller->deshabilitarElemento($codigo);
+
+    if ($result) $output = $result;
   } else {
-    $result = $controller->getAllElementos();
+    $output = ["error" => "error de conexion a la base de datos"];
   }
-
-  if ($result) $output = $result;
 } else {
-  $output = ["error" => "database connection error"];
+  $output = ["error" => "metodo invalido"];
 }
 
 echo json_encode($output);

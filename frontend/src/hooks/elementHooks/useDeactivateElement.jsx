@@ -8,8 +8,8 @@ import { DeactivateElementsEndPoint } from '../../config/apiRoutes'
  *
  * @returns {Object} - Objeto con el estado del elemento a desactivar, el estado de visivilidad del modal y la funcion para desactivar el elemento.
  */
-export const useDeactivateElement = ({ setAlert, setElements }) => {
-  const [deactivateElement, setDeactivateElement] = useState({ code: null, name: null, type: null })
+export const useDeactivateElement = ({ setAlert, fetchElements }) => {
+  const [deactivateElement, setDeactivateElement] = useState({ codigo: null, nombre: null })
   const [showModal, setShowModal] = useState(false)
 
   // Función que realiza una petición a la API para deshabilitar un elemento, según su codigo
@@ -25,6 +25,7 @@ export const useDeactivateElement = ({ setAlert, setElements }) => {
         if (response.error) {
           // Según el error, la alerta muestra un mensaje diferente
           const messages = {
+            'campos vacios': 'No se encontro el elemento',
             'elemento no existe': 'El elemento a deshabilitar no existe',
             'error al deshabilitar el elemento': 'Ocurrió un error al deshabilitar el elemento',
             'database connection error': 'Error al conectar con la base de datos'
@@ -32,7 +33,7 @@ export const useDeactivateElement = ({ setAlert, setElements }) => {
           setAlert({ type: 'error', message: messages[response.error] || 'Error desconocido', active: true })
         } else if (response.success) {
           // Si la desactivación fue exitosa, se actualiza el estado de los elementos
-          setElements(prev => prev.filter(e => e.codigo !== deactivateElement.code))
+          fetchElements()
           setAlert({ type: 'success', message: 'Elemento desactivado correctamente', active: true })
         }
       })

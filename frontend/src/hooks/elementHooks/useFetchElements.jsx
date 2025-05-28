@@ -58,29 +58,34 @@ export const useFetchElements = (setAlert, windowHeight, isMaximized) => {
     }
   }, [windowHeight, isMaximized])
 
-  // Realiza una petición para obtener los elementos de la API
-  useEffect(() => {
+  // Función reutilizable para una petición fetch
+  const fetchElements = () => {
     fetch(FetchElementsEndpoint)
       .then((res) => res.json())
       .then((response) => {
-        // Establece el estado de los elementos con la respuesta de la API
         const offset = (page - 1) * limit
-
         setMaxPage(Math.ceil(response.length / limit))
-        setElements(response.slice(offset, offset + limit))
+
+        // Establece el estado de los elementos con la respuesta de la API
+        if (response.length > 0) setElements(response.slice(offset, offset + limit))
+        else setElements(response)
       })
-      .catch((error) => {
+      .catch(error => {
         // En caso de que ocurra un error en la petición, o un error en el servidor, se captura y se muestra un mensaje de error
         console.error(error)
         setAlert({ type: 'error', message: 'Error al cargar los elementos', active: true })
       })
-  }, [page, limit])
+  }
+
+  // Realiza la petición para obtener los elementos de la API
+  useEffect(fetchElements, [page, limit])
 
   return {
     elements,
     setElements,
     page,
     setPage,
-    maxPage
+    maxPage,
+    fetchElements
   }
 }

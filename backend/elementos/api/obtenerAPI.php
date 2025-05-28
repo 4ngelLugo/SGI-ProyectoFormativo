@@ -1,5 +1,4 @@
 <?php
-
 require_once '../../config/Database.php';
 require_once '../Controller/ElementoController.php';
 
@@ -14,7 +13,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
   exit();
 }
 
-
 $output = array();
 
 $connection = new Database();
@@ -22,12 +20,13 @@ $connection = new Database();
 if ($connection) {
   $controller = new ElementoController($connection->connect());
 
-  $input = json_decode(file_get_contents('php://input'), true);
+  if (isset($_GET["codigo"])) {
+    $codigo = (int) $_GET["codigo"];
 
-  $codigo = $input['code'] ?? null;
-  $tipo = $input['type'] ?? null;
-
-  $result = $controller->deactivateElemento($codigo, $tipo);
+    $result = $controller->obtenerElementoPorCodigo($codigo);
+  } else {
+    $result = $controller->obtenerTodosLosElementos();
+  }
 
   if ($result) $output = $result;
 } else {

@@ -24,34 +24,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $codigo = $_POST["ele_codigo"] ?? null;
     $nombre = $_POST["ele_nombre"] ?? null;
+    $tipo = $_POST["ele_tipo"] ?? null;
+    $categoria = $_POST["ele_categoria"] ?? null;
     $area = $_POST["ele_area"] ?? null;
+    $placa = $_POST["ele_placa"] ?? null;
+    $serial = $_POST["ele_serial"] ?? null;
+    $marca = $_POST["ele_marca"] ?? null;
+    $modelo = $_POST["ele_modelo"] ?? null;
+    $cantidad = $_POST["ele_cant"] ?? null;
+    $medida = $_POST["ele_medida"] ?? null;
 
-    switch ($_POST["tipo"]) {
-      case "consumible":
+    $result = $controller->editarElemento($codigo, $nombre, $tipo, $categoria, $area, $placa, $serial, $marca, $modelo, $cantidad, $medida);
 
-        $cantidad = $_POST["ele_cant"] ?? null;
-        $medida = $_POST["ele_medida"] ?? null;
-
-        $result = $controller->saveElementoConsumible($codigo, $nombre, $area, $cantidad, $medida);
-
-        if ($result) $output = $result;
-        break;
-
-      case "devolutivo":
-        $placa = $_POST["ele_placa"] ?? null;
-        $serial = $_POST["ele_serial"] ?? null;
-        $marca = $_POST["ele_marca"] ?? null;
-        $modelo = $_POST["ele_modelo"] ?? null;
-
-        $result = $controller->saveElementoDevolutivo($codigo, $nombre, $area, $placa, $serial, $marca, $modelo);
-
-        if ($result) $output = $result;
-        break;
-
-      default:
-        $output = ["error" => "invalid type"];
-        break;
-    }
+    if ($result) $output = $result;
   } else {
     $output = ["error" => "database connection error"];
   }

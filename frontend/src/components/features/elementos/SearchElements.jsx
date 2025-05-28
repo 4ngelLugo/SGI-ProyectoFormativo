@@ -45,12 +45,13 @@ export default function SearchElements ({ setAlert, searchElement, setSearchedEl
           ? (
             <div className='element-info__container'>
               <Info label='Nombre' value={element.nombre} />
-              <Info label='Placa' value={element.placa} />
-              <Info label='Marca' value={element.marca} />
-              <Info label='Modelo' value={element.modelo} />
-              <Info label='Serial' value={element.serial} />
+              <Info label='Categoria' value={element.categoria} />
               <Info label='Área' value={element.area} />
               <Info label='Tipo' value={element.tipo} />
+              <Info label='Placa' value={element.placa} />
+              <Info label='Serial' value={element.serial} />
+              <Info label='Marca' value={element.marca} />
+              <Info label='Modelo' value={element.modelo} />
               <Info label='Estado' value={element.estado} />
             </div>
             )
@@ -58,9 +59,10 @@ export default function SearchElements ({ setAlert, searchElement, setSearchedEl
             ? (
               <div className='element-info__container'>
                 <Info label='Nombre' value={element.nombre} />
-                <Info label='Cantidad' value={`${element.cantidad} ${element.medida}`} />
+                <Info label='Categoria' value={element.categoria} />
                 <Info label='Área' value={element.area} />
                 <Info label='Tipo' value={element.tipo} />
+                <Info label='Cantidad' value={`${element.cantidad} ${element.unidadMedida}`} />
                 <Info label='Estado' value={element.estado} />
               </div>
               )
