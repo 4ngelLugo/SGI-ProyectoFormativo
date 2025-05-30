@@ -1,4 +1,5 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import RocketDock from '../components/RocketDock'
 import '../styles/desktop.css'
@@ -11,6 +12,15 @@ export default function Desktop() {
   const [isTop, setIsTop] = useState()
   const [alert, setAlert] = useState({ type: '', message: '', active: false })
   const alertRef = useRef(null)
+  const navigate = useNavigate()
+
+  // Verificar autenticación del usuario
+  useEffect(() => {
+    const isAuthenticated = localStorage.getItem('isAuthenticated')
+    if (!isAuthenticated || isAuthenticated !== 'true') {
+      navigate('/login')
+    }
+  }, [])
 
   // Abre una ventana al hacer click en un icono y la lleva al frente
   const onIconClick = (name) => {
