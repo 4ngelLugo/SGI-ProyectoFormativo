@@ -1,27 +1,50 @@
-import { useRef, useState } from 'react'
-import { SaveElementsEndpoint } from '../../config/apiRoutes'
+import { useRef } from 'react'
+import { SaveElementsEndpoint, GuardarRolEndpoint } from '../../config/apiRoutes'
 
 /**
  * Hook para manejar la creación de un nuevo elemento.
- * Permite gestionar el formulario, el tipo de elemento y el envío de datos al backend.
  *
  * @param {Function} setAlert - Función para mostrar alertas.
- * @returns {Object} - Objeto con la referencia al formulario, el tipo de elemento y la función de envío.
+ * @param {String} obtener - Tipo de elemento a crear.
+ * @returns {Object} - Objeto con la referencia al formulario y la función de envío.
  */
-export const useCreateElement = (setAlert) => {
+export const useCreate = ({ setAlert, obtener }) => {
+  const endpoints = {
+    elemento: SaveElementsEndpoint,
+    rol: GuardarRolEndpoint
+  }
+
+  const apiEndpoint = endpoints[obtener]
+
   // Referencia al formulario para acceder a los datos
   const formRef = useRef(null)
-
-  // Estado para el tipo de elemento que quiera registrar el usuario
-  const [tipo, setTipo] = useState('devolutivo')
 
   const handleSubmit = (e) => {
     e.preventDefault()
 
     const formData = new FormData(formRef.current)
 
+    if (!apiEndpoint) {
+      setAlert({ type: 'error', message: 'Tipo de operación inválido', active: true })
+      return
+    }
+
+    if (obtener === 'rol') {
+      const form = formRef.current
+      const checkboxes = form.querySelectorAll('input[name="permisos[]"]:checked')
+
+      if (checkboxes.length === 0) {
+        setAlert({
+          type: 'error',
+          message: 'Debe seleccionar al menos un permiso',
+          active: true
+        })
+        return
+      }
+    }
+
     // Realiza la peticion al endpoint de guardar elementos, usando el metodo POST y enviando el objeto FormData
-    fetch(SaveElementsEndpoint, {
+    fetch(apiEndpoint, {
       method: 'POST',
       body: formData,
       credentials: 'include'
@@ -31,12 +54,11 @@ export const useCreateElement = (setAlert) => {
         // Verifica si la respuesta contiene un error o un mensaje de exito
         if (response.error) {
           const messages = {
-            'invalid method': 'Error en el metodo de envio',
-            'database connection error': 'Error al conectar con la base de datos',
-            'invalid type': 'Tipo de elemento invalido',
-            'campos vacios': 'Por favor llena todos los campos',
-            'elemento ya existe': 'Ya existe un elemento con el mismo codigo',
-            'error al guardar': 'Ocurrio un error al guardar el elemento'
+            'metodo invalido': 'Error en el metodo de envio',
+            'campos vacios': 'Por favor complete todos los campos',
+            'ya existe': `Ya existe este ${obtener}`,
+            'error al guardar': `Ocurrio un error al crear el ${obtener}`,
+            'error de conexion a la base de datos': 'Error al conectar con la base de datos'
           }
           setAlert({ type: 'error', message: messages[response.error] || 'Error desconocido', active: true })
         } else if (response.success) {
@@ -52,8 +74,6 @@ export const useCreateElement = (setAlert) => {
 
   return {
     formRef,
-    tipo,
-    setTipo,
     handleSubmit
   }
 }

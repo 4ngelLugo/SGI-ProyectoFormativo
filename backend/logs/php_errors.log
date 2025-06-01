@@ -11,3 +11,11 @@
 [2025-05-28 01:12:32] Execute failed (Obtener elemento por id): 
 [2025-05-28 01:13:12] Execute failed (Obtener elemento por id): 
 [2025-05-28 01:16:10] Execute failed (Obtener elemento por id): 
+[2025-05-29 19:00:02] Execute failed (Obtener rol por nombre): 
+[2025-05-29 19:01:24] Execute failed (Obtener rol por nombre): 
+[2025-05-30 19:41:57] Execute failed (Obtener elemento por id): 
+[2025-05-30 19:41:58] Execute failed (Obtener elemento por id): 
+[2025-05-30 20:54:05] Execute failed (Obtener elemento por id): 
+[2025-06-01 01:30:06] Query error: Table 'sistema_prestamos.usuario' doesn't exist
+[2025-06-01 19:00:22] Query error: Table 'sistema_prestamos.usuario' doesn't exist
+[2025-06-01 20:59:22] Query error: Table 'sistema_prestamos.usuario' doesn't exist

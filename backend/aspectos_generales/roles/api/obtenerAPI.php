@@ -1,6 +1,6 @@
 <?php
-require_once '../../config/Database.php';
-require_once '../Controller/ElementoController.php';
+require_once '../../../config/Database.php';
+require_once '../controller/RolController.php';
 
 header("Access-Control-Allow-Origin: http://localhost:5173");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
@@ -15,17 +15,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 $output = array();
 
-$connection = new Database();
+$conexion = new Database();
 
-if ($connection) {
-  $controller = new ElementoController($connection->connect());
+if ($conexion) {
+  $controller = new RolController($conexion->connect());
 
-  if (isset($_GET["codigo"])) {
-    $codigo = (int) $_GET["codigo"];
+  if (isset($_GET["rol_id"]) && is_numeric($_GET["rol_id"])) {
+    $id = (int) $_GET["rol_id"];
 
-    $result = $controller->obtenerElementoPorCodigo($codigo);
+    $result = $controller->obtenerRolPorId($id);
   } else {
-    $result = $controller->obtenerTodosLosElementos();
+    $result = $controller->obtenerTodosLosRoles();
   }
 
   if ($result) $output = $result;

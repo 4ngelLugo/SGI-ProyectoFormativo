@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { DeactivateElementsEndPoint } from '../../config/apiRoutes'
+import { DeactivateElementsEndPoint, DesactivarRolEndpoint, FetchElementsEndpoint, ObtenerRolesEndpoint } from '../../config/apiRoutes'
 
 /**
  * Hook para manejar la busqueda de un elemento por su codigo
@@ -8,13 +8,27 @@ import { DeactivateElementsEndPoint } from '../../config/apiRoutes'
  *
  * @returns {Object} - Objeto con el estado del elemento a desactivar, el estado de visivilidad del modal y la funcion para desactivar el elemento.
  */
-export const useDeactivateElement = ({ setAlert, fetchElements }) => {
+export const useDeactivate = ({ setAlert, obtener, fetchElements }) => {
+  const endpoints = {
+    elemento: DeactivateElementsEndPoint,
+    rol: DesactivarRolEndpoint
+  }
+
+  const apiEndpoint = endpoints[obtener]
+
+  const fetchEndpoints = {
+    elemento: FetchElementsEndpoint,
+    rol: ObtenerRolesEndpoint
+  }
+
+  const fetchApiEndpoint = fetchEndpoints[obtener]
+
   const [deactivateElement, setDeactivateElement] = useState({ codigo: null, nombre: null })
   const [showModal, setShowModal] = useState(false)
 
   // Función que realiza una petición a la API para deshabilitar un elemento, según su codigo
   const handleDeactivate = () => {
-    fetch(DeactivateElementsEndPoint, {
+    fetch(apiEndpoint, {
       method: 'POST',
       body: JSON.stringify(deactivateElement),
       credentials: 'include'
@@ -25,15 +39,16 @@ export const useDeactivateElement = ({ setAlert, fetchElements }) => {
         if (response.error) {
           // Según el error, la alerta muestra un mensaje diferente
           const messages = {
-            'campos vacios': 'No se encontro el elemento',
-            'elemento no existe': 'El elemento a deshabilitar no existe',
-            'error al deshabilitar el elemento': 'Ocurrió un error al deshabilitar el elemento',
-            'database connection error': 'Error al conectar con la base de datos'
+            'metodo invalido': 'Error en el metodo de envio',
+            'campos vacios': `No se encontró el ${obtener}`,
+            'no existe': `El ${obtener} a desactivar no existe`,
+            'error al desactivar': `Ocurrió un error al desactivar el ${obtener}`,
+            'error de conexion a la base de datos': 'Error al conectar con la base de datos'
           }
           setAlert({ type: 'error', message: messages[response.error] || 'Error desconocido', active: true })
         } else if (response.success) {
           // Si la desactivación fue exitosa, se actualiza el estado de los elementos
-          fetchElements()
+          fetchElements(fetchApiEndpoint)
           setAlert({ type: 'success', message: 'Elemento desactivado correctamente', active: true })
         }
       })

@@ -1,23 +1,19 @@
-import { useState } from 'react'
-import { useFetchElementByCode } from '../../../hooks'
+import { useFetchByCode } from '../../../hooks'
 import '../../../styles/globals/lists.css'
 
 export default function SearchElements ({ setAlert, searchElement, setSearchedElement }) {
-  const [inputCode, setInputCode] = useState(searchElement || '')
-
   const {
     loading,
     typing,
     element,
     setElement,
     setLoading
-  } = useFetchElementByCode({ setAlert, codeToSearch: inputCode })
+  } = useFetchByCode({ setAlert, codeToSearch: searchElement, obtener: 'elemento' })
 
   const handleOnChange = (e) => {
     const value = e.target.value
-    setSearchedElement(value)
-    setInputCode(value) // Actualiza el codigo de búsqueda
-    if (value.trim() === '') {
+    setSearchedElement(value) // Actualiza el codigo de búsqueda
+    if (value.trim() === '') { // Si el input está vacío, limpia el estado del elemento y detiene la carga
       setElement(null)
       setLoading(false)
     }
@@ -26,14 +22,14 @@ export default function SearchElements ({ setAlert, searchElement, setSearchedEl
   return (
     <>
       <span className='title see-title'>
-        Ver elemento
+        Buscar elemento
         <div className='search-input'>
           <span>Código</span>
           <input
             type='text'
-            value={inputCode}
+            value={searchElement || ''}
             placeholder='Código'
-            onChange={(e) => handleOnChange(e)}
+            onChange={handleOnChange}
             className='input'
           />
         </div>

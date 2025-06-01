@@ -1,6 +1,6 @@
 <?php
-require_once '../../config/Database.php';
-require_once '../Controller/ElementoController.php';
+require_once '../../../config/Database.php';
+require_once '../controller/PermisoController.php';
 
 header("Access-Control-Allow-Origin: http://localhost:5173");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
@@ -15,18 +15,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 $output = array();
 
-$connection = new Database();
+$conexion = new Database();
 
-if ($connection) {
-  $controller = new ElementoController($connection->connect());
+if ($conexion) {
+  $controller = new PermisoController($conexion->connect());
 
-  if (isset($_GET["codigo"])) {
-    $codigo = (int) $_GET["codigo"];
-
-    $result = $controller->obtenerElementoPorCodigo($codigo);
-  } else {
-    $result = $controller->obtenerTodosLosElementos();
-  }
+  $result = $controller->obtenerTodosLosPermisos();
 
   if ($result) $output = $result;
 } else {

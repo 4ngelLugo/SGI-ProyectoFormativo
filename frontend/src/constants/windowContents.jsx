@@ -3,6 +3,11 @@ import EditElement from '../components/features/elementos/EditElement'
 import ListElements from '../components/features/elementos/ListElements'
 import SearchElements from '../components/features/elementos/SearchElements'
 
+import ListarRoles from '../components/features/roles/ListarRoles'
+import CrearRol from '../components/features/roles/CrearRol'
+import EditarRol from '../components/features/roles/EditarRol'
+import BuscarRol from '../components/features/roles/BuscarRol'
+
 export const windowContents = {
   finder: {
     sidebar: [
@@ -35,6 +40,37 @@ export const windowContents = {
         <EditElement
           setAlert={setAlert}
           searchElement={searchElement}
+        />
+    }
+  },
+  terminal: {
+    sidebar: [
+      { key: 'listarRoles', icon: 'system-uicons:question-circle', label: 'Listar roles' },
+      { key: 'crearRol', icon: 'system-uicons:question-circle', label: 'Crear rol' },
+      { key: 'buscarRol', icon: 'system-uicons:question-circle', label: 'Buscar rol' },
+      { key: 'editarRol', icon: 'system-uicons:question-circle', label: 'Editar rol' }
+    ],
+    views: {
+      listarRoles: ({ setAlert, windowHeight, isMaximized, setActiveView, setSearchedRole }) =>
+        <ListarRoles
+          setAlert={setAlert}
+          windowHeight={windowHeight}
+          isMaximized={isMaximized}
+          setActiveView={setActiveView}
+          setSearchedRole={setSearchedRole}
+        />,
+      crearRol: ({ setAlert }) =>
+        <CrearRol setAlert={setAlert} />,
+      buscarRol: ({ setAlert, searchRole, setSearchRole }) =>
+        <BuscarRol
+          setAlert={setAlert}
+          searchRole={searchRole}
+          setSearchRole={setSearchRole}
+        />,
+      editarRol: ({ setAlert, searchRole }) =>
+        <EditarRol
+          setAlert={setAlert}
+          searchRole={searchRole}
         />
     }
   }

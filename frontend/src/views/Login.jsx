@@ -4,7 +4,7 @@ import useGetTime from '../hooks/useGetTime'
 import logoSena from '../assets/images/logoSena.png'
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router'
-import tryConnect from '../components/aspectos_generales/tryConnect'
+import { tryConnect } from '../hooks'
 
 export default function Login () {
   const [loading, setLoading] = useState(true)
@@ -45,7 +45,7 @@ export default function Login () {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError(null)
-    
+
     try {
       const response = await tryConnect(documentNumber, password)
       if (response.success) {
@@ -77,23 +77,23 @@ export default function Login () {
             <img src={logoSena} alt='Logo SENA' />
           </div>
           <form onSubmit={handleSubmit}>
-            <input 
-              className='login-form__input' 
-              type='number' 
-              placeholder='Número de documento' 
+            <input
+              className='login-form__input'
+              type='number'
+              placeholder='Número de documento'
               value={documentNumber}
               onChange={(e) => setDocumentNumber(e.target.value)}
               required
             />
-            <input 
-              className='login-form__input' 
-              type='password' 
-              placeholder='Contraseña' 
+            <input
+              className='login-form__input'
+              type='password'
+              placeholder='Contraseña'
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-            {error && <div className="login-form__error">{error}</div>}
+            {error && <div className='login-form__error'>{error}</div>}
             <button type='submit'>Ingresar</button>
           </form>
         </section>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { FetchElementByCodeEndpoint } from '../../config/apiRoutes'
+import { FetchElementByCodeEndpoint, ObtenerRolPorIDEndpoint } from '../../config/apiRoutes'
 
 /**
  * Hook para manejar la busqueda de un elemento por su codigo
@@ -9,7 +9,14 @@ import { FetchElementByCodeEndpoint } from '../../config/apiRoutes'
  *
  * @returns {Object} - Objeto con el estado de carga, escritura y el elemento encontrado.
  */
-export const useFetchElementByCode = ({ setAlert, codeToSearch }) => {
+export const useFetchByCode = ({ setAlert, codeToSearch, obtener }) => {
+  const endpoints = {
+    elemento: FetchElementByCodeEndpoint,
+    rol: ObtenerRolPorIDEndpoint
+  }
+
+  const apiEndpoint = endpoints[obtener]
+
   // Estado para guardar si la pagina esta guardando está cargando
   // Estado para guardar si el usuario está escribiendo
   // Estado para guardar el código de búsqueda
@@ -21,7 +28,7 @@ export const useFetchElementByCode = ({ setAlert, codeToSearch }) => {
   // Función para buscar un elemento por su codigo, haciendo una petición a la API
   const fetchElement = async (code) => {
     try {
-      const res = await fetch(`${FetchElementByCodeEndpoint}${code}`)
+      const res = await fetch(`${apiEndpoint}${code}`)
       const response = await res.json()
 
       // Si la respuesta tiene error, se muestra una alerta y se limpia el estado del elemento
@@ -33,7 +40,7 @@ export const useFetchElementByCode = ({ setAlert, codeToSearch }) => {
       }
     } catch (error) {
       // Si ocurre un error en la solicitud, se muestra una alerta de error
-      setAlert({ type: 'error', message: 'Ocurrio un error en la petición', active: true })
+      setAlert({ type: 'error', message: 'Ocurrió un error en la petición', active: true })
       setElement(null)
       setTyping(false)
     }

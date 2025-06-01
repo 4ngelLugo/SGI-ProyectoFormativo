@@ -113,24 +113,24 @@
 
 @container (max-width: 950px) {
 
-  .table th:nth-child(3),
-  .table td:nth-child(3) {
+  .table_elementos th:nth-child(3),
+  .table_elementos td:nth-child(3) {
     display: none;
   }
 }
 
 @container (max-width: 880px) {
 
-  .table th:nth-child(4),
-  .table td:nth-child(4) {
+  .table_elementos th:nth-child(4),
+  .table_elementos td:nth-child(4) {
     display: none;
   }
 }
 
 @container (max-width: 742px) {
 
-  .table th:nth-child(6),
-  .table td:nth-child(6) {
+  .table_elementos th:nth-child(6),
+  .table_elementos td:nth-child(6) {
     display: none;
   }
 }

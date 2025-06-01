@@ -1,16 +1,20 @@
-import { useCreateElement } from '../../../hooks'
+import { useState } from 'react'
+import { useCreate } from '../../../hooks'
 import '../../../styles/globals/forms.css'
 
 export default function CreateElements ({ setAlert }) {
   // Hook para manejar la creación de elementos, incluyendo la lógica para el formulario y el tipo de elemento
-  const { formRef, tipo, setTipo, handleSubmit } = useCreateElement(setAlert)
+  const { formRef, handleSubmit } = useCreate({ setAlert, obtener: 'elemento' })
+
+  // Estado para el tipo de elemento que quiera registrar el usuario
+  const [tipo, setTipo] = useState('devolutivo')
 
   return (
     <>
       <span className='title'>Registrar Elemento</span>
 
       {/* Formulario para registrar un nuevo elemento */}
-      <form className='form' ref={formRef} onSubmit={handleSubmit}>
+      <form className='form form--elements' ref={formRef} onSubmit={handleSubmit}>
         <input type='number' placeholder='Codigo' name='ele_codigo' id='ele_codigo' />
         <input type='text' placeholder='Nombre' name='ele_nombre' id='ele_nombre' />
         <input type='number' placeholder='Categoria' name='ele_categoria' id='ele_categoria' />

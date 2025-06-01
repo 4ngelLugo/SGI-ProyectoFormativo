@@ -21,7 +21,7 @@ class Auth {
     }
 
     public function authenticate() {
-        $sql = "SELECT * FROM usuario WHERE Numero_Documento = ?";
+        $sql = "SELECT * FROM usuarios WHERE usuario_documento = ?";
         $stmt = $this->connection->executeQuery($sql, [$this->document]);
         $result = $stmt->get_result();
         $user = $result->fetch_assoc();
@@ -30,7 +30,7 @@ class Auth {
             return false;
         }
         
-        if (password_verify($this->password, $user['Contrasena'])) {
+        if (password_verify($this->password, $user['usuario_contrasena'])) {
             $this->userData = $user;
             return true;
         }

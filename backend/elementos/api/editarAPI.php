@@ -38,10 +38,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($result) $output = $result;
   } else {
-    $output = ["error" => "database connection error"];
+    $output = ["error" => "error de conexion a la base de datos"];
   }
 } else {
-  $output = ["error" => "invalid method"];
+  $output = ["error" => "metodo invalido"];
 }
 
 echo json_encode($output);

@@ -15,7 +15,7 @@ class User {
     
     public function __construct($userData) {
         $this->userData = $userData;
-         
+
         if (isset($userData['db_username']) && isset($userData['db_password'])) {
             $this->connection = new Database(
                 // $userData['db_username'],

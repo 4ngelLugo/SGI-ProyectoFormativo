@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { UpdateElementsEndpoint } from '../../config/apiRoutes'
+import { UpdateElementsEndpoint, EditarRolEndpoint } from '../../config/apiRoutes'
 
 /**
  * Hook para manejar la edición de un nuevo elemento.
@@ -8,7 +8,14 @@ import { UpdateElementsEndpoint } from '../../config/apiRoutes'
  * @param {Function} setAlert - Función para mostrar alertas.
  * @returns {Object} - Objeto con la referencia al formulario y la función de envío.
  */
-export default function useEditElement (setAlert) {
+export const useEdit = ({ setAlert, obtener }) => {
+  const endpoints = {
+    elemento: UpdateElementsEndpoint,
+    rol: EditarRolEndpoint
+  }
+
+  const apiEndpoint = endpoints[obtener]
+
   // Referencia al formulario para acceder a los datos
   const formRef = useRef(null)
 
@@ -18,7 +25,7 @@ export default function useEditElement (setAlert) {
     const formData = new FormData(formRef.current)
 
     // Realiza la peticion al endpoint de guardar elementos, usando el metodo POST y enviando el objeto FormData
-    fetch(UpdateElementsEndpoint, {
+    fetch(apiEndpoint, {
       method: 'POST',
       body: formData,
       credentials: 'include'
@@ -28,12 +35,11 @@ export default function useEditElement (setAlert) {
         // Verifica si la respuesta contiene un error o un mensaje de exito
         if (response.error) {
           const messages = {
-            'invalid method': 'Error en el metodo de envio',
-            'database connection error': 'Error al conectar con la base de datos',
-            'invalid type': 'Tipo de elemento invalido',
-            'campos vacios': 'Por favor llene todos los campos',
-            'elemento no existe': 'No existe un elemento con ese codigo',
-            'error al actualizar': 'Ocurrio un error al editar el elemento'
+            'metodo invalido': 'Error en el metodo de envio',
+            'error de conexion a la base de datos': 'Error al conectar con la base de datos',
+            'campos vacios': 'Por favor complete todos los campos',
+            'no existe': `No se encontró el ${obtener}`,
+            'error al actualizar': `Ocurrio un error al editar el ${obtener}`
           }
           setAlert({ type: 'error', message: messages[response.error] || 'Error desconocido', active: true })
         } else if (response.success) {

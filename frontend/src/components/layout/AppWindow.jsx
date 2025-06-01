@@ -68,6 +68,7 @@ export default function AppWindow ({
 
   // Estados especificos para cada ventana
   const [searchedElement, setSearchedElement] = useState(id === 'finder' ? null : undefined)
+  const [searchedRole, setSearchedRole] = useState(id === 'terminal' ? null : undefined)
 
   // Abre la ventana mostrando automaticamente el contenido de la primera pestaña del menú lateral
   useEffect(() => {
@@ -127,6 +128,24 @@ export default function AppWindow ({
           break
         case 'editElement':
           props.searchElement = searchedElement
+          break
+      }
+    }
+
+    if (id === 'terminal') {
+      switch (activeView) {
+        case 'listarRoles':
+          props.windowHeight = windowSize.height
+          props.isMaximized = isMaximized
+          props.setActiveView = setActiveView
+          props.setSearchedRole = setSearchedRole
+          break
+        case 'buscarRol':
+          props.searchRole = searchedRole
+          props.setSearchRole = setSearchedRole
+          break
+        case 'editarRol':
+          props.searchRole = searchedRole
           break
       }
     }

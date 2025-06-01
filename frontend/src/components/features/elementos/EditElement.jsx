@@ -1,17 +1,16 @@
-import { useFetchElementByCode } from '../../../hooks'
-import useEditElement from '../../../hooks/elementHooks/useEditElement'
+import { useFetchByCode, useEdit } from '../../../hooks'
 import '../../../styles/globals/forms.css'
 
 export default function EditElement ({ setAlert, searchElement }) {
   // Hook para manejar la edición de elementos, incluyendo la lógica para el formulario y su referencia
-  const { formRef, handleSubmit } = useEditElement(setAlert)
+  const { formRef, handleSubmit } = useEdit({ setAlert, obtener: 'elemento' })
 
   // Hook para obtener el elemento a editar por su código
-  const { loading, element } = useFetchElementByCode({ setAlert, codeToSearch: searchElement })
+  const { loading, element } = useFetchByCode({ setAlert, codeToSearch: searchElement, obtener: 'elemento' })
 
   return (
     <>
-      <span className='title'>Editar Elemento {searchElement}</span>
+      <span className='title'>Editar Elemento: {searchElement}</span>
 
       {/* Formulario para registrar un nuevo elemento */}
       {
@@ -19,7 +18,7 @@ export default function EditElement ({ setAlert, searchElement }) {
           ? <p>Cargando...</p>
           : element
             ? (
-              <form className='form' ref={formRef} onSubmit={handleSubmit}>
+              <form className='form form--elements' ref={formRef} onSubmit={handleSubmit}>
                 <input type='hidden' value={element.codigo} name='ele_codigo' />
                 <input type='text' placeholder='Nombre' name='ele_nombre' id='ele_nombre' defaultValue={element.nombre} />
                 <input type='number' placeholder='Categoria' name='ele_categoria' id='ele_categoria' defaultValue={element.categoria} />
@@ -71,7 +70,7 @@ export default function EditElement ({ setAlert, searchElement }) {
                   : (
                     <>
                       <input type='number' placeholder='Cantidad' name='ele_cant' id='ele_cant' defaultValue={element.cantidad} />
-                      <input type='text' placeholder='Unidad de medida' name='ele_medida' id='ele_medida' defaultValue={element.medida} />
+                      <input type='text' placeholder='Unidad de medida' name='ele_medida' id='ele_medida' defaultValue={element.unidadMedida} />
                     </>
                     )}
                 <button className='form__button' type='submit'>Enviar</button>

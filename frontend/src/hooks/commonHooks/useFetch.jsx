@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { FetchElementsEndpoint } from '../../config/apiRoutes'
+import { FetchElementsEndpoint, ObtenerRolesEndpoint, ObtenerPermisosEndpoint } from '../../config/apiRoutes'
 
 /**
  * Calcula el límite inicial de elementos según el alto de pantalla.
@@ -21,11 +21,21 @@ const calculateInitialLimit = (windowHeight, isMaximized) => {
  * Hook para manejar la busqueda de todos los elementos disponibles
  *
  * @param {Function} setAlert - Función para mostrar alertas.
- *
+ * @param {Integer} windowHeight - Altura de la ventana
+ * @param {Boolean} isMaximized - Estado de maximización de la ventana.
+ * @param {String} obtener - Tipo de elemento a crear.
  * @returns {Object} - Objeto con el estado de los elementos encontrados, y la funcion para actualizarlo.
  */
-export const useFetchElements = (setAlert, windowHeight, isMaximized) => {
-  const initialLimit = calculateInitialLimit(windowHeight, isMaximized)
+export const useFetch = (setAlert, windowHeight, isMaximized, obtener) => {
+  const endpoints = {
+    elementos: FetchElementsEndpoint,
+    roles: ObtenerRolesEndpoint,
+    permisos: ObtenerPermisosEndpoint
+  }
+
+  const apiEndpoint = endpoints[obtener]
+
+  const initialLimit = windowHeight ? calculateInitialLimit(windowHeight, isMaximized) : 100
 
   // Estados para manejar los elementos a mostrar, el elemento a deshabilitar y el estado del modal
   const [elements, setElements] = useState([])
@@ -39,6 +49,8 @@ export const useFetchElements = (setAlert, windowHeight, isMaximized) => {
   const prevHeight = useRef(isMaximized ? Math.floor((screenRect.height - 86) / 52) : Math.floor((windowHeight - 86) / 52))
 
   useEffect(() => {
+    if (!windowHeight) return
+
     let currentHeigh
 
     if (isMaximized && screen) {
@@ -59,8 +71,8 @@ export const useFetchElements = (setAlert, windowHeight, isMaximized) => {
   }, [windowHeight, isMaximized])
 
   // Función reutilizable para una petición fetch
-  const fetchElements = () => {
-    fetch(FetchElementsEndpoint)
+  const fetchElements = (apiEndpoint) => {
+    fetch(apiEndpoint)
       .then((res) => res.json())
       .then((response) => {
         const offset = (page - 1) * limit
@@ -78,7 +90,9 @@ export const useFetchElements = (setAlert, windowHeight, isMaximized) => {
   }
 
   // Realiza la petición para obtener los elementos de la API
-  useEffect(fetchElements, [page, limit])
+  useEffect(() => {
+    fetchElements(apiEndpoint)
+  }, [page, limit, apiEndpoint])
 
   return {
     elements,

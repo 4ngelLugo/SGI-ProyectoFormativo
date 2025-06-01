@@ -41,13 +41,13 @@ class ElementoController
     }
 
     $validate_elemento = $this->elemento_modelo->obtenerElementoPorCodigo($codigo);
-    if ($validate_elemento) return ["error" => "elemento ya existe"];
+    if ($validate_elemento) return ["error" => "ya existe"];
 
     $result = $this->elemento_modelo->guardarElemento($codigo, $nombre, $tipo, $categoria, $area, $placa, $serial, $marca, $modelo, $cantidad, $medida);
 
     if ($result) return ["success" => true];
 
-    return ["error" => "error al guardar elemento"];
+    return ["error" => "error al guardar"];
   }
 
   public function obtenerTodosLosElementos()
@@ -56,7 +56,7 @@ class ElementoController
 
     if ($todos_los_elementos) return $todos_los_elementos;
 
-    return ["error" => "error al obtener elementos"];
+    return ["error" => "error al obtener"];
   }
 
   public function obtenerElementoPorCodigo($codigo)
@@ -67,7 +67,7 @@ class ElementoController
 
     if ($elemento) return $elemento;
 
-    return ["error" => "elemento no existe"];
+    return ["error" => "no existe"];
   }
 
   public function editarElemento($codigo, $nombre, $tipo, $categoria, $area, $placa = null, $serial = null, $marca = null, $modelo = null, $cantidad = null, $medida = null)
@@ -101,7 +101,7 @@ class ElementoController
     }
 
     $validate_elemento = $this->elemento_modelo->obtenerElementoPorCodigo($codigo);
-    if (!$validate_elemento) return ["error" => "elemento no existe"];
+    if (!$validate_elemento) return ["error" => "no existe"];
 
     $result = $this->elemento_modelo->editarElemento($codigo, $nombre, $tipo, $categoria, $area, $placa, $serial, $marca, $modelo, $cantidad, $medida);
     if ($result) return ["success" => true];
@@ -114,12 +114,12 @@ class ElementoController
     if (empty($codigo)) return ["error" => "campos vacios"];
 
     $elemento = $this->elemento_modelo->obtenerElementoPorCodigo($codigo);
-    if (!$elemento) return ["error" => "elemento no existe"];
+    if (!$elemento) return ["error" => "no existe"];
 
     $deshabilitar_elemento = $this->elemento_modelo->deshabilitarElemento($codigo);
 
     if ($deshabilitar_elemento) return ["success" => true];
 
-    return ["error" => "error al deshabilitar elemento"];
+    return ["error" => "error al desactivar"];
   }
 }

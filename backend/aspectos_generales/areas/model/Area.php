@@ -2,7 +2,7 @@
 class AreaModel
 {
   private $conn;
-  public $table = "areas";
+  public $tabla = "areas";
 
   public function __construct($db)
   {
@@ -11,7 +11,7 @@ class AreaModel
 
   public function guardarArea($nombre)
   {
-    $query = "INSERT INTO {$this->table} (area_nombre) VALUES (?)";
+    $query = "INSERT INTO {$this->tabla} (area_nombre) VALUES (?)";
     $stmt = $this->conn->prepare($query);
 
     if (!$stmt) {
@@ -30,7 +30,7 @@ class AreaModel
 
   public function obtenerTodasLasAreas($estado = "activo")
   {
-    $query = "SELECT * FROM {$this->table} WHERE area_estado = ?";
+    $query = "SELECT * FROM {$this->tabla} WHERE area_estado = ?";
     $stmt = $this->conn->prepare($query);
 
     if (!$stmt) {
@@ -52,7 +52,7 @@ class AreaModel
 
   public function obtenerAreaPorId($id)
   {
-    $query = "SELECT * FROM {$this->table} WHERE area_id = ?";
+    $query = "SELECT * FROM {$this->tabla} WHERE area_id = ?";
     $stmt = $this->conn->prepare($query);
 
     if (!$stmt) {
@@ -74,7 +74,7 @@ class AreaModel
 
   public function obtenerAreaPorNombre($nombre)
   {
-    $query = "SELECT * FROM {$this->table} WHERE area_nombre = ?";
+    $query = "SELECT * FROM {$this->tabla} WHERE area_nombre = ?";
     $stmt = $this->conn->prepare($query);
 
     if (!$stmt) {
@@ -96,7 +96,7 @@ class AreaModel
 
   public function editarArea($id, $nombre)
   {
-    $query = "UPDATE {$this->table} SET area_nombre = ? WHERE area_id = ?";
+    $query = "UPDATE {$this->tabla} SET area_nombre = ? WHERE area_id = ?";
     $stmt = $this->conn->prepare($query);
 
     if (!$stmt) {
@@ -114,7 +114,7 @@ class AreaModel
 
   public function desactivarArea($id)
   {
-    $query = "UPDATE {$this->table} SET area_estado = 'desactivado' WHERE area_id = ?";
+    $query = "UPDATE {$this->tabla} SET area_estado = 'desactivado' WHERE area_id = ?";
     $stmt = $this->conn->prepare($query);
 
     if (!$stmt) {
