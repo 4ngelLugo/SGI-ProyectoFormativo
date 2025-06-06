@@ -8,8 +8,10 @@ export default function EditarRol ({ setAlert, searchRole }) {
 
   // Hook para obtener el elemento a editar por su código
   const { loading, element } = useFetchByCode({ setAlert, codeToSearch: searchRole, obtener: 'rol' })
+  // Extrae los IDs de los permisos del rol
+  const permisosDelRol = element?.permisos?.map(p => p.id) || []
 
-  const { elements } = useFetch(setAlert, null, null, 'permisos')
+  const { elements } = useFetch({ setAlert, windowHeight: null, isMaximized: null, obtener: 'permisos' })
 
   // Agrupa los permisos por el módulo al que pertenecen
   const permisosPorModulo = (Array.isArray(elements) ? elements : []).reduce((acc, permiso) => {
@@ -68,7 +70,7 @@ export default function EditarRol ({ setAlert, searchRole }) {
                               type='checkbox'
                               name='permisos[]'
                               value={permiso.id}
-                              defaultChecked={element.permisos?.includes(permiso.id)}
+                              defaultChecked={permisosDelRol?.includes(permiso.id)}
                             />
                             <label htmlFor={permiso.id}>
                               {permiso.nombre.charAt(0).toUpperCase() + permiso.nombre.slice(1)}

@@ -150,6 +150,11 @@ export default function AppWindow ({
       }
     }
 
+    if (id === 'settings') {
+      props.windowHeight = windowSize.height
+      props.isMaximized = isMaximized
+    }
+
     return <ViewComponent {...props} />
   }, [content?.views, activeView, setAlert, searchedElement, windowSize, isMaximized])
 

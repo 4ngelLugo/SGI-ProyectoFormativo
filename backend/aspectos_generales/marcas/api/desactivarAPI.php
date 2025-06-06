@@ -1,6 +1,6 @@
 <?php
 require_once '../../../config/Database.php';
-require_once '../controller/CategoriaController.php';
+require_once '../controller/MarcaController.php';
 
 header("Access-Control-Allow-Origin: http://localhost:5173");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
@@ -19,11 +19,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $conexion = new Database();
 
   if ($conexion) {
-    $controller = new CategoriaController($conexion->connect());
+    $controller = new MarcaController($conexion->connect());
 
-    $nombre = $_POST["nombre"] ?? null;
+    $input = json_decode(file_get_contents('php://input'), true);
 
-    $result = $controller->guardarCategoria($nombre);
+    $id = $input['codigo'] ?? null;
+
+    $result = $controller->desactivarMarca($id);
 
     if ($result) $output = $result;
   } else {

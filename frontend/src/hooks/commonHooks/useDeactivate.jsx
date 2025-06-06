@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { DeactivateElementsEndPoint, DesactivarRolEndpoint, FetchElementsEndpoint, ObtenerRolesEndpoint } from '../../config/apiRoutes'
+import { DeactivateElementsEndPoint, DesactivarRolEndpoint, FetchElementsEndpoint, ObtenerRolesEndpoint, DesactivarAreaEndpoint, ObtenerAreasEndpoint, DesactivarCategoriaEndpoint, ObtenerCategoriasEndpoint, DesactivarMarcaEndpoint, ObtenerMarcasEndpoint, DesactivarTipoDocumentoEndpoint, ObtenerTipoDocumentoEndpoint } from '../../config/apiRoutes'
 
 /**
  * Hook para manejar la busqueda de un elemento por su codigo
@@ -11,14 +11,22 @@ import { DeactivateElementsEndPoint, DesactivarRolEndpoint, FetchElementsEndpoin
 export const useDeactivate = ({ setAlert, obtener, fetchElements }) => {
   const endpoints = {
     elemento: DeactivateElementsEndPoint,
-    rol: DesactivarRolEndpoint
+    rol: DesactivarRolEndpoint,
+    area: DesactivarAreaEndpoint,
+    categoria: DesactivarCategoriaEndpoint,
+    marca: DesactivarMarcaEndpoint,
+    tipoDocumento: DesactivarTipoDocumentoEndpoint
   }
 
   const apiEndpoint = endpoints[obtener]
 
   const fetchEndpoints = {
     elemento: FetchElementsEndpoint,
-    rol: ObtenerRolesEndpoint
+    rol: ObtenerRolesEndpoint,
+    area: ObtenerAreasEndpoint,
+    categoria: ObtenerCategoriasEndpoint,
+    marca: ObtenerMarcasEndpoint,
+    tipoDocumento: ObtenerTipoDocumentoEndpoint
   }
 
   const fetchApiEndpoint = fetchEndpoints[obtener]

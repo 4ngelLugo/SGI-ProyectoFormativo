@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { SaveElementsEndpoint, GuardarRolEndpoint } from '../../config/apiRoutes'
+import { SaveElementsEndpoint, GuardarRolEndpoint, GuardarAreaEndpoint, GuardarCategoriaEndpoint, GuardarMarcaEndpoint, GuardarTipoDocumentoEndpoint, FetchElementsEndpoint, ObtenerRolesEndpoint, ObtenerAreasEndpoint, ObtenerCategoriasEndpoint, ObtenerMarcasEndpoint, ObtenerTipoDocumentoEndpoint } from '../../config/apiRoutes'
 
 /**
  * Hook para manejar la creación de un nuevo elemento.
@@ -8,11 +8,26 @@ import { SaveElementsEndpoint, GuardarRolEndpoint } from '../../config/apiRoutes
  * @param {String} obtener - Tipo de elemento a crear.
  * @returns {Object} - Objeto con la referencia al formulario y la función de envío.
  */
-export const useCreate = ({ setAlert, obtener }) => {
+export const useCreate = ({ setAlert, obtener, fetchElements }) => {
   const endpoints = {
     elemento: SaveElementsEndpoint,
-    rol: GuardarRolEndpoint
+    rol: GuardarRolEndpoint,
+    area: GuardarAreaEndpoint,
+    categoria: GuardarCategoriaEndpoint,
+    marca: GuardarMarcaEndpoint,
+    tipoDocumento: GuardarTipoDocumentoEndpoint
   }
+
+  const fetchEndpoints = {
+    elemento: FetchElementsEndpoint,
+    rol: ObtenerRolesEndpoint,
+    area: ObtenerAreasEndpoint,
+    categoria: ObtenerCategoriasEndpoint,
+    marca: ObtenerMarcasEndpoint,
+    tipoDocumento: ObtenerTipoDocumentoEndpoint
+  }
+
+  const fetchApiEndpoint = fetchEndpoints[obtener]
 
   const apiEndpoint = endpoints[obtener]
 
@@ -63,6 +78,10 @@ export const useCreate = ({ setAlert, obtener }) => {
           setAlert({ type: 'error', message: messages[response.error] || 'Error desconocido', active: true })
         } else if (response.success) {
           setAlert({ type: 'success', message: 'Elemento guardado correctamente', active: true })
+
+          if (typeof fetchElements === 'function') {
+            fetchElements(fetchApiEndpoint)
+          }
         }
       })
       // En caso de que ocurra un error en la petición, o un error en el servidor, se captura y se muestra un mensaje de error

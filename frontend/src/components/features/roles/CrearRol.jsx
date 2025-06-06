@@ -4,7 +4,7 @@ import '../../../styles/globals/forms.css'
 
 export default function CrearRol ({ setAlert }) {
   const { formRef, handleSubmit } = useCreate({ setAlert, obtener: 'rol' })
-  const { elements } = useFetch(setAlert, null, null, 'permisos')
+  const { elements } = useFetch({ setAlert, windowHeight: null, isMaximized: null, obtener: 'permisos' })
 
   // Agrupa los permisos por el módulo al que pertenecen
   const permisosPorModulo = (Array.isArray(elements) ? elements : []).reduce((acc, permiso) => {

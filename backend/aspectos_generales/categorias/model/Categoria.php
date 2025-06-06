@@ -28,17 +28,19 @@ class CategoriaModel
     return null;
   }
 
-  public function obtenerTodasLasCategorias($estado = "activo")
+  public function obtenerTodasLasCategorias()
   {
-    $query = "SELECT * FROM {$this->tabla} WHERE categoria_estado = ?";
+    $query = "SELECT
+              categoria_id as id,
+              categoria_nombre as nombre,
+              categoria_estado as estado
+              FROM {$this->tabla}";
     $stmt = $this->conn->prepare($query);
 
     if (!$stmt) {
       $this->logError("Prepare failed: " . $this->conn->error);
       return null;
     }
-
-    $stmt->bind_param("s", $estado);
 
     if ($stmt->execute()) {
       $result = $stmt->get_result();
@@ -52,7 +54,12 @@ class CategoriaModel
 
   public function obtenerCategoriaPorId($id)
   {
-    $query = "SELECT * FROM {$this->tabla} WHERE categoria_id = ?";
+    $query = "SELECT
+              categoria_id as id,
+              categoria_nombre as nombre,
+              categoria_estado as estado
+              FROM {$this->tabla}
+              WHERE categoria_id = ?";
     $stmt = $this->conn->prepare($query);
 
     if (!$stmt) {

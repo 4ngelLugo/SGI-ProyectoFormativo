@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { FetchElementByCodeEndpoint, ObtenerRolPorIDEndpoint } from '../../config/apiRoutes'
+import { FetchElementByCodeEndpoint, ObtenerCategoriaPorCodigoEndpoint, ObtenerRolPorIDEndpoint, ObtenerAreaPorCodigoEndpoint, ObtenerTipoDocumentoPorCodigoEndpoint } from '../../config/apiRoutes'
 
 /**
  * Hook para manejar la busqueda de un elemento por su codigo
@@ -12,14 +12,21 @@ import { FetchElementByCodeEndpoint, ObtenerRolPorIDEndpoint } from '../../confi
 export const useFetchByCode = ({ setAlert, codeToSearch, obtener }) => {
   const endpoints = {
     elemento: FetchElementByCodeEndpoint,
-    rol: ObtenerRolPorIDEndpoint
+    rol: ObtenerRolPorIDEndpoint,
+    area: ObtenerAreaPorCodigoEndpoint,
+    categoria: ObtenerCategoriaPorCodigoEndpoint,
+    tipoDocumento: ObtenerTipoDocumentoPorCodigoEndpoint
   }
 
   const apiEndpoint = endpoints[obtener]
 
+  if (!apiEndpoint) {
+    console.warn(`Tipo '${obtener}' no es válido para búsqueda`)
+    return
+  }
+
   // Estado para guardar si la pagina esta guardando está cargando
   // Estado para guardar si el usuario está escribiendo
-  // Estado para guardar el código de búsqueda
   // Estado para almacenar los datos del elemento
   const [loading, setLoading] = useState(false)
   const [typing, setTyping] = useState(false)
@@ -33,7 +40,7 @@ export const useFetchByCode = ({ setAlert, codeToSearch, obtener }) => {
 
       // Si la respuesta tiene error, se muestra una alerta y se limpia el estado del elemento
       if (response.error) {
-        setAlert({ type: 'error', message: response.error })
+        setAlert({ type: 'error', message: response.error, active: true })
         setElement(null)
       } else {
         setElement(response)

@@ -1,6 +1,6 @@
 <?php
 require_once '../../../config/Database.php';
-require_once '../controller/CategoriaController.php';
+require_once '../controller/TipoDocumentoController.php';
 
 header("Access-Control-Allow-Origin: http://localhost:5173");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
@@ -19,11 +19,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $conexion = new Database();
 
   if ($conexion) {
-    $controller = new CategoriaController($conexion->connect());
+    $controller = new TipoDocumentoController($conexion->connect());
 
+    $id = $_POST["id"] ?? null;
     $nombre = $_POST["nombre"] ?? null;
 
-    $result = $controller->guardarCategoria($nombre);
+    $result = $controller->editarTipoDocumento($id, $nombre);
 
     if ($result) $output = $result;
   } else {

@@ -21,8 +21,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   if ($conexion) {
     $controller = new CategoriaController($conexion->connect());
 
-    $id = $_POST["categoria_id"] ?? null;
-    $nombre = $_POST["categoria_nombre"] ?? null;
+    $id = $_POST["id"] ?? null;
+    $nombre = $_POST["nombre"] ?? null;
 
     $result = $controller->editarCategoria($id, $nombre);
 

@@ -1,60 +1,82 @@
 import { useRef } from 'react'
-import { UpdateElementsEndpoint, EditarRolEndpoint } from '../../config/apiRoutes'
+import { UpdateElementsEndpoint, EditarRolEndpoint, EditarAreaEndpoint, EditarCategoriaEndpoint, EditarMarcaEndpoint, EditarTipoDocumentoEndpoint } from '../../config/apiRoutes'
 
 /**
- * Hook para manejar la edición de un nuevo elemento.
- * Permite gestionar el formulario y el envío de datos al backend.
+ * Hook para manejar la edición de un elemento.
+ * Soporta tanto el envío desde formularios HTML como desde objetos JS.
  *
  * @param {Function} setAlert - Función para mostrar alertas.
- * @returns {Object} - Objeto con la referencia al formulario y la función de envío.
+ * @param {string} obtener - Tipo de recurso a editar ('elemento', 'rol').
+ * @returns {Object} - Referencia al formulario y funciones para enviar datos.
  */
 export const useEdit = ({ setAlert, obtener }) => {
   const endpoints = {
     elemento: UpdateElementsEndpoint,
-    rol: EditarRolEndpoint
+    rol: EditarRolEndpoint,
+    area: EditarAreaEndpoint,
+    categoria: EditarCategoriaEndpoint,
+    marca: EditarMarcaEndpoint,
+    tipoDocumento: EditarTipoDocumentoEndpoint
   }
 
   const apiEndpoint = endpoints[obtener]
-
-  // Referencia al formulario para acceder a los datos
   const formRef = useRef(null)
 
   const handleSubmit = (e) => {
     e.preventDefault()
-
     const formData = new FormData(formRef.current)
+    sendRequest(formData)
+  }
 
-    // Realiza la peticion al endpoint de guardar elementos, usando el metodo POST y enviando el objeto FormData
-    fetch(apiEndpoint, {
-      method: 'POST',
-      body: formData,
-      credentials: 'include'
+  const submitData = async (data) => {
+    const formData = new FormData()
+    Object.entries(data).forEach(([key, value]) => {
+      formData.append(key, value)
     })
-      .then((res) => res.json())
-      .then((response) => {
-        // Verifica si la respuesta contiene un error o un mensaje de exito
-        if (response.error) {
-          const messages = {
-            'metodo invalido': 'Error en el metodo de envio',
-            'error de conexion a la base de datos': 'Error al conectar con la base de datos',
-            'campos vacios': 'Por favor complete todos los campos',
-            'no existe': `No se encontró el ${obtener}`,
-            'error al actualizar': `Ocurrio un error al editar el ${obtener}`
-          }
-          setAlert({ type: 'error', message: messages[response.error] || 'Error desconocido', active: true })
-        } else if (response.success) {
-          setAlert({ type: 'success', message: 'Elemento editado correctamente', active: true })
+
+    return await sendRequest(formData) // Retorna true o false
+  }
+
+  const sendRequest = async (formData) => {
+    try {
+      const res = await fetch(apiEndpoint, {
+        method: 'POST',
+        body: formData,
+        credentials: 'include'
+      })
+
+      const response = await res.json()
+
+      if (response.error) {
+        const messages = {
+          'metodo invalido': 'Error en el método de envío',
+          'error de conexion a la base de datos': 'Error al conectar con la base de datos',
+          'campos vacios': 'Por favor complete todos los campos',
+          'no existe': `No se encontró el ${obtener}`,
+          'error al actualizar': `Ocurrió un error al editar el ${obtener}`
         }
-      })
-      // En caso de que ocurra un error en la petición, o un error en el servidor, se captura y se muestra un mensaje de error
-      .catch((error) => {
-        console.error(error)
-        setAlert({ type: 'error', message: 'Ocurrio un error en la petición', active: true })
-      })
+        setAlert({ type: 'error', message: messages[response.error] || 'Error desconocido', active: true })
+        return false
+      }
+
+      if (response.success) {
+        setAlert({ type: 'success', message: 'Elemento editado correctamente', active: true })
+        return true
+      }
+
+      // Caso inesperado
+      setAlert({ type: 'error', message: 'Respuesta inesperada del servidor', active: true })
+      return false
+    } catch (error) {
+      console.error(error)
+      setAlert({ type: 'error', message: 'Ocurrió un error en la petición', active: true })
+      return false
+    }
   }
 
   return {
     formRef,
-    handleSubmit
+    handleSubmit,
+    submitData
   }
 }

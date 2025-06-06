@@ -21,8 +21,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   if ($conexion) {
     $controller = new AreaController($conexion->connect());
 
-    $id = $_POST["area_id"] ?? null;
-    $nombre = $_POST["area_nombre"] ?? null;
+    $id = $_POST["id"] ?? null;
+    $nombre = $_POST["nombre"] ?? null;
 
     $result = $controller->editarArea($id, $nombre);
 

@@ -1,27 +1,29 @@
 import '../../styles/modal.css'
+import '../../styles/globals/forms.css'
 
-export default function ConfirmModal ({ icon, title, message, showModal, setShowModal, action }) {
+export default function ConfirmModal ({ icon, title, message, showModal, setShowModal, formRef, handleSubmit }) {
   return (
     <div className={`modal--container ${showModal ? 'show' : ''}`}>
-      <div className='modal'>
+      <form className='modal form' ref={formRef} onSubmit={handleSubmit}>
         {icon && <img src={icon} alt='' width='64px' />}
         {title && <p>{title}</p>}
         {message && <span>{message}</span>}
+        <input type='text' placeholder='Nombre' name='nombre' id='nombre' />
 
         <div>
           {/* Botones para cancelar o confirmar */}
-          <button onClick={() => setShowModal(false)} className='modal--cancel'>Cancelar</button>
+          <button type='button' onClick={() => setShowModal(false)} className='modal--cancel'>Cancelar</button>
           <button
+            type='submit'
             onClick={() => {
               setShowModal(false)
-              action()
             }}
             className='modal--confirm'
           >
             Confirmar
           </button>
         </div>
-      </div>
+      </form>
     </div>
   )
 }

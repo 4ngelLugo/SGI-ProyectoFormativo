@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { useFetchByCode } from '../../../hooks'
 import '../../../styles/globals/lists.css'
 
@@ -19,10 +18,6 @@ export default function BuscarRol ({ setAlert, searchRole, setSearchRole }) {
       setLoading(false)
     }
   }
-
-  useEffect(() => {
-    console.log(element)
-  }, [element])
 
   return (
     <>
@@ -47,9 +42,11 @@ export default function BuscarRol ({ setAlert, searchRole, setSearchRole }) {
             <div className='element-info__container'>
               <Info label='ID' value={element.id} />
               <Info label='Nombre' value={element.nombre} />
-              {element?.permisos.map((permiso) => (
-                <Info key={permiso} label='Permiso' value={permiso} />
-              ))}
+              <Info label='Permisos'>
+                {element?.permisos.map((permiso) => (
+                  <p key={permiso.id}>{permiso.nombre}</p>
+                ))}
+              </Info>
 
             </div>
             )
@@ -59,11 +56,12 @@ export default function BuscarRol ({ setAlert, searchRole, setSearchRole }) {
 }
 
 // Componente reutilizable para mostrar información del elemento
-function Info ({ label, value }) {
+function Info ({ label, value, children }) {
   return (
     <div className='element-info'>
       <span className='element-info__title'>{label}</span>
-      <span className='element-info__content'>{value}</span>
+      {value && <span className='element-info__content'>{value}</span>}
+      {children && <span className='element-info__content'>{children}</span>}
     </div>
   )
 }

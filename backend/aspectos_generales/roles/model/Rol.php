@@ -101,7 +101,8 @@ class Rol
     $rol = $rolResult->fetch_assoc();
 
     $sql_permisos = "SELECT
-                    p.permiso_id as permisoId
+                    p.permiso_id as permisoId,
+                    p.permiso_nombre as permisoNombre
                     FROM {$this->tabla_permisos} p
                     INNER JOIN {$this->tabla_roles_permisos} rp
                     ON rp.permiso_id = p.permiso_id
@@ -126,7 +127,10 @@ class Rol
     $permisos = [];
 
     while ($row = $permisoResult->fetch_assoc()) {
-      $permisos[] = $row['permisoId'];
+      $permisos[] = [
+        'id' => $row['permisoId'],
+        'nombre' => $row['permisoNombre']
+      ];
     }
 
     $rol['permisos'] = $permisos;

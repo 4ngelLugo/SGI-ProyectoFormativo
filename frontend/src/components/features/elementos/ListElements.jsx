@@ -15,7 +15,7 @@ export default function ListElements ({ setAlert, windowHeight, isMaximized, set
     setPage,
     maxPage,
     fetchElements
-  } = useFetch(setAlert, windowHeight, isMaximized, 'elementos')
+  } = useFetch({ setAlert, windowHeight, isMaximized, obtener: 'elementos' })
 
   // Hook para manejar la lógica de desactivación de elementos
   const {

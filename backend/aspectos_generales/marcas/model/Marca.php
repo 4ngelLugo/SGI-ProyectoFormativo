@@ -1,17 +1,17 @@
 <?php
-class AreaModel
+class MarcaModel
 {
   private $conn;
-  public $tabla = "areas";
+  public $tabla = "marcas";
 
   public function __construct($db)
   {
     $this->conn = $db;
   }
 
-  public function guardarArea($nombre)
+  public function guardarMarca($nombre)
   {
-    $query = "INSERT INTO {$this->tabla} (area_nombre) VALUES (?)";
+    $query = "INSERT INTO {$this->tabla} (marca_nombre) VALUES (?)";
     $stmt = $this->conn->prepare($query);
 
     if (!$stmt) {
@@ -28,12 +28,12 @@ class AreaModel
     return null;
   }
 
-  public function obtenerTodasLasAreas()
+  public function obtenerTodasLasMarcas()
   {
-    $query = "SELECT 
-              area_id as id,
-              area_nombre as nombre,
-              area_estado as estado
+    $query = "SELECT
+              marca_id as id,
+              marca_nombre as nombre,
+              marca_estado as estado
               FROM {$this->tabla}";
     $stmt = $this->conn->prepare($query);
 
@@ -52,14 +52,14 @@ class AreaModel
     return null;
   }
 
-  public function obtenerAreaPorId($id)
+  public function obtenerMarcaPorId($id)
   {
-    $query = "SELECT 
-              area_id as id,
-              area_nombre as nombre,
-              area_estado as estado
-              FROM {$this->tabla} 
-              WHERE area_id = ?";
+    $query = "SELECT
+              marca_id as id,
+              marca_nombre as nombre,
+              marca_estado as estado
+              FROM {$this->tabla}
+              WHERE marca_id = ?";
     $stmt = $this->conn->prepare($query);
 
     if (!$stmt) {
@@ -79,9 +79,9 @@ class AreaModel
     return null;
   }
 
-  public function obtenerAreaPorNombre($nombre)
+  public function obtenerMarcaPorNombre($nombre)
   {
-    $query = "SELECT * FROM {$this->tabla} WHERE area_nombre = ?";
+    $query = "SELECT * FROM {$this->tabla} WHERE marca_nombre = ?";
     $stmt = $this->conn->prepare($query);
 
     if (!$stmt) {
@@ -101,9 +101,9 @@ class AreaModel
     return null;
   }
 
-  public function editarArea($id, $nombre)
+  public function editarMarca($id, $nombre)
   {
-    $query = "UPDATE {$this->tabla} SET area_nombre = ? WHERE area_id = ?";
+    $query = "UPDATE {$this->tabla} SET marca_nombre = ? WHERE marca_id = ?";
     $stmt = $this->conn->prepare($query);
 
     if (!$stmt) {
@@ -119,9 +119,9 @@ class AreaModel
     return null;
   }
 
-  public function desactivarArea($id)
+  public function desactivarMarca($id)
   {
-    $query = "UPDATE {$this->tabla} SET area_estado = 'desactivado' WHERE area_id = ?";
+    $query = "UPDATE {$this->tabla} SET marca_estado = 'desactivado' WHERE marca_id = ?";
     $stmt = $this->conn->prepare($query);
 
     if (!$stmt) {

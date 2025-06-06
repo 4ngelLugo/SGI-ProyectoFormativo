@@ -8,6 +8,11 @@ import CrearRol from '../components/features/roles/CrearRol'
 import EditarRol from '../components/features/roles/EditarRol'
 import BuscarRol from '../components/features/roles/BuscarRol'
 
+import ListarAreas from '../components/features/configuracion/ListarAreas'
+import ListarCategorias from '../components/features/configuracion/ListarCategorias'
+import ListarMarcas from '../components/features/configuracion/ListarMarcas'
+import ListarTipoDocumento from '../components/features/configuracion/ListarTipoDocumento'
+
 export const windowContents = {
   finder: {
     sidebar: [
@@ -71,6 +76,40 @@ export const windowContents = {
         <EditarRol
           setAlert={setAlert}
           searchRole={searchRole}
+        />
+    }
+  },
+  settings: {
+    sidebar: [
+      { key: 'listarAreas', icon: 'system-uicons:clipboard-notes', label: 'Listar Areas' },
+      { key: 'listarCategorias', icon: 'system-uicons:clipboard-notes', label: 'Listar Categorias' },
+      { key: 'listarMarcas', icon: 'system-uicons:clipboard-notes', label: 'Listar Marcas' },
+      { key: 'listarTipoDocumento', icon: 'system-uicons:clipboard-notes', label: 'Listar T.  Documento' }
+    ],
+    views: {
+      listarAreas: ({ setAlert, windowHeight, isMaximized }) =>
+        <ListarAreas
+          setAlert={setAlert}
+          windowHeight={windowHeight}
+          isMaximized={isMaximized}
+        />,
+      listarCategorias: ({ setAlert, windowHeight, isMaximized }) =>
+        <ListarCategorias
+          setAlert={setAlert}
+          windowHeight={windowHeight}
+          isMaximized={isMaximized}
+        />,
+      listarMarcas: ({ setAlert, windowHeight, isMaximized }) =>
+        <ListarMarcas
+          setAlert={setAlert}
+          windowHeight={windowHeight}
+          isMaximized={isMaximized}
+        />,
+      listarTipoDocumento: ({ setAlert, windowHeight, isMaximized }) =>
+        <ListarTipoDocumento
+          setAlert={setAlert}
+          windowHeight={windowHeight}
+          isMaximized={isMaximized}
         />
     }
   }

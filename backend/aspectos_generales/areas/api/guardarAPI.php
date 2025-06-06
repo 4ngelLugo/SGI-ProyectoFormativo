@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   if ($conexion) {
     $controller = new AreaController($conexion->connect());
 
-    $nombre = $_POST["area_nombre"] ?? null;
+    $nombre = $_POST["nombre"] ?? null;
 
     $result = $controller->guardarArea($nombre);
 

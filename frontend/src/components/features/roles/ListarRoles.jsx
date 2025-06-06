@@ -15,7 +15,7 @@ export default function ListarRoles ({ setAlert, windowHeight, isMaximized, setA
     setPage,
     maxPage,
     fetchElements
-  } = useFetch(setAlert, windowHeight, isMaximized, 'roles')
+  } = useFetch({ setAlert, windowHeight, isMaximized, obtener: 'roles' })
 
   // Hook para manejar la lógica de desactivación de elementos
   const {

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { FetchElementsEndpoint, ObtenerRolesEndpoint, ObtenerPermisosEndpoint } from '../../config/apiRoutes'
+import { FetchElementsEndpoint, ObtenerRolesEndpoint, ObtenerPermisosEndpoint, ObtenerAreasEndpoint, ObtenerCategoriasEndpoint, ObtenerMarcasEndpoint, ObtenerTipoDocumentoEndpoint } from '../../config/apiRoutes'
 
 /**
  * Calcula el límite inicial de elementos según el alto de pantalla.
@@ -26,14 +26,23 @@ const calculateInitialLimit = (windowHeight, isMaximized) => {
  * @param {String} obtener - Tipo de elemento a crear.
  * @returns {Object} - Objeto con el estado de los elementos encontrados, y la funcion para actualizarlo.
  */
-export const useFetch = (setAlert, windowHeight, isMaximized, obtener) => {
+export const useFetch = ({ setAlert, windowHeight, isMaximized, obtener }) => {
   const endpoints = {
     elementos: FetchElementsEndpoint,
     roles: ObtenerRolesEndpoint,
-    permisos: ObtenerPermisosEndpoint
+    permisos: ObtenerPermisosEndpoint,
+    areas: ObtenerAreasEndpoint,
+    categorias: ObtenerCategoriasEndpoint,
+    marcas: ObtenerMarcasEndpoint,
+    tipoDocumento: ObtenerTipoDocumentoEndpoint
   }
 
   const apiEndpoint = endpoints[obtener]
+
+  if (!apiEndpoint) {
+    console.warn(`Tipo '${obtener}' no es válido para búsqueda`)
+    return
+  }
 
   const initialLimit = windowHeight ? calculateInitialLimit(windowHeight, isMaximized) : 100
 
@@ -47,6 +56,10 @@ export const useFetch = (setAlert, windowHeight, isMaximized, obtener) => {
   const screenRect = screen.getBoundingClientRect()
 
   const prevHeight = useRef(isMaximized ? Math.floor((screenRect.height - 86) / 52) : Math.floor((windowHeight - 86) / 52))
+
+  useEffect(() => {
+    if (page > maxPage && maxPage !== null) setPage(maxPage)
+  }, [page, maxPage])
 
   useEffect(() => {
     if (!windowHeight) return
@@ -68,7 +81,7 @@ export const useFetch = (setAlert, windowHeight, isMaximized, obtener) => {
       setLimit(prev => Math.floor(prev - difference) > 1 ? Math.floor(prev - difference) : 1)
       prevHeight.current = currentHeigh
     }
-  }, [windowHeight, isMaximized])
+  }, [windowHeight, isMaximized, elements])
 
   // Función reutilizable para una petición fetch
   const fetchElements = (apiEndpoint) => {

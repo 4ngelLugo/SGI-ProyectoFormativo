@@ -23,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $input = json_decode(file_get_contents('php://input'), true);
 
-    $id = $input['area_id'] ?? null;
+    $id = $input['codigo'] ?? null;
 
     $result = $controller->desactivarArea($id);
 

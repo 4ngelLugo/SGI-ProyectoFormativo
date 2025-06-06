@@ -1,20 +1,16 @@
-import { IniciarSesionEndpoint } from "../config/apiRoutes"
+/* global localStorage */
+import { IniciarSesionEndpoint } from '../config/apiRoutes'
 
 /**
  * Función para realizar la autenticación del usuario
- * @param {string} document - Numero de documento del usuario
+ * @param {string} document - Número de documento del usuario
  * @param {string} password - Contraseña del usuario
  * @returns {Promise<Object>} - Respuesta de la autenticación
  */
 export const tryConnect = async (document, password) => {
   try {
-    // Crear formato JSON de la petición
-    const requestData = {
-      document,
-      password
-    }
+    const requestData = { document, password }
 
-    // Crear petición POST a la API
     const response = await fetch(IniciarSesionEndpoint, {
       method: 'POST',
       headers: {
@@ -23,10 +19,14 @@ export const tryConnect = async (document, password) => {
       },
       body: JSON.stringify(requestData),
       credentials: 'include', // Incluir cookies para la gestión de la sesión
-      mode: 'cors' // Add CORS mode
+      mode: 'cors'
     })
 
-    // Parsear la respuesta JSON
+    // Verifica que la respuesta esté OK (status 2xx)
+    if (!response.ok) {
+      throw new Error(`Error HTTP: ${response.status}`)
+    }
+
     const data = await response.json()
 
     // Comprobar si la autenticación fue exitosa
@@ -45,7 +45,6 @@ export const tryConnect = async (document, password) => {
     }
   } catch (error) {
     console.error('Authentication error:', error)
-    // Error de conexión con el servidor
     return {
       success: false,
       message: `Error de conexión con el servidor: ${error.message}. Verifique que el servidor esté en funcionamiento.`
