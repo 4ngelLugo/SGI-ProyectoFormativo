@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { SaveElementsEndpoint, GuardarRolEndpoint, GuardarAreaEndpoint, GuardarCategoriaEndpoint, GuardarMarcaEndpoint, GuardarTipoDocumentoEndpoint, FetchElementsEndpoint, ObtenerRolesEndpoint, ObtenerAreasEndpoint, ObtenerCategoriasEndpoint, ObtenerMarcasEndpoint, ObtenerTipoDocumentoEndpoint } from '../../config/apiRoutes'
+import { SaveElementsEndpoint, GuardarUsuarioEndpoint, GuardarRolEndpoint, GuardarAreaEndpoint, GuardarCategoriaEndpoint, GuardarMarcaEndpoint, GuardarTipoDocumentoEndpoint, FetchElementsEndpoint, ObtenerUsuariosEndpoint, ObtenerRolesEndpoint, ObtenerAreasEndpoint, ObtenerCategoriasEndpoint, ObtenerMarcasEndpoint, ObtenerTipoDocumentoEndpoint } from '../../config/apiRoutes'
 
 /**
  * Hook para manejar la creación de un nuevo elemento.
@@ -11,6 +11,7 @@ import { SaveElementsEndpoint, GuardarRolEndpoint, GuardarAreaEndpoint, GuardarC
 export const useCreate = ({ setAlert, obtener, fetchElements }) => {
   const endpoints = {
     elemento: SaveElementsEndpoint,
+    usuario: GuardarUsuarioEndpoint,
     rol: GuardarRolEndpoint,
     area: GuardarAreaEndpoint,
     categoria: GuardarCategoriaEndpoint,
@@ -20,6 +21,7 @@ export const useCreate = ({ setAlert, obtener, fetchElements }) => {
 
   const fetchEndpoints = {
     elemento: FetchElementsEndpoint,
+    usuario: ObtenerUsuariosEndpoint,
     rol: ObtenerRolesEndpoint,
     area: ObtenerAreasEndpoint,
     categoria: ObtenerCategoriasEndpoint,
@@ -73,18 +75,20 @@ export const useCreate = ({ setAlert, obtener, fetchElements }) => {
             'campos vacios': 'Por favor complete todos los campos',
             'ya existe': `Ya existe este ${obtener}`,
             'error al guardar': `Ocurrio un error al crear el ${obtener}`,
-            'error de conexion a la base de datos': 'Error al conectar con la base de datos'
+            'error de conexion a la base de datos': 'Error al conectar con la base de datos',
+            'contrasenas no coinciden': 'Las contraseñas no coinciden',
+            'correo no valido': 'Correo electrónico no válido'
           }
           setAlert({ type: 'error', message: messages[response.error] || 'Error desconocido', active: true })
         } else if (response.success) {
-          setAlert({ type: 'success', message: 'Elemento guardado correctamente', active: true })
+          setAlert({ type: 'success', message: `${obtener} guardado correctamente`, active: true })
 
           if (typeof fetchElements === 'function') {
             fetchElements(fetchApiEndpoint)
           }
         }
       })
-      // En caso de que ocurra un error en la petición, o un error en el servidor, se captura y se muestra un mensaje de error
+    // En caso de que ocurra un error en la petición, o un error en el servidor, se captura y se muestra un mensaje de error
       .catch((error) => {
         console.error(error)
         setAlert({ type: 'error', message: 'Ocurrio un error en la petición', active: true })

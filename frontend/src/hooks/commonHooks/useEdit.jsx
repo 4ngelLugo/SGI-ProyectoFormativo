@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { UpdateElementsEndpoint, EditarRolEndpoint, EditarAreaEndpoint, EditarCategoriaEndpoint, EditarMarcaEndpoint, EditarTipoDocumentoEndpoint } from '../../config/apiRoutes'
+import { UpdateElementsEndpoint, EditarUsuarioEndpoint, EditarRolEndpoint, EditarAreaEndpoint, EditarCategoriaEndpoint, EditarMarcaEndpoint, EditarTipoDocumentoEndpoint } from '../../config/apiRoutes'
 
 /**
  * Hook para manejar la edición de un elemento.
@@ -12,6 +12,7 @@ import { UpdateElementsEndpoint, EditarRolEndpoint, EditarAreaEndpoint, EditarCa
 export const useEdit = ({ setAlert, obtener }) => {
   const endpoints = {
     elemento: UpdateElementsEndpoint,
+    usuario: EditarUsuarioEndpoint,
     rol: EditarRolEndpoint,
     area: EditarAreaEndpoint,
     categoria: EditarCategoriaEndpoint,

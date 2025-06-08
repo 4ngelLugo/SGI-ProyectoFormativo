@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { DeactivateElementsEndPoint, DesactivarRolEndpoint, FetchElementsEndpoint, ObtenerRolesEndpoint, DesactivarAreaEndpoint, ObtenerAreasEndpoint, DesactivarCategoriaEndpoint, ObtenerCategoriasEndpoint, DesactivarMarcaEndpoint, ObtenerMarcasEndpoint, DesactivarTipoDocumentoEndpoint, ObtenerTipoDocumentoEndpoint } from '../../config/apiRoutes'
+import { DeactivateElementsEndPoint, DesactivarRolEndpoint, FetchElementsEndpoint, ObtenerRolesEndpoint, DesactivarUsuarioEndpoint, ObtenerUsuariosEndpoint, DesactivarAreaEndpoint, ObtenerAreasEndpoint, DesactivarCategoriaEndpoint, ObtenerCategoriasEndpoint, DesactivarMarcaEndpoint, ObtenerMarcasEndpoint, DesactivarTipoDocumentoEndpoint, ObtenerTipoDocumentoEndpoint } from '../../config/apiRoutes'
 
 /**
  * Hook para manejar la busqueda de un elemento por su codigo
@@ -11,6 +11,7 @@ import { DeactivateElementsEndPoint, DesactivarRolEndpoint, FetchElementsEndpoin
 export const useDeactivate = ({ setAlert, obtener, fetchElements }) => {
   const endpoints = {
     elemento: DeactivateElementsEndPoint,
+    usuario: DesactivarUsuarioEndpoint,
     rol: DesactivarRolEndpoint,
     area: DesactivarAreaEndpoint,
     categoria: DesactivarCategoriaEndpoint,
@@ -22,6 +23,7 @@ export const useDeactivate = ({ setAlert, obtener, fetchElements }) => {
 
   const fetchEndpoints = {
     elemento: FetchElementsEndpoint,
+    usuario: ObtenerUsuariosEndpoint,
     rol: ObtenerRolesEndpoint,
     area: ObtenerAreasEndpoint,
     categoria: ObtenerCategoriasEndpoint,

@@ -8,6 +8,12 @@ export const FetchElementByCodeEndpoint = `${API_BASE}/elementos/api/obtenerAPI.
 export const UpdateElementsEndpoint = `${API_BASE}/elementos/api/editarAPI.php`
 export const DeactivateElementsEndPoint = `${API_BASE}/elementos/api/deshabilitarAPI.php`
 
+export const ObtenerUsuariosEndpoint = `${API_BASE}/usuarios/api/obtenerAPI.php`
+export const ObtenerUsuarioPorCodigoEndpoint = `${API_BASE}/usuarios/api/obtenerAPI.php?documento=`
+export const GuardarUsuarioEndpoint = `${API_BASE}/usuarios/api/guardarAPI.php`
+export const EditarUsuarioEndpoint = `${API_BASE}/usuarios/api/editarAPI.php`
+export const DesactivarUsuarioEndpoint = `${API_BASE}/usuarios/api/desactivarAPI.php`
+
 export const ObtenerRolesEndpoint = `${API_BASE}/aspectos_generales/roles/api/obtenerAPI.php`
 export const ObtenerRolPorIDEndpoint = `${API_BASE}/aspectos_generales/roles/api/obtenerAPI.php?rol_id=`
 export const GuardarRolEndpoint = `${API_BASE}/aspectos_generales/roles/api/guardarAPI.php`

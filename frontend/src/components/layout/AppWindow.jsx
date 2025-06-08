@@ -132,6 +132,24 @@ export default function AppWindow ({
       }
     }
 
+    if (id === 'appstore') {
+      switch (activeView) {
+        case 'listarUsuarios':
+          props.windowHeight = windowSize.height
+          props.isMaximized = isMaximized
+          props.setActiveView = setActiveView
+          props.setSearchedElement = setSearchedElement
+          break
+        case 'buscarUsuario':
+          props.searchElement = searchedElement
+          props.setSearchedElement = setSearchedElement
+          break
+        case 'editarUsuario':
+          props.searchElement = searchedElement
+          break
+      }
+    }
+
     if (id === 'terminal') {
       switch (activeView) {
         case 'listarRoles':
