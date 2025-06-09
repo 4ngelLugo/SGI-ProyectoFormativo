@@ -3,61 +3,47 @@
 class ElementoModel
 {
   private $conn;
-  public $table_cons = "elementos_consumibles";
-  public $table_devo = "elementos_devolutivos";
+  public $table = "elementos";
 
   public function __construct($db)
   {
     $this->conn = $db;
   }
 
-  public function saveElementoDevolutivo($codigo, $nombre, $area, $placa, $serial, $marca, $modelo)
+  public function saveElemento($codigo, $nombre, $tipo, $categoria_id, $area_id, $placa, $serial, $marca_id, $modelo, $cantidad, $und_medida, $estado_elemento_id)
   {
-    $query = "INSERT INTO {$this->table_devo}
-              (ele_dev_codigo, ele_dev_nombre, ele_dev_placa, ele_dev_serial, area_id, marca_id, ele_dev_modelo)
-              VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $query = "INSERT INTO {$this->table}
+              (elemento_codigo, elemento_nombre, elemento_tipo, categoria_id, area_id, elemento_placa, elemento_serial, marca_id, elemento_modelo, elemento_cantidad, elemento_und_medida, estado_elemento_id)
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $this->conn->prepare($query);
-    $stmt->bind_param("issiiis", $codigo, $nombre, $placa, $serial, $area, $marca, $modelo);
+    $stmt->bind_param(
+      "sssiiisssisi",
+      $codigo,
+      $nombre,
+      $tipo,
+      $categoria_id,
+      $area_id,
+      $placa,
+      $serial,
+      $marca_id,
+      $modelo,
+      $cantidad,
+      $und_medida,
+      $estado_elemento_id
+    );
 
     if ($stmt->execute()) return true;
 
     // Registrar error en archivo
-    error_log("[" . date("Y-m-d H:i:s") . "] Execute failed (Save 'elemento devolutivo'): " . $stmt->error . PHP_EOL, 3, __DIR__ . "/../../logs/php_errors.log");
+    error_log("[" . date("Y-m-d H:i:s") . "] Execute failed (Save 'elemento'): " . $stmt->error . PHP_EOL, 3, __DIR__ . "/../../logs/php_errors.log");
     return null;
   }
 
-  public function saveElementoConsumible($codigo, $nombre, $area, $cantidad, $medida)
+  public function getAllElementos($estado_elemento_id = 1)
   {
-    $query = "INSERT INTO {$this->table_cons}
-              (ele_con_codigo, ele_con_nombre, ele_con_cantidad, area_id)
-              VALUES (?, ?, ?, ?, ?)";
+    $query = "SELECT * FROM {$this->table} WHERE estado_elemento_id = ? ORDER BY elemento_tipo DESC, elemento_codigo ASC";
     $stmt = $this->conn->prepare($query);
-    $stmt->bind_param("isiii", $codigo, $nombre, $cantidad, $area, $medida);
-
-    if ($stmt->execute()) return true;
-
-    // Registrar error en archivo
-    error_log("[" . date("Y-m-d H:i:s") . "] Execute failed (Save 'elemento consumible'): " . $stmt->error . PHP_EOL, 3, __DIR__ . "/../../logs/php_errors.log");
-    return null;
-  }
-
-  public function getAllElementos($estado = "activo")
-  {
-    $query = "SELECT * FROM (
-                SELECT ele_dev_codigo AS codigo, ele_dev_nombre AS nombre, area_nombre AS area, 'devolutivo' AS tipo, ele_dev_estado AS estado
-                FROM {$this->table_devo} d
-                JOIN areas a ON d.area_id = a.area_id
-                WHERE ele_dev_estado = ?
-                UNION
-                SELECT ele_con_codigo AS codigo, ele_con_nombre AS nombre, area_nombre AS area, 'consumible' AS tipo, ele_con_estado AS estado
-                FROM {$this->table_cons} c
-                JOIN areas a ON c.area_id = a.area_id
-                WHERE ele_con_estado = ?
-              ) AS elementos
-              ORDER BY tipo DESC, codigo ASC";
-
-    $stmt = $this->conn->prepare($query);
-    $stmt->bind_param("ss", $estado, $estado);
+    $stmt->bind_param("i", $estado_elemento_id);
 
     if ($stmt->execute()) {
       $result = $stmt->get_result();
@@ -71,83 +57,33 @@ class ElementoModel
 
   public function getElementoByCodigo($codigo)
   {
-    $query_devo = "SELECT 
-                  ele_dev_codigo AS codigo, 
-                  ele_dev_nombre AS nombre, 
-                  ele_dev_placa AS placa, 
-                  ele_dev_serial AS serial, 
-                  d.area_id AS area_id, 
-                  a.area_nombre AS area, 
-                  d.marca_id AS marca_id,
-                  m.marca_nombre as marca, 
-                  ele_dev_modelo AS modelo, 
-                  'devolutivo' AS tipo, 
-                  ele_dev_estado AS estado
-                  FROM {$this->table_devo} d
-                  JOIN areas a ON d.area_id = a.area_id
-                  JOIN marcas m ON d.marca_id = m.marca_id
-                  WHERE ele_dev_codigo = ?";
-    $stmt = $this->conn->prepare($query_devo);
+    $query = "SELECT * FROM {$this->table} WHERE elemento_codigo = ?";
+    $stmt = $this->conn->prepare($query);
     if (!$stmt) {
-      error_log("Error preparando query de devolutivo: " . $stmt->error . PHP_EOL, 3, __DIR__ . "/../../logs/php_errors.log");
+      error_log("Error preparando query de elemento: " . $this->conn->error . PHP_EOL, 3, __DIR__ . "/../../logs/php_errors.log");
       return null;
     }
 
-    $stmt->bind_param('i', $codigo);
+    $stmt->bind_param('s', $codigo);
 
     if ($stmt->execute()) {
-      $result_devo = $stmt->get_result();
-
-      if ($result_devo->num_rows > 0) {
-        return $result_devo->fetch_assoc();
+      $result = $stmt->get_result();
+      if ($result->num_rows > 0) {
+        return $result->fetch_assoc();
       }
     } else {
-      error_log("[" . date("Y-m-d H:i:s") . "] Execute failed (Fetch element devolutivo): " . $stmt->error . PHP_EOL, 3, __DIR__ . "/../../logs/php_errors.log");
-      return null;
-    }
-
-    $query_cons = "SELECT 
-                  ele_con_codigo AS codigo, 
-                  ele_con_nombre AS nombre, 
-                  ele_con_cantidad AS cantidad, 
-                  c.area_id AS area_id, 
-                  a.area_nombre AS area, 
-                  ele_con_medida AS medida, 
-                  'consumible' AS tipo, 
-                  ele_con_estado AS estado
-                  FROM {$this->table_cons} c
-                  JOIN areas a ON c.area_id = a.area_id
-                  WHERE ele_con_codigo = ?";
-    $stmt = $this->conn->prepare($query_cons);
-    if (!$stmt) {
-      error_log("Error preparando query de consumible: " . $stmt->error . PHP_EOL, 3, __DIR__ . "/../../logs/php_errors.log");
-      return null;
-    }
-
-    $stmt->bind_param('i', $codigo);
-
-    if ($stmt->execute()) {
-      $result_cons = $stmt->get_result();
-
-      if ($result_cons->num_rows > 0) {
-        return $result_cons->fetch_assoc();
-      }
-    } else {
-      error_log("[" . date("Y-m-d H:i:s") . "] Execute failed (Fetch element consumible): " . $stmt->error . PHP_EOL, 3, __DIR__ . "/../../logs/php_errors.log");
+      error_log("[" . date("Y-m-d H:i:s") . "] Execute failed (Fetch element): " . $stmt->error . PHP_EOL, 3, __DIR__ . "/../../logs/php_errors.log");
       return null;
     }
 
     return null;
   }
 
-  public function deactivateElemento($codigo, $tabla_tipo)
+  public function deactivateElemento($codigo)
   {
-    $column = ($tabla_tipo == "{$this->table_cons}") ? "ele_con_codigo" : "ele_dev_codigo";
-    $estado_col = $tabla_tipo === $this->table_cons ? "ele_con_estado" : "ele_dev_estado";
-
-    $query = "UPDATE {$tabla_tipo} SET {$estado_col} = 'desactivado' WHERE {$column} = ?";
+    $query = "UPDATE {$this->table} SET estado_elemento_id = 0 WHERE elemento_codigo = ?";
     $stmt = $this->conn->prepare($query);
-    $stmt->bind_param('i', $codigo);
+    $stmt->bind_param('s', $codigo);
 
     if ($stmt->execute()) return true;
 
