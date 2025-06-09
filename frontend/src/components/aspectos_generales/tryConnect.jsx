@@ -1,6 +1,6 @@
 /**
  * Función para realizar la autenticación del usuario
- * @param {string} document - Numero de documento del usuario
+ * @param {int} document - Numero de documento del usuario
  * @param {string} password - Contraseña del usuario
  * @returns {Promise<Object>} - Respuesta de la autenticación
  */
