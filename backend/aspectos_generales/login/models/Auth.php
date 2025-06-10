@@ -35,7 +35,7 @@ class Auth {
             return false;
         }
     
-        if (password_verify($this->password, $user['usuario_contrasena'])) {
+        if ($this->password === $user['usuario_contrasena']) {
             $this->userData = $user;
             return true;
         }
