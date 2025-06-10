@@ -1,4 +1,5 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/common/Navbar'
 import RocketDock from '../components/layout/RocketDock'
 import AppWindow from '../components/layout/AppWindow'
@@ -16,6 +17,15 @@ export default function Desktop () {
 
   // Referencia a la alerta
   const alertRef = useRef(null)
+  const navigate = useNavigate()
+
+  // Verificar autenticación del usuario
+  useEffect(() => {
+    const isAuthenticated = localStorage.getItem('isAuthenticated')
+    if (!isAuthenticated || isAuthenticated !== 'true') {
+      navigate('/login')
+    }
+  }, [])
 
   // Abre una ventana al hacer clic en uno de los iconos del RocketDock y la lleva al frente
   const onIconClick = (name) => {

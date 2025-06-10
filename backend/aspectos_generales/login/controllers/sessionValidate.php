@@ -45,16 +45,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['user_id'] = $userData['ID_Usuario'];
                 $_SESSION['user_name'] = $userData['nombre'];
                 $_SESSION['user_role'] = $userData['ID_Rol'];
-                $_SESSION['user_document'] = $userData['Numero_Documento'];
+                $_SESSION['user_document'] = $userData['usuario_documento'];
 
                 $response = [
                     'status' => 'success',
                     'message' => 'Autenticación exitosa',
                     'user' => [
-                        'id' => $userData['ID_Usuario'],
-                        'name' => $userData['nombre'],
-                        'role' => $userData['ID_Rol'],
-                        'document' => $userData['Numero_Documento']
+                        'documento' => $userData['usuario_documento'],
+                        'nombre' => $userData['usuario_nombre'],
+                        'rol' => $userData['usuario_rol'],
                     ]
                 ];
             } catch (Exception $e) {

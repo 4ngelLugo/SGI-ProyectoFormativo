@@ -23,20 +23,27 @@ class Auth {
     public function authenticate() {
         $sql = "SELECT * FROM usuarios WHERE usuario_documento = ?";
         $stmt = $this->connection->executeQuery($sql, [$this->document]);
+    
+        if (!$stmt) {
+            return false;
+        }
+    
         $result = $stmt->get_result();
         $user = $result->fetch_assoc();
-        
+    
         if (!$user) {
             return false;
         }
-        
-        if (password_verify($this->password, $user['usuario_contrasena'])) {
+    
+        if ($this->password === $user['usuario_contrasena']) {
             $this->userData = $user;
             return true;
         }
-        
+    
+        file_put_contents('log.txt', "Password incorrecto\n", FILE_APPEND);
         return false;
     }
+    
     
     public function getUserData() {
         return $this->userData;
@@ -45,8 +52,8 @@ class Auth {
     public function getUserDbCredentials() {
         if ($this->userData) {
             return [
-                'db_username' => $this->userData['Numero_Documento'],
-                'db_password' => $this->userData['Contrasena']
+                'db_username' => $this->userData['usuario_documento'],
+                'db_password' => $this->userData['usuario_contrasena']
             ];
         }
         return null;
