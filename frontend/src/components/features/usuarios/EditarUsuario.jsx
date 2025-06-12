@@ -16,7 +16,7 @@ export default function EditarUsuario ({ setAlert, searchElement }) {
 
   return (
     <>
-      <span className='title'>Registrar Usuario</span>
+      <span className='title'>Editar Usuario</span>
 
       {
         loading

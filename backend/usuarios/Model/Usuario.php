@@ -9,13 +9,13 @@ class UsuarioModel
     $this->conn = $db;
   }
 
-  public function guardarUsuario($documento, $tipo_documento, $nombres, $apellidos, $telefono, $direccion, $correo, $contrasena, $rol)
+  public function guardarUsuario($documento, $tipo_documento, $nombres, $apellidos, $telefono, $correo, $contrasena, $rol)
   {
     $query = "INSERT INTO {$this->tabla}
               (usuario_documento, tipo_docu_id,
               usuario_nombre, usuario_apellido,
-              usuario_telefono, usuario_direccion,
-              usuario_correo, usuario_contrasena, rol_id)
+              usuario_telefono, usuario_correo,
+              usuario_contrasena, rol_id)
               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $this->conn->prepare($query);
 
@@ -24,7 +24,7 @@ class UsuarioModel
       return null;
     }
 
-    $stmt->bind_param("iississsi", $documento, $tipo_documento, $nombres, $apellidos, $telefono, $direccion, $correo, $contrasena, $rol);
+    $stmt->bind_param("iississsi", $documento, $tipo_documento, $nombres, $apellidos, $telefono, $correo, $contrasena, $rol);
 
     if ($stmt->execute()) return true;
 
@@ -40,7 +40,6 @@ class UsuarioModel
             u.usuario_nombre as nombres,
             u.usuario_apellido as apellidos,
             u.usuario_telefono as telefono,
-            u.usuario_direccion as direccion,
             u.usuario_correo as correo,
             u.usuario_contrasena as contrasena,
             r.rol_nombre as rol,
@@ -79,7 +78,6 @@ class UsuarioModel
             u.usuario_nombre as nombres,
             u.usuario_apellido as apellidos,
             u.usuario_telefono as telefono,
-            u.usuario_direccion as direccion,
             u.usuario_correo as correo,
             u.usuario_contrasena as contrasena,
             r.rol_id as rol,
@@ -110,14 +108,13 @@ class UsuarioModel
     return null;
   }
 
-  public function editarUsuario($documento, $tipo_documento, $nombres, $apellidos, $telefono, $direccion, $correo, $rol)
+  public function editarUsuario($documento, $tipo_documento, $nombres, $apellidos, $telefono, $correo, $rol)
   {
     $sql = "UPDATE {$this->tabla}
             SET tipo_docu_id = ?,
             usuario_nombre = ?,
             usuario_apellido = ?,
             usuario_telefono = ?,
-            usuario_direccion = ?,
             usuario_correo = ?,
             rol_id = ?
             WHERE usuario_documento = ?";
@@ -128,7 +125,7 @@ class UsuarioModel
       return null;
     }
 
-    $stmt->bind_param("ississii", $tipo_documento, $nombres, $apellidos, $telefono, $direccion, $correo, $rol, $documento);
+    $stmt->bind_param("ississii", $tipo_documento, $nombres, $apellidos, $telefono, $correo, $rol, $documento);
 
     if ($stmt->execute()) return true;
 

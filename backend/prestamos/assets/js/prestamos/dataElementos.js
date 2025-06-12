@@ -5,21 +5,14 @@
 
 // URL base para las peticiones
 const API_BASE = 'http://localhost/SGI-ProyectoFormativo/backend';
-const ELEMENTOS_ENDPOINT = `${API_BASE}/elementos/logic/getLogic.php`;
+const ELEMENTOS_ENDPOINT = `${API_BASE}/elementos/api/obtenerAPI.php`;
 
 /**
  * Función para obtener todos los elementos
  * @returns {Promise<Array>} Promesa con los datos de los elementos (array de objetos)
  */
 function obtenerElementos() {
-    return fetch(ELEMENTOS_ENDPOINT, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        },
-        credentials: 'include' // Incluir cookies para la gestión de la sesión
-    })
+    return fetch(ELEMENTOS_ENDPOINT)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`Error HTTP: ${response.status}`);
@@ -27,6 +20,7 @@ function obtenerElementos() {
             return response.json();
         })
         .then(data => {
+            console.log(data)
             // Si la respuesta es un objeto con clave 'data', devolver ese array, si no, devolver el array directamente
             if (Array.isArray(data)) {
                 return data;

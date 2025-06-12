@@ -53,7 +53,7 @@ export default function ListarAreas ({ setAlert, windowHeight, isMaximized }) {
           className='btn_add'
           onClick={() => setCreateModal(true)}
         >
-          Crear +
+          +
         </button>
       </p>
 

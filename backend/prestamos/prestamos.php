@@ -391,11 +391,11 @@ if (!isset($_SESSION['typeuser'])) $_SESSION['typeuser'] = 'Almacenista';
         .then(data => {
           data.forEach(elemento => {
             // Usar los campos correctos según la estructura recibida
-            const option = new Option(elemento.elemento_nombre, elemento.elemento_codigo, false, false);
+            const option = new Option(elemento.nombre, elemento.codigo, false, false);
             $(option).attr('data-obj', JSON.stringify(elemento));
-            if (elemento.elemento_tipo === 'devolutivo') {
+            if (elemento.tipo === 'devolutivo') {
               $('#selector_elemento_devolutivo').append(option);
-            } else if (elemento.elemento_tipo === 'consumible') {
+            } else if (elemento.tipo === 'consumible') {
               $('#selector_elemento_consumible').append(option);
             }
           });
@@ -435,28 +435,6 @@ if (!isset($_SESSION['typeuser'])) $_SESSION['typeuser'] = 'Almacenista';
                     <div class="col-md-2">
                         <label class="form-label">Modelo:</label>
                         <input type="text" class="form-control" value="${data.elemento_modelo || ''}" disabled>
-                    </div>
-                </div>
-                <div class="row mt-2">
-                    <div class="col-md-2">
-                        <label class="form-label">Marca ID:</label>
-                        <input type="text" class="form-control" value="${data.marca_id || ''}" disabled>
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label">Área ID:</label>
-                        <input type="text" class="form-control" value="${data.area_id || ''}" disabled>
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label">Categoría ID:</label>
-                        <input type="text" class="form-control" value="${data.categoria_id || ''}" disabled>
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label">Unidad Medida:</label>
-                        <input type="text" class="form-control" value="${data.elemento_und_medida || ''}" disabled>
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label">Cantidad Disponible:</label>
-                        <input type="text" class="form-control" value="${data.elemento_cantidad || ''}" disabled>
                     </div>
                 </div>
             </div>

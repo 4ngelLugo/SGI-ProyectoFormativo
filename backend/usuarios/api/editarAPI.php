@@ -27,11 +27,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nombres = $_POST["nombres"] ?? null;
     $apellidos = $_POST["apellidos"] ?? null;
     $telefono = $_POST["telefono"] ?? null;
-    $direccion = $_POST["direccion"] ?? null;
     $correo = $_POST["correo"] ?? null;
     $rol = $_POST["rol"] ?? null;
 
-    $result = $controller->editarUsuario($documento, $tipo_documento, $nombres, $apellidos, $telefono, $direccion, $correo, $rol);
+    $result = $controller->editarUsuario($documento, $tipo_documento, $nombres, $apellidos, $telefono, $correo, $rol);
 
     if ($result) $output = $result;
   } else {

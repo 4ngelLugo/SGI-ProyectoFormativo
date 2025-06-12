@@ -9,7 +9,7 @@ class UsuarioController
     $this->usuario_modelo = new UsuarioModel($db);
   }
 
-  public function guardarUsuario($documento, $tipo_documento, $nombres, $apellidos, $telefono, $direccion, $correo, $contrasena, $confirmar, $rol)
+  public function guardarUsuario($documento, $tipo_documento, $nombres, $apellidos, $telefono, $correo, $contrasena, $confirmar, $rol)
   {
     if (
       empty($documento)
@@ -17,7 +17,6 @@ class UsuarioController
       || empty($nombres)
       || empty($apellidos)
       || empty($telefono)
-      || empty($direccion)
       || empty($correo)
       || empty($contrasena)
       || empty($confirmar)
@@ -33,7 +32,7 @@ class UsuarioController
 
     $hashed_password = password_hash($contrasena, PASSWORD_DEFAULT);
 
-    $result = $this->usuario_modelo->guardarUsuario($documento, $tipo_documento, $nombres, $apellidos, $telefono, $direccion, $correo, $hashed_password, $rol);
+    $result = $this->usuario_modelo->guardarUsuario($documento, $tipo_documento, $nombres, $apellidos, $telefono, $correo, $hashed_password, $rol);
 
     if ($result) return ['success' => true];
 
@@ -60,7 +59,7 @@ class UsuarioController
     return ["error" => "no existe"];
   }
 
-  public function editarUsuario($documento, $tipo_documento, $nombres, $apellidos, $telefono, $direccion, $correo, $rol)
+  public function editarUsuario($documento, $tipo_documento, $nombres, $apellidos, $telefono, $correo, $rol)
   {
     if (
       empty($documento)
@@ -68,7 +67,6 @@ class UsuarioController
       || empty($nombres)
       || empty($apellidos)
       || empty($telefono)
-      || empty($direccion)
       || empty($correo)
       || empty($rol)
     ) return ["error" => "campos vacios"];
@@ -76,7 +74,7 @@ class UsuarioController
     $validar_usuario = $this->usuario_modelo->obtenerUsuarioPorDocumento($documento);
     if (!$validar_usuario) return ["error" => "no existe"];
 
-    $result = $this->usuario_modelo->editarUsuario($documento, $tipo_documento, $nombres, $apellidos, $telefono, $direccion, $correo, $rol);
+    $result = $this->usuario_modelo->editarUsuario($documento, $tipo_documento, $nombres, $apellidos, $telefono, $correo, $rol);
     if ($result) return ["success" => true];
 
     return ["error" => "error al actualizar"];

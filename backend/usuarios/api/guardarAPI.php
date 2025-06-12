@@ -27,13 +27,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nombres = $_POST["nombres"] ?? null;
     $apellidos = $_POST["apellidos"] ?? null;
     $telefono = $_POST["telefono"] ?? null;
-    $direccion = $_POST["direccion"] ?? null;
     $correo = $_POST["correo"] ?? null;
     $contrasena = $_POST["contrasena"] ?? null;
     $confirmar = $_POST["confirmar"] ?? null;
     $rol = $_POST["rol"] ?? null;
 
-    $result = $controller->guardarUsuario($documento, $tipo_documento, $nombres, $apellidos, $telefono, $direccion, $correo, $contrasena, $confirmar,$rol);
+    $result = $controller->guardarUsuario($documento, $tipo_documento, $nombres, $apellidos, $telefono, $correo, $contrasena, $confirmar,$rol);
 
     if ($result) $output = $result;
   } else {

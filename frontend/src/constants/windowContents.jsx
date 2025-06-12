@@ -8,6 +8,8 @@ import CrearUsuario from '../components/features/usuarios/CrearUsuario'
 import BuscarUsuario from '../components/features/usuarios/BuscarUsuario'
 import EditarUsuario from '../components/features/usuarios/EditarUsuario'
 
+import CrearPrestamo from '../components/features/prestamos/CrearPrestamo'
+
 import ListarRoles from '../components/features/roles/ListarRoles'
 import CrearRol from '../components/features/roles/CrearRol'
 import EditarRol from '../components/features/roles/EditarRol'
@@ -81,37 +83,6 @@ export const windowContents = {
         />
     }
   },
-  terminal: {
-    sidebar: [
-      { key: 'listarRoles', icon: 'system-uicons:question-circle', label: 'Listar roles' },
-      { key: 'crearRol', icon: 'system-uicons:question-circle', label: 'Crear rol' },
-      { key: 'buscarRol', icon: 'system-uicons:question-circle', label: 'Buscar rol' },
-      { key: 'editarRol', icon: 'system-uicons:question-circle', label: 'Editar rol' }
-    ],
-    views: {
-      listarRoles: ({ setAlert, windowHeight, isMaximized, setActiveView, setSearchedRole }) =>
-        <ListarRoles
-          setAlert={setAlert}
-          windowHeight={windowHeight}
-          isMaximized={isMaximized}
-          setActiveView={setActiveView}
-          setSearchedRole={setSearchedRole}
-        />,
-      crearRol: ({ setAlert }) =>
-        <CrearRol setAlert={setAlert} />,
-      buscarRol: ({ setAlert, searchRole, setSearchRole }) =>
-        <BuscarRol
-          setAlert={setAlert}
-          searchRole={searchRole}
-          setSearchRole={setSearchRole}
-        />,
-      editarRol: ({ setAlert, searchRole }) =>
-        <EditarRol
-          setAlert={setAlert}
-          searchRole={searchRole}
-        />
-    }
-  },
   settings: {
     sidebar: [
       { key: 'listarAreas', icon: 'system-uicons:clipboard-notes', label: 'Listar Areas' },
@@ -145,5 +116,45 @@ export const windowContents = {
           isMaximized={isMaximized}
         />
     }
-  }
+  },
+  terminal: {
+    sidebar: [
+      { key: 'listarRoles', icon: 'system-uicons:question-circle', label: 'Listar roles' },
+      { key: 'crearRol', icon: 'system-uicons:clipboard-add', label: 'Crear rol' },
+      { key: 'buscarRol', icon: 'system-uicons:question-circle', label: 'Buscar rol' },
+      { key: 'editarRol', icon: 'system-uicons:question-circle', label: 'Editar rol' }
+    ],
+    views: {
+      listarRoles: ({ setAlert, windowHeight, isMaximized, setActiveView, setSearchedRole }) =>
+        <ListarRoles
+          setAlert={setAlert}
+          windowHeight={windowHeight}
+          isMaximized={isMaximized}
+          setActiveView={setActiveView}
+          setSearchedRole={setSearchedRole}
+        />,
+      crearRol: ({ setAlert }) =>
+        <CrearRol setAlert={setAlert} />,
+      buscarRol: ({ setAlert, searchRole, setSearchRole }) =>
+        <BuscarRol
+          setAlert={setAlert}
+          searchRole={searchRole}
+          setSearchRole={setSearchRole}
+        />,
+      editarRol: ({ setAlert, searchRole }) =>
+        <EditarRol
+          setAlert={setAlert}
+          searchRole={searchRole}
+        />
+    }
+  },
+  mail: {
+    sidebar: [
+      { key: 'crearPrestamo', icon: 'system-uicons:clipboard-add', label: 'Solicitar Prestamo' },
+    ],
+    views: {
+      crearPrestamo: ({ setAlert }) =>
+        <CrearPrestamo setAlert={setAlert} />
+    }
+  },
 }
