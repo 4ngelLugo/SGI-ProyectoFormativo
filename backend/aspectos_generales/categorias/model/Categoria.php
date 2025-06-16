@@ -9,9 +9,9 @@ class CategoriaModel
     $this->conn = $db;
   }
 
-  public function guardarCategoria($nombre)
+  public function guardarCategoria($nombre, $tipo)
   {
-    $query = "INSERT INTO {$this->tabla} (categoria_nombre) VALUES (?)";
+    $query = "INSERT INTO {$this->tabla} (categoria_nombre, categoria_tipo) VALUES (?, ?)";
     $stmt = $this->conn->prepare($query);
 
     if (!$stmt) {
@@ -19,7 +19,7 @@ class CategoriaModel
       return null;
     }
 
-    $stmt->bind_param("s", $nombre);
+    $stmt->bind_param("ss", $nombre, $tipo);
 
     if ($stmt->execute()) return true;
 
@@ -33,6 +33,7 @@ class CategoriaModel
     $query = "SELECT
               categoria_id as id,
               categoria_nombre as nombre,
+              categoria_tipo as tipo,
               categoria_estado as estado
               FROM {$this->tabla}";
     $stmt = $this->conn->prepare($query);
@@ -57,6 +58,7 @@ class CategoriaModel
     $query = "SELECT
               categoria_id as id,
               categoria_nombre as nombre,
+              categoria_tipo as tipo,
               categoria_estado as estado
               FROM {$this->tabla}
               WHERE categoria_id = ?";
@@ -81,7 +83,13 @@ class CategoriaModel
 
   public function obtenerCategoriaPorNombre($nombre)
   {
-    $query = "SELECT * FROM {$this->tabla} WHERE categoria_nombre = ?";
+    $query = "SELECT 
+              categoria_id as id,
+              categoria_nombre as nombre,
+              categoria_tipo as tipo,
+              categoria_estado as estado
+              FROM {$this->tabla} 
+              WHERE categoria_nombre = ?";
     $stmt = $this->conn->prepare($query);
 
     if (!$stmt) {
@@ -101,9 +109,12 @@ class CategoriaModel
     return null;
   }
 
-  public function editarCategoria($id, $nombre)
+  public function editarCategoria($id, $nombre, $tipo)
   {
-    $query = "UPDATE {$this->tabla} SET categoria_nombre = ? WHERE categoria_id = ?";
+    $query = "UPDATE {$this->tabla}
+              SET categoria_nombre = ?,
+              categoria_tipo = ?
+              WHERE categoria_id = ?";
     $stmt = $this->conn->prepare($query);
 
     if (!$stmt) {
@@ -111,7 +122,7 @@ class CategoriaModel
       return null;
     }
 
-    $stmt->bind_param("si", $nombre, $id);
+    $stmt->bind_param("ssi", $nombre, $tipo, $id);
 
     if ($stmt->execute()) return true;
 

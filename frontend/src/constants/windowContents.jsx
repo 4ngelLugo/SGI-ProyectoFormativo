@@ -20,75 +20,81 @@ import ListarCategorias from '../components/features/configuracion/ListarCategor
 import ListarMarcas from '../components/features/configuracion/ListarMarcas'
 import ListarTipoDocumento from '../components/features/configuracion/ListarTipoDocumento'
 
+const iconos = {
+  listar: 'system-uicons:clipboard-notes',
+  crear: 'system-uicons:clipboard-add',
+  buscar: 'system-uicons:eye'
+}
+
 export const windowContents = {
   finder: {
     sidebar: [
-      { key: 'listElement', icon: 'system-uicons:clipboard-notes', label: 'Listar elementos' },
-      { key: 'createElement', icon: 'system-uicons:clipboard-add', label: 'Crear elemento' },
-      { key: 'searchElement', icon: 'system-uicons:eye', label: 'Ver elemento' },
-      { key: 'editElement', icon: 'system-uicons:create', label: 'Editar elemento' }
+      { key: 'listElement', icon: iconos.listar, label: 'Listar elementos' },
+      { key: 'createElement', icon: iconos.crear, label: 'Crear elemento' },
+      { key: 'searchElement', icon: iconos.buscar, label: 'Buscar elemento' }
     ],
     views: {
-      listElement: ({ setAlert, windowHeight, isMaximized, setActiveView, setSearchedElement }) =>
+      listElement: ({ setAlert, windowHeight, isMaximized, setActiveView, setSearchedItem, setSearchedEdit }) =>
         <ListElements
           setAlert={setAlert}
           windowHeight={windowHeight}
           isMaximized={isMaximized}
           setActiveView={setActiveView}
-          setSearchedElement={setSearchedElement}
+          setSearchedItem={setSearchedItem}
+          setSearchedEdit={setSearchedEdit}
         />,
       createElement: ({ setAlert }) =>
         <CreateElement setAlert={setAlert} />,
-      searchElement: ({ setAlert, searchElement, setSearchedElement }) =>
+      searchElement: ({ setAlert, searchedItem, setSearchedItem }) =>
         <SearchElements
           setAlert={setAlert}
-          searchElement={searchElement}
-          setSearchedElement={setSearchedElement}
+          searchedItem={searchedItem}
+          setSearchedItem={setSearchedItem}
         />,
-      editElement: ({ setAlert, searchElement }) =>
+      editElement: ({ setAlert, searchedEdit }) =>
         <EditElement
           setAlert={setAlert}
-          searchElement={searchElement}
+          searchedEdit={searchedEdit}
         />
     }
   },
   appstore: {
     sidebar: [
-      { key: 'listarUsuarios', icon: 'system-uicons:clipboard-notes', label: 'Listar usuarios' },
-      { key: 'crearUsuario', icon: 'system-uicons:clipboard-add', label: 'Crear usuario' },
-      { key: 'buscarUsuario', icon: 'system-uicons:eye', label: 'Buscar usuario' },
-      { key: 'editarUsuario', icon: 'system-uicons:create', label: 'Editar usuario' }
+      { key: 'listarUsuarios', icon: iconos.listar, label: 'Listar usuarios' },
+      { key: 'crearUsuario', icon: iconos.crear, label: 'Crear usuario' },
+      { key: 'buscarUsuario', icon: iconos.buscar, label: 'Buscar usuario' }
     ],
     views: {
-      listarUsuarios: ({ setAlert, windowHeight, isMaximized, setActiveView, setSearchedElement }) =>
+      listarUsuarios: ({ setAlert, windowHeight, isMaximized, setActiveView, setSearchedItem, setSearchedEdit }) =>
         <ListarUsuarios
           setAlert={setAlert}
           windowHeight={windowHeight}
           isMaximized={isMaximized}
           setActiveView={setActiveView}
-          setSearchedElement={setSearchedElement}
+          setSearchedItem={setSearchedItem}
+          setSearchedEdit={setSearchedEdit}
         />,
       crearUsuario: ({ setAlert }) =>
         <CrearUsuario setAlert={setAlert} />,
-      buscarUsuario: ({ setAlert, searchElement, setSearchedElement }) =>
+      buscarUsuario: ({ setAlert, searchedItem, setSearchedItem }) =>
         <BuscarUsuario
           setAlert={setAlert}
-          searchElement={searchElement}
-          setSearchedElement={setSearchedElement}
+          searchedItem={searchedItem}
+          setSearchedItem={setSearchedItem}
         />,
-      editarUsuario: ({ setAlert, searchElement }) =>
+      editarUsuario: ({ setAlert, searchedEdit }) =>
         <EditarUsuario
           setAlert={setAlert}
-          searchElement={searchElement}
+          searchedEdit={searchedEdit}
         />
     }
   },
   settings: {
     sidebar: [
-      { key: 'listarAreas', icon: 'system-uicons:clipboard-notes', label: 'Listar Areas' },
-      { key: 'listarCategorias', icon: 'system-uicons:clipboard-notes', label: 'Listar Categorias' },
-      { key: 'listarMarcas', icon: 'system-uicons:clipboard-notes', label: 'Listar Marcas' },
-      { key: 'listarTipoDocumento', icon: 'system-uicons:clipboard-notes', label: 'Listar T.  Documento' }
+      { key: 'listarAreas', icon: iconos.listar, label: 'Listar Areas' },
+      { key: 'listarCategorias', icon: iconos.listar, label: 'Listar Categorias' },
+      { key: 'listarMarcas', icon: iconos.listar, label: 'Listar Marcas' },
+      { key: 'listarTipoDocumento', icon: iconos.listar, label: 'Listar Tipos de Documento' }
     ],
     views: {
       listarAreas: ({ setAlert, windowHeight, isMaximized }) =>
@@ -119,42 +125,42 @@ export const windowContents = {
   },
   terminal: {
     sidebar: [
-      { key: 'listarRoles', icon: 'system-uicons:question-circle', label: 'Listar roles' },
-      { key: 'crearRol', icon: 'system-uicons:clipboard-add', label: 'Crear rol' },
-      { key: 'buscarRol', icon: 'system-uicons:question-circle', label: 'Buscar rol' },
-      { key: 'editarRol', icon: 'system-uicons:question-circle', label: 'Editar rol' }
+      { key: 'listarRoles', icon: iconos.listar, label: 'Listar roles' },
+      { key: 'crearRol', icon: iconos.crear, label: 'Crear rol' },
+      { key: 'buscarRol', icon: iconos.buscar, label: 'Buscar rol' }
     ],
     views: {
-      listarRoles: ({ setAlert, windowHeight, isMaximized, setActiveView, setSearchedRole }) =>
+      listarRoles: ({ setAlert, windowHeight, isMaximized, setActiveView, setSearchedItem, setSearchedEdit }) =>
         <ListarRoles
           setAlert={setAlert}
           windowHeight={windowHeight}
           isMaximized={isMaximized}
           setActiveView={setActiveView}
-          setSearchedRole={setSearchedRole}
+          setSearchedItem={setSearchedItem}
+          setSearchedEdit={setSearchedEdit}
         />,
       crearRol: ({ setAlert }) =>
         <CrearRol setAlert={setAlert} />,
-      buscarRol: ({ setAlert, searchRole, setSearchRole }) =>
+      buscarRol: ({ setAlert, searchedItem, setSearchedItem }) =>
         <BuscarRol
           setAlert={setAlert}
-          searchRole={searchRole}
-          setSearchRole={setSearchRole}
+          searchedItem={searchedItem}
+          setSearchedItem={setSearchedItem}
         />,
-      editarRol: ({ setAlert, searchRole }) =>
+      editarRol: ({ setAlert, searchedEdit }) =>
         <EditarRol
           setAlert={setAlert}
-          searchRole={searchRole}
+          searchedEdit={searchedEdit}
         />
     }
   },
   mail: {
     sidebar: [
-      { key: 'crearPrestamo', icon: 'system-uicons:clipboard-add', label: 'Solicitar Prestamo' },
+      { key: 'crearPrestamo', icon: iconos.crear, label: 'Solicitar Prestamo' }
     ],
     views: {
       crearPrestamo: ({ setAlert }) =>
         <CrearPrestamo setAlert={setAlert} />
     }
-  },
+  }
 }

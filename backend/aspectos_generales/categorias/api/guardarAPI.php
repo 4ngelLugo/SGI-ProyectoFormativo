@@ -22,8 +22,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $controller = new CategoriaController($conexion->connect());
 
     $nombre = $_POST["nombre"] ?? null;
+    $tipo = $_POST["tipo"] ?? null;
 
-    $result = $controller->guardarCategoria($nombre);
+    $result = $controller->guardarCategoria($nombre, $tipo);
 
     if ($result) $output = $result;
   } else {

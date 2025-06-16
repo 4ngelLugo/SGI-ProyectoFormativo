@@ -67,8 +67,8 @@ export default function AppWindow ({
   }
 
   // Estados especificos para cada ventana
-  const [searchedElement, setSearchedElement] = useState(id === 'finder' ? null : undefined)
-  const [searchedRole, setSearchedRole] = useState(id === 'terminal' ? null : undefined)
+  const [searchedItem, setSearchedItem] = useState(null)
+  const [searchedEdit, setSearchedEdit] = useState(null)
 
   // Abre la ventana mostrando automaticamente el contenido de la primera pestaña del menú lateral
   useEffect(() => {
@@ -120,14 +120,15 @@ export default function AppWindow ({
           props.windowHeight = windowSize.height
           props.isMaximized = isMaximized
           props.setActiveView = setActiveView
-          props.setSearchedElement = setSearchedElement
+          props.setSearchedItem = setSearchedItem
+          props.setSearchedEdit = setSearchedEdit
           break
         case 'searchElement':
-          props.searchElement = searchedElement
-          props.setSearchedElement = setSearchedElement
+          props.searchedItem = searchedItem
+          props.setSearchedItem = setSearchedItem
           break
         case 'editElement':
-          props.searchElement = searchedElement
+          props.searchedEdit = searchedEdit
           break
       }
     }
@@ -138,14 +139,15 @@ export default function AppWindow ({
           props.windowHeight = windowSize.height
           props.isMaximized = isMaximized
           props.setActiveView = setActiveView
-          props.setSearchedElement = setSearchedElement
+          props.setSearchedItem = setSearchedItem
+          props.setSearchedEdit = setSearchedEdit
           break
         case 'buscarUsuario':
-          props.searchElement = searchedElement
-          props.setSearchedElement = setSearchedElement
+          props.searchedItem = searchedItem
+          props.setSearchedItem = setSearchedItem
           break
         case 'editarUsuario':
-          props.searchElement = searchedElement
+          props.searchedEdit = searchedEdit
           break
       }
     }
@@ -156,14 +158,15 @@ export default function AppWindow ({
           props.windowHeight = windowSize.height
           props.isMaximized = isMaximized
           props.setActiveView = setActiveView
-          props.setSearchedRole = setSearchedRole
+          props.setSearchedItem = setSearchedItem
+          props.setSearchedEdit = setSearchedEdit
           break
         case 'buscarRol':
-          props.searchRole = searchedRole
-          props.setSearchRole = setSearchedRole
+          props.searchedItem = searchedItem
+          props.setSearchedItem = setSearchedItem
           break
         case 'editarRol':
-          props.searchRole = searchedRole
+          props.searchedEdit = searchedEdit
           break
       }
     }
@@ -174,7 +177,7 @@ export default function AppWindow ({
     }
 
     return <ViewComponent {...props} />
-  }, [content?.views, activeView, setAlert, searchedElement, windowSize, isMaximized])
+  }, [content?.views, activeView, setAlert, searchedItem, windowSize, isMaximized])
 
   // #endregion
 

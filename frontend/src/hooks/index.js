@@ -1,4 +1,5 @@
 export { tryConnect } from './tryConnect'
+export { useGetTime } from './useGetTime'
 
 // Hooks para la configuración de las ventanas
 export { useWindowDraggable } from './windowHooks/useWindowDraggable'

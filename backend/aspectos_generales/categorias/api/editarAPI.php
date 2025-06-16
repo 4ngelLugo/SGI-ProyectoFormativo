@@ -23,8 +23,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $id = $_POST["id"] ?? null;
     $nombre = $_POST["nombre"] ?? null;
+    $tipo = $_POST["tipo"] ?? null;
 
-    $result = $controller->editarCategoria($id, $nombre);
+    $result = $controller->editarCategoria($id, $nombre, $tipo);
 
     if ($result) $output = $result;
   } else {

@@ -4,7 +4,7 @@
   display      : grid;
   place-content: center;
 
-  background-color: #007aff;
+  background-color: var(--main-color);
   color           : #fff;
   border          : none;
 
@@ -12,7 +12,7 @@
 }
 
 .btn_add:hover {
-  background-color: #0971df;
+  background-color: var(--main-dark);
   border          : none;
 }
 
@@ -20,9 +20,8 @@
   width    : 100%;
   max-width: 100%;
 
-  background-color: #f9f9fb;
-  border-radius   : 0.75rem;
-  border-spacing  : 0;
+  border-radius : 0.75rem;
+  border-spacing: 0;
 
   font-size: 1.1rem;
 }
@@ -33,7 +32,7 @@
   text-align: left;
 
   border-bottom: 1px solid #e0e0e0;
-  color        : #007aff;
+  color        : var(--main-color);
 
   font-size  : 1.1rem;
   font-weight: 600;
@@ -45,7 +44,7 @@
 
   vertical-align: middle;
 
-  color: #1d1d1f;
+  color: var(--font-color);
 
   font-size: 1.1rem;
 }
@@ -63,8 +62,7 @@
 }
 
 .table__row--alt {
-  background-color: #f1f1f1;
-  border-radius   : 0.5rem;
+  background-color: var(--hightlight-bg);
 }
 
 .table__row--alt td:first-child {
@@ -73,8 +71,8 @@
 }
 
 .table__row--alt td:last-child {
-  border-top-left-radius   : 0.5rem;
-  border-bottom-left-radius: 0.5rem;
+  border-top-right-radius   : 0.5rem;
+  border-bottom-right-radius: 0.5rem;
 }
 
 .table__body--actions {
@@ -92,7 +90,7 @@
 }
 
 .table__body--actions svg:hover {
-  color    : #007aff;
+  color    : var(--main-dark);
   transform: scale(1.1);
 }
 
@@ -110,7 +108,7 @@
   bottom  : 120%;
   left    : 50%;
 
-  background-color: #333;
+  background-color: var(--font-color);
   border-radius   : 6px;
   color           : #fff;
   font-size       : .8rem;
@@ -127,6 +125,18 @@
 .tooltip-container:hover .tooltip {
   visibility: visible;
   opacity   : 1;
+}
+
+.inputEdit {
+  max-width: 100%;
+  padding  : 0;
+
+  background-color: transparent;
+  border          : none;
+  border-bottom   : 1px solid var(--main-color);
+  outline         : none;
+
+  font-size: 1em;
 }
 
 @container (max-width: 950px) {

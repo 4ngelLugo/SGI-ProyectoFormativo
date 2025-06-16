@@ -16,7 +16,7 @@ class UsuarioModel
               usuario_nombre, usuario_apellido,
               usuario_telefono, usuario_correo,
               usuario_contrasena, rol_id)
-              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $this->conn->prepare($query);
 
     if (!$stmt) {
@@ -24,7 +24,7 @@ class UsuarioModel
       return null;
     }
 
-    $stmt->bind_param("iississsi", $documento, $tipo_documento, $nombres, $apellidos, $telefono, $correo, $contrasena, $rol);
+    $stmt->bind_param("iississi", $documento, $tipo_documento, $nombres, $apellidos, $telefono, $correo, $contrasena, $rol);
 
     if ($stmt->execute()) return true;
 
@@ -125,7 +125,7 @@ class UsuarioModel
       return null;
     }
 
-    $stmt->bind_param("ississii", $tipo_documento, $nombres, $apellidos, $telefono, $correo, $rol, $documento);
+    $stmt->bind_param("issisii", $tipo_documento, $nombres, $apellidos, $telefono, $correo, $rol, $documento);
 
     if ($stmt->execute()) return true;
 

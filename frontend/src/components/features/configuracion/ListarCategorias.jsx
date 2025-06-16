@@ -8,7 +8,7 @@ import '../../../styles/globals/tables.css'
 import { Icon } from '@iconify/react'
 import { useState } from 'react'
 
-export default function ListarCategorias ({ setAlert, windowHeight, isMaximized }) {
+export default function ListarCategorias({ setAlert, windowHeight, isMaximized }) {
   const [editingId, setEditingId] = useState(null)
   const [editedName, setEditedName] = useState('')
   const [createModal, setCreateModal] = useState(false)
@@ -62,11 +62,12 @@ export default function ListarCategorias ({ setAlert, windowHeight, isMaximized 
             <th>ID</th>
             <th>Nombre</th>
             <th>Estado</th>
+            <th>Tipo</th>
             <th>Acciones</th>
           </tr>
         </thead>
         <tbody className='table__body'>
-          {elements && elements.length > 0 && elements.map(({ id, nombre, estado }, index) => (
+          {elements && elements.length > 0 && elements.map(({ id, nombre, tipo, estado }, index) => (
             <tr key={index} className={`table__row ${index % 2 === 1 ? 'table__row--alt' : ''}`}>
 
               <TooltipCell text={id} />
@@ -77,6 +78,7 @@ export default function ListarCategorias ({ setAlert, windowHeight, isMaximized 
                       <input
                         type='text'
                         value={editedName}
+                        className='inputEdit'
                         onChange={(e) => setEditedName(e.target.value)}
                         onBlur={async () => {
                           if (editedName === nombre) {
@@ -105,11 +107,12 @@ export default function ListarCategorias ({ setAlert, windowHeight, isMaximized 
                         autoFocus
                       />
                     </td>
-                    )
+                  )
                   : (
                     <TooltipCell text={nombre} />
-                    )
+                  )
               }
+              <TooltipCell text={tipo} />
               <TooltipCell text={estado} />
 
               <td className='table__body--actions'>
@@ -153,6 +156,7 @@ export default function ListarCategorias ({ setAlert, windowHeight, isMaximized 
         setShowModal={setCreateModal}
         formRef={formRef}
         handleSubmit={handleSubmit}
+        inputTipo
       />
     </>
   )

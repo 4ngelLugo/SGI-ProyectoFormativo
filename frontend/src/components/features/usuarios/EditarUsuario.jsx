@@ -1,11 +1,13 @@
 import { useEdit, useFetch, useFetchByCode } from '../../../hooks'
+import Input from '../../common/Input'
+import SelectInput from '../../common/SelectInput'
 import '../../../styles/globals/forms.css'
 
-export default function EditarUsuario ({ setAlert, searchElement }) {
+export default function EditarUsuario ({ setAlert, searchedEdit }) {
   // Hook para manejar la creación de usuarios, incluyendo la lógica para el formulario y el tipo de elemento
   const { formRef, handleSubmit } = useEdit({ setAlert, obtener: 'usuario' })
 
-  const { loading, element } = useFetchByCode({ setAlert, codeToSearch: searchElement, obtener: 'usuario' })
+  const { loading, element } = useFetchByCode({ setAlert, codeToSearch: searchedEdit, obtener: 'usuario' })
 
   // Obtiene los datos de las tipos de documento y roles, y los filtra para no mostrar aquellos que esten desactivados
   const { elements: tipoDocumento } = useFetch({ setAlert, windowHeight: null, isMaximized: null, obtener: 'tipoDocumento' })
@@ -24,24 +26,37 @@ export default function EditarUsuario ({ setAlert, searchElement }) {
           : element
             ? (
               <form className='form form--elements' ref={formRef} onSubmit={handleSubmit}>
-                <input type='number' placeholder='N° de Documento' name='documento' id='documento' defaultValue={element.documento} />
-                <select name='tipo_documento' id='tipo_documento' defaultValue={element.tipoDocumentoId || ''}>
-                  <option value='' hidden>Tipo de documento</option>
-                  {filteredTipos.map((tipo) => (
-                    <option key={tipo.id} value={tipo.id}>{tipo.nombre}</option>
-                  ))}
-                </select>
-                <input type='text' placeholder='Nombres' name='nombres' id='nombres' defaultValue={element.nombres} />
-                <input type='text' placeholder='Apellidos' name='apellidos' id='apellidos' defaultValue={element.apellidos} />
-                <input type='tel' placeholder='Telefono' name='telefono' id='telefono' defaultValue={element.telefono} />
-                <input type='tel' placeholder='Dirección' name='direccion' id='direccion' defaultValue={element.direccion} />
-                <input type='email' placeholder='Correo Electronico' name='correo' id='correo' defaultValue={element.correo} />
-                <select name='rol' id='rol' defaultValue={element.rol || ''}>
-                  <option value='' hidden>Rol</option>
-                  {filteredRoles.map((rol) => (
-                    <option key={rol.id} value={rol.id}>{rol.nombre}</option>
-                  ))}
-                </select>
+                <p className='message'>Los campos marcados con asterisco (*) son obligatorios.</p>
+
+                <Input type='number' placeholder='N° de Documento (numérico)' name='documento' defaultValue={element.documento} required />
+                <SelectInput
+                  options={filteredTipos}
+                  placeholder='Tipo de documento'
+                  name='tipo_documento'
+                  defaultValue={
+                    {
+                      id: element.tipoDocumentoId,
+                      nombre: element.tipoDocumento
+                    }
+                  }
+                  required
+                />
+                <Input type='text' placeholder='Nombres' name='nombres' defaultValue={element.nombres} required />
+                <Input type='text' placeholder='Apellidos' name='apellidos' defaultValue={element.apellidos} required />
+                <Input type='tel' placeholder='Telefono' name='telefono' defaultValue={element.telefono} required />
+                <Input type='email' placeholder='Correo Electronico' defaultValue={element.correo} name='correo' required />
+                <SelectInput
+                  options={filteredRoles}
+                  placeholder='Rol'
+                  name='rol'
+                  defaultValue={
+                    {
+                      id: element.rol,
+                      nombre: element.rolNombre
+                    }
+                  }
+                  required
+                />
 
                 <button className='form__button' type='submit'>Enviar</button>
               </form>

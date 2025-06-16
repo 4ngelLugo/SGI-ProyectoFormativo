@@ -8,6 +8,16 @@
   color           : #213547;
   background-color: #efefef;
 
+  --main-color: #39A900;
+  --main-dark : #007832;
+
+  --light-gray-bg     : #f9f9fb;
+  --hightlight-bg     : #ededed;
+  --dark-hightlight-bg: #e7e7e7;
+
+  --font-color      : #00304D;
+  --font-light-color: #84949f;
+
   font-synthesis         : none;
   text-rendering         : optimizeLegibility;
   -webkit-font-smoothing : antialiased;
@@ -18,6 +28,10 @@
   margin    : 0;
   padding   : 0;
   box-sizing: border-box;
+}
+
+*::placeholder {
+  color: var(--font-light-color);
 }
 
 body {
@@ -56,4 +70,14 @@ li {
   display        : flex;
   align-items    : center;
   gap            : .5em;
+}
+
+.notFound--message {
+  padding: 1em;
+
+  text-align: center;
+
+  border-radius: 12px;
+
+  background-color: var(--light-gray-bg);
 }

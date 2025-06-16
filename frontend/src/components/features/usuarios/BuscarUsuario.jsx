@@ -1,36 +1,90 @@
-import { useFetchByCode } from '../../../hooks'
+import { useFetchByCode, useFetch } from '../../../hooks'
+import Select from 'react-select'
 import '../../../styles/globals/lists.css'
+import { useEffect, useState } from 'react'
 
-export default function BuscarUsuario ({ setAlert, searchElement, setSearchedElement }) {
+export default function BuscarUsuario ({ setAlert, searchedItem, setSearchedItem }) {
   const {
     loading,
     typing,
     element,
     setElement,
     setLoading
-  } = useFetchByCode({ setAlert, codeToSearch: searchElement, obtener: 'usuario' })
+  } = useFetchByCode({ setAlert, codeToSearch: searchedItem, obtener: 'usuario' })
 
-  const handleOnChange = (e) => {
-    const value = e.target.value
-    setSearchedElement(value) // Actualiza el codigo de búsqueda
-    if (value.trim() === '') { // Si el input está vacío, limpia el estado del elemento y detiene la carga
+  const {
+    elements
+  } = useFetch({ setAlert, windowHeight: null, isMaximized: null, obtener: 'usuarios' })
+
+  const opciones = elements.map(e => ({
+    value: e.documento,
+    label: `${e.documento} - ${e.nombres}`,
+    data: e
+  }))
+  const [selectedOption, setSelectedOption] = useState(null)
+
+  // Cuando cambia searchElement o elements, actualiza el valor del Select
+  useEffect(() => {
+    if (searchedItem && elements.length > 0) {
+      const found = opciones.find(opt => opt.value === searchedItem)
+      setSelectedOption(found || null)
+    } else {
+      setSelectedOption(null)
+    }
+  }, [searchedItem, elements])
+
+  const handleOnChange = (option) => {
+    if (!option) {
+      setSearchedItem('')
       setElement(null)
       setLoading(false)
+      setSelectedOption(null)
+    } else {
+      setSearchedItem(option.value)
+      setSelectedOption(option)
     }
   }
-
+  
   return (
     <>
       <span className='title see-title'>
         Buscar usuario
         <div className='search-input'>
-          <span>Documento</span>
-          <input
-            type='text'
-            value={searchElement || ''}
-            placeholder='Código'
+          <Select
+            options={opciones}
+            placeholder='Buscar usuario'
+            value={selectedOption}
             onChange={handleOnChange}
-            className='input'
+            isClearable
+            menuPlacement='auto'
+            menuPortalTarget={document.body}
+            styles={{
+              control: (base, state) => ({
+                ...base,
+                borderRadius: '12px',
+                cursor: state.isDisabled ? 'not-allowed' : 'pointer',
+                minWidth: '15em',
+                maxWidth: '15em',
+                width: '15em'
+              }),
+              input: (base) => ({
+                ...base,
+                fontSize: '1rem',
+                color: '#84949f'
+              }),
+              placeholder: (base) => ({
+                ...base,
+                fontSize: '1rem',
+                color: '#84949f'
+              }),
+              singleValue: (base) => ({
+                ...base,
+                paddingLeft: '.3em',
+                fontSize: '1rem'
+              }),
+              menuPortal: base => ({ ...base, zIndex: 9999 }),
+              menu: base => ({ ...base, zIndex: 9999 })
+            }}
           />
         </div>
       </span>
@@ -41,8 +95,8 @@ export default function BuscarUsuario ({ setAlert, searchElement, setSearchedEle
           ? (
             <div className='element-info__container'>
               <Info label='Documento' value={element.documento} />
+              <Info label='Tipo de documento' value={element.tipoDocumento} />
               <Info label='Nombre' value={`${element.nombres} ${element.apellidos}`} />
-              <Info label='Dirección' value={element.direccion} />
               <Info label='Telefono' value={element.telefono} />
               <Info label='Correo' value={element.correo} />
               <Info label='Rol' value={element.rolNombre} />

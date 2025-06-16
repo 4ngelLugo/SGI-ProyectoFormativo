@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import Input from '../../common/Input'
 import { useCreate, useFetch } from '../../../hooks'
 import '../../../styles/globals/forms.css'
 
@@ -40,10 +41,12 @@ export default function CrearRol ({ setAlert }) {
       <span className='title'>Crear Rol</span>
 
       <form className='form' ref={formRef} onSubmit={handleSubmit}>
-        <input type='text' placeholder='Nombre' name='rol_nombre' id='rol_nombre' />
+        <p className='message'>Los campos marcados con asterisco (*) son obligatorios.</p>
+
+        <Input type='text' placeholder='Nombre' name='rol_nombre' required />
 
         <div>
-          <p className='form__check--title'>Permisos</p>
+          <p className='form__check--title'>Permisos*</p>
           {/* Muestra los permisos agrupados por módulo */}
           {Object.entries(permisosPorModulo).map(([modulo, permisos]) => (
             <fieldset key={modulo} className='form__check--modules__container'>

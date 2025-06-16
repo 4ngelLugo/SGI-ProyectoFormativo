@@ -10,14 +10,14 @@ class CategoriaController
     $this->categoria_modelo = new CategoriaModel($db);
   }
 
-  public function guardarCategoria($nombre)
+  public function guardarCategoria($nombre, $tipo)
   {
-    if (empty($nombre)) return ["error" => "campos vacios"];
+    if (empty($nombre) || empty($tipo)) return ["error" => "campos vacios"];
 
     $verificar_categoria = $this->categoria_modelo->obtenerCategoriaPorNombre($nombre);
     if ($verificar_categoria) return ["error" => "ya existe"];
 
-    $guardar_categoria = $this->categoria_modelo->guardarCategoria($nombre);
+    $guardar_categoria = $this->categoria_modelo->guardarCategoria($nombre, $tipo);
     if ($guardar_categoria) return ["success" => true];
 
     return ["error" => "error al guardar"];
@@ -54,14 +54,14 @@ class CategoriaController
     return ["error" => "error al obtener por nombre"];
   }
 
-  public function editarCategoria($id, $nombre)
+  public function editarCategoria($id, $nombre, $tipo)
   {
-    if (empty($id) || empty($nombre)) return ["error" => "campos vacios"];
+    if (empty($id) || empty($nombre) || empty($tipo)) return ["error" => "campos vacios"];
 
     $verificar_categoria = $this->categoria_modelo->obtenerCategoriaPorId($id);
     if (!$verificar_categoria) return ["error" => "no existe"];
 
-    $editar_categoria = $this->categoria_modelo->editarCategoria($id, $nombre);
+    $editar_categoria = $this->categoria_modelo->editarCategoria($id, $nombre, $tipo);
     if ($editar_categoria) return ["success" => true];
 
     return ["error" => "error al editar"];

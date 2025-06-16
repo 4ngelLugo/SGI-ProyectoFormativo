@@ -1,20 +1,18 @@
 import '../styles/login.css'
 import LoadingScreen from '../components/common/LoadingScreen'
-import useGetTime from '../hooks/useGetTime'
 import logoSena from '../assets/images/logoSena.png'
 import { useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router'
-import { tryConnect } from '../hooks'
+import { tryConnect, useGetTime } from '../hooks'
 
 export default function Login () {
   const [loading, setLoading] = useState(true)
+
   const { hour, period, date } = useGetTime()
+
   const timestamp = useRef(null)
   const form = useRef(null)
-  const navigate = useNavigate()
-  const [documentNumber, setDocumentNumber] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState(null)
+
+  const { formRef, error, handleSubmit } = tryConnect()
 
   const showLogin = () => {
     const timestampRef = timestamp.current
@@ -42,23 +40,6 @@ export default function Login () {
     }
   }, [loading])
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    setError(null)
-
-    try {
-      const response = await tryConnect(documentNumber, password)
-      if (response.success) {
-        navigate('/desktop')
-      } else {
-        setError(response.message || 'Error de autenticación')
-      }
-    } catch (err) {
-      setError('Error de conexión. Intente nuevamente.')
-      console.error(err)
-    }
-  }
-
   return (
     <>
       <LoadingScreen setLoading={setLoading} />
@@ -76,21 +57,19 @@ export default function Login () {
           <div className='login-form__logo'>
             <img src={logoSena} alt='Logo SENA' />
           </div>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} ref={formRef}>
             <input
               className='login-form__input'
               type='number'
               placeholder='Número de documento'
-              value={documentNumber}
-              onChange={(e) => setDocumentNumber(e.target.value)}
+              name='documento'
               required
             />
             <input
               className='login-form__input'
               type='password'
               placeholder='Contraseña'
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              name='contrasena'
               required
             />
             {error && <div className='login-form__error'>{error}</div>}

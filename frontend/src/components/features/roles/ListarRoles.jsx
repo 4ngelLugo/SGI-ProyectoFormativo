@@ -6,7 +6,7 @@ import danger from '../../../assets/icons/danger.svg'
 import '../../../styles/globals/tables.css'
 import { Icon } from '@iconify/react'
 
-export default function ListarRoles ({ setAlert, windowHeight, isMaximized, setActiveView, setSearchedRole }) {
+export default function ListarRoles ({ setAlert, windowHeight, isMaximized, setActiveView, setSearchedItem, setSearchedEdit }) {
   // Hook para manejar la lista de elementos y su paginación
   const {
     elements,
@@ -26,8 +26,10 @@ export default function ListarRoles ({ setAlert, windowHeight, isMaximized, setA
     handleDeactivate
   } = useDeactivate({ setAlert, obtener: 'rol', fetchElements })
 
-  const handleView = (id, view) => {
-    setSearchedRole(id)// Guarda el código para la vista
+  const handleView = (codigo, view) => {
+    if (view === 'buscarRol') setSearchedItem(codigo)// Guarda el código para la vista
+    else if (view === 'editarRol') setSearchedEdit(codigo)
+
     setElements([]) // Limpia la lista de elementos para evitar conflictos
     setActiveView(view) // Cambia la vista
   }

@@ -1,4 +1,6 @@
 import { useCreate, useFetch } from '../../../hooks'
+import Input from '../../common/Input'
+import SelectInput from '../../common/SelectInput'
 import '../../../styles/globals/forms.css'
 
 export default function CrearUsuario ({ setAlert }) {
@@ -18,26 +20,17 @@ export default function CrearUsuario ({ setAlert }) {
 
       {/* Formulario para registrar un nuevo elemento */}
       <form className='form form--elements' ref={formRef} onSubmit={handleSubmit}>
-        <input type='number' placeholder='N° de Documento' name='documento' id='documento' />
-        <select name='tipo_documento' id='tipo_documento' defaultValue=''>
-          <option value='' hidden>Tipo de documento</option>
-          {filteredTipos.map((tipo) => (
-            <option key={tipo.id} value={tipo.id}>{tipo.nombre}</option>
-          ))}
-        </select>
-        <input type='text' placeholder='Nombres' name='nombres' id='nombres' />
-        <input type='text' placeholder='Apellidos' name='apellidos' id='apellidos' />
-        <input type='tel' placeholder='Telefono' name='telefono' id='telefono' />
-        <input type='tel' placeholder='Dirección' name='direccion' id='direccion' />
-        <input type='email' placeholder='Correo Electronico' name='correo' id='correo' />
-        <select name='rol' id='rol' defaultValue=''>
-          <option value='' hidden>Rol</option>
-          {filteredRoles.map((rol) => (
-            <option key={rol.id} value={rol.id}>{rol.nombre}</option>
-          ))}
-        </select>
-        <input type='password' placeholder='Contraseña' name='contrasena' id='contrasena' />
-        <input type='password' placeholder='Confirmar contraseña' name='confirmar' id='confirmar' />
+        <p className='message'>Los campos marcados con asterisco (*) son obligatorios.</p>
+
+        <Input type='number' placeholder='N° de Documento (numérico)' name='documento' required />
+        <SelectInput options={filteredTipos} placeholder='Tipo de documento' name='tipo_documento' required />
+        <Input type='text' placeholder='Nombres' name='nombres' required />
+        <Input type='text' placeholder='Apellidos' name='apellidos' required />
+        <Input type='tel' placeholder='Telefono' name='telefono' required />
+        <Input type='email' placeholder='Correo Electronico' name='correo' required />
+        <SelectInput options={filteredRoles} placeholder='Rol' name='rol' required />
+        <Input type='password' placeholder='Contraseña' name='contrasena' required />
+        <Input type='password' placeholder='Confirmar contraseña' name='confirmar' required />
 
         <button className='form__button' type='submit'>Enviar</button>
       </form>

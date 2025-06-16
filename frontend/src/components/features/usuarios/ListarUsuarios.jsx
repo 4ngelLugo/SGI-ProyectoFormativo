@@ -6,7 +6,7 @@ import danger from '../../../assets/icons/danger.svg'
 import '../../../styles/globals/tables.css'
 import { Icon } from '@iconify/react'
 
-export default function ListarUsuarios ({ setAlert, windowHeight, isMaximized, setActiveView, setSearchedElement }) {
+export default function ListarUsuarios ({ setAlert, windowHeight, isMaximized, setActiveView, setSearchedItem, setSearchedEdit }) {
   // Hook para manejar la lista de elementos y su paginación
   const {
     elements,
@@ -28,8 +28,10 @@ export default function ListarUsuarios ({ setAlert, windowHeight, isMaximized, s
 
   // Maneja la activación de la vista para ver detalles de un usuarios específico
   const handleView = (codigo, view) => {
-    setSearchedElement(codigo)// Guarda el código para la vista
-    setElements([]) // Limpia la lista de usuarios para evitar conflictos
+    if (view === 'buscarUsuario') setSearchedItem(codigo)// Guarda el código para la vista
+    else if (view === 'editarUsuario') setSearchedEdit(codigo)
+
+    setElements([]) // Limpia la lista de elementos para evitar conflictos
     setActiveView(view) // Cambia la vista
   }
 

@@ -1,13 +1,14 @@
 import { useEffect } from 'react'
+import Input from '../../common/Input'
 import { useEdit, useFetchByCode, useFetch } from '../../../hooks'
 import '../../../styles/globals/forms.css'
 
-export default function EditarRol ({ setAlert, searchRole }) {
+export default function EditarRol ({ setAlert, searchedEdit }) {
   // Hook para manejar la edición de elementos, incluyendo la lógica para el formulario y su referencia
   const { formRef, handleSubmit } = useEdit({ setAlert, obtener: 'rol' })
 
   // Hook para obtener el elemento a editar por su código
-  const { loading, element } = useFetchByCode({ setAlert, codeToSearch: searchRole, obtener: 'rol' })
+  const { loading, element } = useFetchByCode({ setAlert, codeToSearch: searchedEdit, obtener: 'rol' })
   // Extrae los IDs de los permisos del rol
   const permisosDelRol = element?.permisos?.map(p => p.id) || []
 
@@ -52,10 +53,12 @@ export default function EditarRol ({ setAlert, searchRole }) {
             ? (
               <form className='form' ref={formRef} onSubmit={handleSubmit}>
                 <input type='hidden' value={element && element.id} name='rol_id' />
-                <input type='text' placeholder='Nombre' name='rol_nombre' id='rol_nombre' defaultValue={element.nombre} />
+                <p className='message'>Los campos marcados con asterisco (*) son obligatorios.</p>
+
+                <Input type='text' placeholder='Nombre' name='rol_nombre' defaultValue={element.nombre} required />
 
                 <div>
-                  <p className='form__check--title'>Permisos</p>
+                  <p className='form__check--title'>Permisos*</p>
                   {/* Muestra los permisos agrupados por módulo */}
                   {Object.entries(permisosPorModulo).map(([modulo, permisos]) => (
                     <fieldset key={modulo} className='form__check--modules__container'>

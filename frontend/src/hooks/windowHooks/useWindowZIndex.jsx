@@ -14,10 +14,8 @@ export const useWindowZIndex = (winRef, isMaximized, isTop, id) => {
     // Verifica que la referencia de la ventana no sea nula antes de aplicar estilos
     if (!winRef.current) return
 
-    // Asignar el zIndex dependiendo del estado de maximización y si está en la parte superior
-    if (isMaximized) {
-      winRef.current.style.zIndex = '100'
-    } else if (isTop === id) {
+    // Asignar el zIndex dependiendo si está en la parte superior
+    if (isTop === id) {
       winRef.current.style.zIndex = '20'
     } else {
       winRef.current.style.zIndex = '10'
