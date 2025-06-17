@@ -1,6 +1,6 @@
 <?php
 session_start();
-$_SESSION['user_id'] = 1;
+$_SESSION['user_id'] = 123;
 $_SESSION['typeuser'] = 'Instructor';
 // Simulación de tipo de usuario para ejemplo
 if (!isset($_SESSION['typeuser'])) $_SESSION['typeuser'] = 'Almacenista';
@@ -284,7 +284,7 @@ if (!isset($_SESSION['typeuser'])) $_SESSION['typeuser'] = 'Almacenista';
                             <label for="identificacion" class="form-label">Identificación del Solicitante:</label>
                             <input type="number" class="form-control" id="identificacion" name="identificacion" required>
                         </div>
-                        <div class="mb-3">
+                        <div class="mb-3">  
                             <label for="nombre_apellido" class="form-label">Nombre y Apellido del Solicitante:</label>
                             <input type="text" class="form-control" id="nombre_apellido" name="nombre_apellido" required>
                         </div>
@@ -374,211 +374,9 @@ if (!isset($_SESSION['typeuser'])) $_SESSION['typeuser'] = 'Almacenista';
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="assets/js/prestamos/dataElementos.js"></script>
-
-    <script>
-        $(document).ready(function() {
-            // Select2 para selección múltiple de devolutivos y consumibles
-            $('#selector_elemento_devolutivo').select2({
-                placeholder: "Buscar elementos devolutivos por nombre...",
-                allowClear: true
-            });
-            $('#selector_elemento_consumible').select2({
-                placeholder: "Buscar elementos consumibles por nombre...",
-                allowClear: true
-            });
-
-            obtenerElementos()
-                .then(data => {
-                    data.forEach(elemento => {
-                        // Usar los campos correctos según la estructura recibida
-                        const option = new Option(elemento.elemento_nombre, elemento.elemento_codigo, false, false);
-                        $(option).attr('data-obj', JSON.stringify(elemento));
-                        if (elemento.elemento_tipo === 'devolutivo') {
-                            $('#selector_elemento_devolutivo').append(option);
-                        } else if (elemento.elemento_tipo === 'consumible') {
-                            $('#selector_elemento_consumible').append(option);
-                        }
-                    });
-                    $('#selector_elemento_devolutivo, #selector_elemento_consumible').trigger('change');
-                })
-                .catch(error => {
-                    console.error('Error al cargar elementos:', error);
-                });
-
-            // Mostrar campos para cada devolutivo seleccionado
-            $('#selector_elemento_devolutivo').on('change', function() {
-                const selected = $(this).find('option:selected');
-                let html = '';
-                selected.each(function(i, opt) {
-                    const data = JSON.parse($(opt).attr('data-obj'));
-                    html += `
-                        <div class="card mb-2 p-2">
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <label class="form-label">Nombre:</label>
-                                    <input type="text" class="form-control" value="${data.elemento_nombre}" disabled>
-                                    <input type="hidden" name="devolutivos[${data.elemento_codigo}][codigo]" value="${data.elemento_codigo}">
-                                </div>
-                                <div class="col-md-2">
-                                    <label class="form-label">Cantidad:</label>
-                                    <input type="number" class="form-control" name="devolutivos[${data.elemento_codigo}][cantidad]" min="1" max="${data.elemento_cantidad}" value="1">
-                                    <small class="text-muted">Máx: ${data.elemento_cantidad}</small>
-                                </div>
-                                <div class="col-md-2">
-                                    <label class="form-label">Placa:</label>
-                                    <input type="text" class="form-control" value="${data.elemento_placa || ''}" disabled>
-                                </div>
-                                <div class="col-md-2">
-                                    <label class="form-label">Serial:</label>
-                                    <input type="text" class="form-control" value="${data.elemento_serial || ''}" disabled>
-                                </div>
-                                <div class="col-md-2">
-                                    <label class="form-label">Modelo:</label>
-                                    <input type="text" class="form-control" value="${data.elemento_modelo || ''}" disabled>
-                                </div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-md-2">
-                                    <label class="form-label">Marca ID:</label>
-                                    <input type="text" class="form-control" value="${data.marca_id || ''}" disabled>
-                                </div>
-                                <div class="col-md-2">
-                                    <label class="form-label">Área ID:</label>
-                                    <input type="text" class="form-control" value="${data.area_id || ''}" disabled>
-                                </div>
-                                <div class="col-md-2">
-                                    <label class="form-label">Categoría ID:</label>
-                                    <input type="text" class="form-control" value="${data.categoria_id || ''}" disabled>
-                                </div>
-                                <div class="col-md-2">
-                                    <label class="form-label">Unidad Medida:</label>
-                                    <input type="text" class="form-control" value="${data.elemento_und_medida || ''}" disabled>
-                                </div>
-                                <div class="col-md-2">
-                                    <label class="form-label">Cantidad Disponible:</label>
-                                    <input type="text" class="form-control" value="${data.elemento_cantidad || ''}" disabled>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                });
-                $('#devolutivosSeleccionados').html(html);
-            });
-
-            // Mostrar campos para cada consumible seleccionado (igual que devolutivos)
-            $('#selector_elemento_consumible').on('change', function() {
-                const selected = $(this).find('option:selected');
-                let html = '';
-                selected.each(function(i, opt) {
-                    const data = JSON.parse($(opt).attr('data-obj'));
-                    html += `
-                        <div class="card mb-2 p-2">
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <label class="form-label">Nombre:</label>
-                                    <input type="text" class="form-control" value="${data.elemento_nombre}" disabled>
-                                    <input type="hidden" name="consumibles[${data.elemento_codigo}][codigo]" value="${data.elemento_codigo}">
-                                </div>
-                                <div class="col-md-2">
-                                    <label class="form-label">Cantidad:</label>
-                                    <input type="number" class="form-control" name="consumibles[${data.elemento_codigo}][cantidad]" min="1" max="${data.elemento_cantidad}" value="1">
-                                    <small class="text-muted">Máx: ${data.elemento_cantidad}</small>
-                                </div>
-                                <div class="col-md-2">
-                                    <label class="form-label">Placa:</label>
-                                    <input type="text" class="form-control" value="${data.elemento_placa || ''}" disabled>
-                                </div>
-                                <div class="col-md-2">
-                                    <label class="form-label">Serial:</label>
-                                    <input type="text" class="form-control" value="${data.elemento_serial || ''}" disabled>
-                                </div>
-                                <div class="col-md-2">
-                                    <label class="form-label">Modelo:</label>
-                                    <input type="text" class="form-control" value="${data.elemento_modelo || ''}" disabled>
-                                </div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-md-2">
-                                    <label class="form-label">Marca ID:</label>
-                                    <input type="text" class="form-control" value="${data.marca_id || ''}" disabled>
-                                </div>
-                                <div class="col-md-2">
-                                    <label class="form-label">Área ID:</label>
-                                    <input type="text" class="form-control" value="${data.area_id || ''}" disabled>
-                                </div>
-                                <div class="col-md-2">
-                                    <label class="form-label">Categoría ID:</label>
-                                    <input type="text" class="form-control" value="${data.categoria_id || ''}" disabled>
-                                </div>
-                                <div class="col-md-2">
-                                    <label class="form-label">Unidad Medida:</label>
-                                    <input type="text" class="form-control" value="${data.elemento_und_medida || ''}" disabled>
-                                </div>
-                                <div class="col-md-2">
-                                    <label class="form-label">Cantidad Disponible:</label>
-                                    <input type="text" class="form-control" value="${data.elemento_cantidad || ''}" disabled>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                });
-                $('#consumiblesSeleccionados').html(html);
-            });
-
-            // Lógica de pasos
-            let currentStep = 1;
-
-            function showStep(step) {
-                $('.form-step').addClass('d-none');
-                $('.form-step-' + step).removeClass('d-none');
-                $('.progress-step .step').removeClass('active');
-                $('.progress-step .step-' + step).addClass('active');
-            }
-            $('.next-step').click(function() {
-                if (currentStep < 3) {
-                    currentStep++;
-                    showStep(currentStep);
-                }
-            });
-            $('.prev-step').click(function() {
-                if (currentStep > 1) {
-                    currentStep--;
-                    showStep(currentStep);
-                }
-            });
-            showStep(currentStep);
-
-            // Deshabilitar campos según typeuser
-            if ($('#typeuser').val() !== 'admin') {
-                $('#id_usuario').prop('disabled', true);
-            }
-
-            // Lógica de tipo de usuario y tipo de préstamo
-            function actualizarTipoPrestamoYFechas() {
-                const typeuser = $('#typeuser').val();
-                if (typeuser === 'Almacenista') {
-                    // Prestamo inmediato
-                    $('#fecha_entrega').closest('.fecha-entrega-group').hide();
-                    // Al cambiar la fecha de solicitud, igualar fecha de entrega
-                    $('#fecha_solicitud').on('change', function() {
-                        $('#fecha_entrega').val($(this).val());
-                    });
-                    // Inicializar fecha de entrega igual a solicitud si ya tiene valor
-                    $('#fecha_entrega').val($('#fecha_solicitud').val());
-                } else {
-                    // Reserva (Instructor)
-                    $('#fecha_entrega').closest('.fecha-entrega-group').show();
-                }
-            }
-
-            // Ejecutar al cargar
-            actualizarTipoPrestamoYFechas();
-
-            $('#typeuser').on('change', actualizarTipoPrestamoYFechas);
-        });
-    </script>
-
+    <script src="assets/js/prestamos/mostrarElementos.js"></script>
     <script src="assets/js/prestamos/enviarPrestamo.js" defer></script>
+    <script src="assets/js/prestamos/obtenerSolicitante.js"></script>
 </body>
 
 </html>

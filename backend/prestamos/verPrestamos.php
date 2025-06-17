@@ -7,6 +7,7 @@ $_SESSION['typeuser'] = 'Almacenista'; // Simulación de tipo de usuario
 <html lang="es">
 
 <head>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <meta charset="UTF-8">
     <title>Ver Préstamos</title>
     <style>
@@ -203,16 +204,19 @@ $_SESSION['typeuser'] = 'Almacenista'; // Simulación de tipo de usuario
                 </tr>
             </tbody>
         </table>
-        <script src="assets/js/prestamos/listarPrestamos.js"></script>
+        <script src="assets/js/prestamos/accionesPrestamos.js"></script>
         <!-- <script src="assets/js/prestamos/websocket.js"></script> -->
     </div>
     <div id="modal-overlay">
-    <div id="modal-box">
-        <button id="modal-close" onclick="cerrarModal()">&times;</button>
-        <div id="modal-content"></div>
-        <div id="modal-actions"></div>
+        <div id="modal-box">
+            <button id="modal-close" onclick="cerrarModal()">&times;</button>
+            <div id="modal-content"></div>
+            <div id="modal-actions"></div>
+        </div>
     </div>
-</div>
+    
 </body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"  integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 </html>

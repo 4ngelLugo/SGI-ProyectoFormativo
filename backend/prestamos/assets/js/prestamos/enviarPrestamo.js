@@ -28,23 +28,40 @@ async function enviarSolicitud() {
         const formElement = document.getElementById('solicitudForm');
         const formData = new FormData(formElement);
 
-        // Convertir FormData a objeto plano, soportando arrays y objetos anidados
+        // Objeto final para almacenar los datos estructurados
         const datosFormulario = {};
 
+        // Procesar cada entrada de FormData
         for (let [key, value] of formData.entries()) {
-            // Soporte para campos tipo array (ej: devolutivos[123][cantidad])
-            if (key.includes('[')) {
-                const keys = key.split(/\[|\]/).filter(Boolean);
+            if (key.startsWith('devolutivos') || key.startsWith('consumibles')) {
+                // Claves como "devolutivos[123][cantidad]"
+                const keys = key.match(/([^\[\]]+)/g); // Extrae por ejemplo: ['devolutivos', '123', 'cantidad']
                 let ref = datosFormulario;
-                for (let i = 0; i < keys.length; i++) {
-                    if (i === keys.length - 1) {
-                        ref[keys[i]] = value;
-                    } else {
-                        if (!ref[keys[i]]) ref[keys[i]] = {};
-                        ref = ref[keys[i]];
-                    }
+
+                for (let i = 0; i < keys.length - 1; i++) {
+                    const k = keys[i];
+                    if (!ref[k]) ref[k] = {};
+                    ref = ref[k];
                 }
+
+                const lastKey = keys[keys.length - 1];
+                if (!ref[lastKey]) {
+                    ref[lastKey] = value;
+                } else if (Array.isArray(ref[lastKey])) {
+                    ref[lastKey].push(value);
+                } else {
+                    ref[lastKey] = [ref[lastKey], value];
+                }
+
+            } else if (key === 'observaciones') {
+                // Manejar observaciones como array
+                if (!datosFormulario.observaciones) {
+                    datosFormulario.observaciones = [];
+                }
+                datosFormulario.observaciones.push(value);
+
             } else {
+                // Campos normales
                 datosFormulario[key] = value;
             }
         }
@@ -110,6 +127,6 @@ function mostrarCargando(mostrar) {
         botonSubmit.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Procesando...';
     } else {
         botonSubmit.disabled = false;
-        botonSubmit.innerHTML = 'Generar Prestamo';
+        botonSubmit.innerHTML = 'Generar Préstamo';
     }
 }

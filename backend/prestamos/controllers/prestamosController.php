@@ -7,8 +7,8 @@ class PrestamosController
     public function crearSolicitud(array $data)
     {
         $idPrestamo = Prestamo::generarPrestamo($data);
-        if($data['usertype'] === 'Instructor') {
-           $tipoPrestamo = "Reserva" ?? 'Prestamo inmediato';
+        if ($data['usertype'] === 'Instructor') {
+            $tipoPrestamo = "Reserva" ?? 'Prestamo inmediato';
         }
         // Solo notificar si es tipo Reserva
         if ($tipoPrestamo === 'Reserva') {
@@ -44,5 +44,43 @@ class PrestamosController
     public function listarTodoPrestamos()
     {
         return Prestamo::listarPrestamos();
+    }
+
+    public function obtenerSolicitante(string $identificacion)
+    {
+        $solicitante = Prestamo::getSolicitanteByIdentificacion($identificacion);
+
+        if (!$solicitante) {
+            throw new Exception("No se encontró el solicitante");
+        }
+
+        return $solicitante;
+    }
+
+    public function actualizarPrestamo(array $data)
+    {
+        try {
+            return Prestamo::actualizarPrestamoCompleto($data);
+        } catch (Exception $e) {
+            throw new Exception("Error en controlador: " . $e->getMessage());
+        }
+    }
+
+    public function obtenerPrestamoCompleto(string $prestamo_id)
+    {
+        try {
+            return Prestamo::obtenerPrestamoCompleto($prestamo_id);
+        } catch (Exception $e) {
+            throw new Exception("Error en controlador: " . $e->getMessage());
+        }
+    }
+
+    public static function inhabilitarPrestamo(string $prestamo_id): bool
+    {
+        try {
+            return Prestamo::inhabilitarPrestamo($prestamo_id);
+        } catch (Exception $e) {
+            throw new Exception("Error en controlador: " . $e->getMessage());
+        }
     }
 }
