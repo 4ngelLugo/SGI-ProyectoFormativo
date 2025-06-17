@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useValidateSelect } from '../../hooks/commonHooks/useValidateSelect'
 import Select from 'react-select'
 
-export default function SelectInput ({ options, placeholder, name, defaultValue, required }) {
+export default function SelectInput({ options, placeholder, name, defaultValue, required, setTipo }) {
   const [selectedOption, setSelectedOption] = useState(null)
 
   const opciones = options.map(e => ({
@@ -23,7 +23,14 @@ export default function SelectInput ({ options, placeholder, name, defaultValue,
 
   const handleChange = (option) => {
     setSelectedOption(option)
+    if (setTipo) {
+      setTipo(option.data.tipo)
+    }
   }
+
+  useEffect(() => {
+
+  }, [])
 
   return (
     <div>
