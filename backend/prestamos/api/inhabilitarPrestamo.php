@@ -1,5 +1,5 @@
 <?php
-require_once '../models/Prestamo.php';
+require_once '../controllers/prestamosController.php';
 
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
@@ -16,7 +16,7 @@ try {
 
     $prestamo_id = $input['prestamo_id'];
 
-    $resultado = Prestamo::inhabilitarPrestamo($prestamo_id);
+    $resultado = PrestamosController::inhabilitarPrestamo($prestamo_id);
 
     if ($resultado) {
         echo json_encode(['mensaje' => 'Préstamo inhabilitado correctamente']);

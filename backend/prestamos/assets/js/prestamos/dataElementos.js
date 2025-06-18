@@ -5,7 +5,7 @@
 
 // URL base para las peticiones
 const API_BASE = 'http://localhost/SGI-ProyectoFormativo/backend';
-const ELEMENTOS_ENDPOINT = `${API_BASE}/elementos/logic/getLogic.php`;
+const ELEMENTOS_ENDPOINT = `${API_BASE}/elementos/api/obtenerAPI.php`;
 
 /**
  * Función para obtener todos los elementos
