@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 
-export default function useGetTime () {
+export const useGetTime = () => {
   const hour = useRef(null)
   const period = useRef(null)
   const date = useRef(null)

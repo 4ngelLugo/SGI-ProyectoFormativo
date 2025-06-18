@@ -1,78 +1,125 @@
 <?php
-include '../Model/ElementoModel.php';
+include '../Model/Elemento.php';
 
 class ElementoController
 {
-  private $elemento_model;
+  private $elemento_modelo;
 
   public function __construct($db)
   {
-    $this->elemento_model = new ElementoModel($db);
+    $this->elemento_modelo = new Elemento($db);
   }
 
-  public function saveElementoDevolutivo($codigo, $nombre, $area, $placa, $serial, $marca, $modelo)
+  public function guardarElemento($codigo, $nombre, $tipo, $categoria, $area, $placa = null, $serial = null, $marca = null, $modelo = null, $cantidad = null, $medida = null)
   {
-    if (empty($codigo) || empty($nombre) || empty($area) || empty($placa) || empty($serial) || empty($marca) || empty($modelo)) return ["error" => "campos vacios"];
+    switch ($tipo) {
+      case "devolutivo":
+        if (
+          empty($codigo)
+          || empty($nombre)
+          || empty($tipo)
+          || empty($categoria)
+          || empty($area)
+          || empty($placa)
+          || empty($serial)
+          || empty($marca)
+          || empty($modelo)
+        ) return ["error" => "campos vacios"];
+        break;
 
-    $validate_elemento = $this->getElementoByCodigo($codigo);
-    if (empty($validate_elemento["error"])) return ["error" => "elemento ya existe"];
+      case "consumible":
+        if (
+          empty($codigo)
+          || empty($nombre)
+          || empty($tipo)
+          || empty($categoria)
+          || empty($area)
+          || empty($cantidad)
+          || empty($medida)
+        ) return ["error" => "campos vacios"];
+        break;
+    }
 
-    $result = $this->elemento_model->saveElementoDevolutivo($codigo, $nombre, $area, $placa, $serial, $marca, $modelo);
+    $validate_elemento = $this->elemento_modelo->obtenerElementoPorCodigo($codigo);
+    if ($validate_elemento) return ["error" => "ya existe"];
+
+    $result = $this->elemento_modelo->guardarElemento($codigo, $nombre, $tipo, $categoria, $area, $placa, $serial, $marca, $modelo, $cantidad, $medida);
+
     if ($result) return ["success" => true];
 
     return ["error" => "error al guardar"];
   }
 
-  public function saveElementoConsumible($codigo, $nombre, $area, $cantidad, $medida)
+  public function obtenerTodosLosElementos()
   {
-    if (empty($codigo) || empty($nombre) || empty($area) || empty($cantidad) || empty($medida)) return ["error" => "campos vacios"];
+    $todos_los_elementos = $this->elemento_modelo->obtenerTodosLosElementos();
 
-    $validate_elemento = $this->getElementoByCodigo($codigo);
-    if (empty($validate_elemento["error"])) return ["error" => "elemento ya existe"];
+    if ($todos_los_elementos) return $todos_los_elementos;
 
-    if ($medida === "m") $medida = "metros";
-    else if ($medida === "und") $medida = "unidades";
-
-    $medida = strtolower($medida);
-
-    $result = $this->elemento_model->saveElementoConsumible($codigo, $nombre, $area, $cantidad, $medida);
-    if ($result) return ["success" => true];
-
-    return ["error" => "error al guardar"];
+    return ["error" => "error al obtener"];
   }
 
-  public function getAllElementos()
-  {
-    $get_elementos = $this->elemento_model->getAllElementos();
-
-    if ($get_elementos) return $get_elementos;
-
-    return ["error" => "error al obtener elementos"];
-  }
-
-  public function getElementoByCodigo($codigo)
+  public function obtenerElementoPorCodigo($codigo)
   {
     if (empty($codigo)) return ["error" => "campos vacios"];
 
-    $get_elemento = $this->elemento_model->getElementoByCodigo($codigo);
+    $elemento = $this->elemento_modelo->obtenerElementoPorCodigo($codigo);
 
-    if ($get_elemento) return $get_elemento;
+    if ($elemento) return $elemento;
 
-    return ["error" => "elemento no existe"];
+    return ["error" => "no existe"];
   }
 
-  public function deactivateElemento($codigo, $tipo)
+  public function editarElemento($codigo, $nombre, $tipo, $categoria, $area, $placa = null, $serial = null, $marca = null, $modelo = null, $cantidad = null, $medida = null)
   {
-    $tabla_tipo = strtolower($tipo) === 'consumible' ? $this->elemento_model->table_cons : $this->elemento_model->table_devo;
+    switch ($tipo) {
+      case "devolutivo":
+        if (
+          empty($codigo)
+          || empty($nombre)
+          || empty($tipo)
+          || empty($categoria)
+          || empty($area)
+          || empty($placa)
+          || empty($serial)
+          || empty($marca)
+          || empty($modelo)
+        ) return ["error" => "campos vacios"];
+        break;
 
-    $get_elemento = $this->elemento_model->getElementoByCodigo($codigo);
+      case "consumible":
+        if (
+          empty($codigo)
+          || empty($nombre)
+          || empty($tipo)
+          || empty($categoria)
+          || empty($area)
+          || empty($cantidad)
+          || empty($medida)
+        ) return ["error" => "campos vacios"];
+        break;
+    }
 
-    if (!$get_elemento) return ["error" => "elemento no existe"];
+    $validate_elemento = $this->elemento_modelo->obtenerElementoPorCodigo($codigo);
+    if (!$validate_elemento) return ["error" => "no existe"];
 
-    $deactivate_elemento = $this->elemento_model->deactivateElemento($codigo, $tabla_tipo);
+    $result = $this->elemento_modelo->editarElemento($codigo, $nombre, $tipo, $categoria, $area, $placa, $serial, $marca, $modelo, $cantidad, $medida);
+    if ($result) return ["success" => true];
 
-    if ($deactivate_elemento) return ["success" => "elemento desactivado"];
+    return ["error" => "error al actualizar"];
+  }
 
-    return ["error" => "error al deactivar el elemento"];
+  public function deshabilitarElemento($codigo)
+  {
+    if (empty($codigo)) return ["error" => "campos vacios"];
+
+    $elemento = $this->elemento_modelo->obtenerElementoPorCodigo($codigo);
+    if (!$elemento) return ["error" => "no existe"];
+
+    $deshabilitar_elemento = $this->elemento_modelo->deshabilitarElemento($codigo);
+
+    if ($deshabilitar_elemento) return ["success" => true];
+
+    return ["error" => "error al desactivar"];
   }
 }

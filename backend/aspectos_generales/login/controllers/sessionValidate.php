@@ -23,25 +23,25 @@ require_once '../models/User.php';
 $response = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $jsonData = file_get_contents('php://input');
-    $data = json_decode($jsonData, true);
-    
-    if (isset($data['document']) && isset($data['password'])) {
-        $auth = new Auth($data['document'], $data['password']);
-        
+    $documento = $_POST['documento'] ?? null;
+    $contrasena = $_POST['contrasena'] ?? null;
+
+    if (isset($documento) && isset($contrasena)) {
+        $auth = new Auth($documento, $contrasena);
+
         if ($auth->authenticate()) {
             $userData = $auth->getUserData();
-            
+
             $dbCredentials = $auth->getUserDbCredentials();
-            
+
             $userData['db_username'] = $dbCredentials['db_username'];
             $userData['db_password'] = $dbCredentials['db_password'];
-            
+
             $auth->closeConnection();
-            
+
             try {
                 $user = new User($userData);
-                
+
                 $_SESSION['user_id'] = $userData['ID_Usuario'];
                 $_SESSION['user_name'] = $userData['nombre'];
                 $_SESSION['user_role'] = $userData['ID_Rol'];
@@ -83,4 +83,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 ob_end_clean();
 echo json_encode($response);
-?>
