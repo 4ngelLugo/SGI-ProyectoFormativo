@@ -11,7 +11,7 @@ export default function Navbar({ windowOnTop, setIsAuthenticated }) {
   }
 
   // Define el nombre que se mostrará en la barra (ventana activa o nombre por defecto)
-  const formattedWindowOnTop = windowOnTop ? capitalizeFirstLetter(windowOnTop) : 'SENA'
+  const formattedWindowOnTop = windowOnTop ? capitalizeFirstLetter(windowOnTop) : 'LENDORA'
 
   const [showModal, setShowModal] = useState(false)
 
