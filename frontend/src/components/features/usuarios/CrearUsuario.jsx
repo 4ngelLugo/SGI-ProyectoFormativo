@@ -3,9 +3,9 @@ import Input from '../../common/Input'
 import SelectInput from '../../common/SelectInput'
 import '../../../styles/globals/forms.css'
 
-export default function CrearUsuario ({ setAlert }) {
+export default function CrearUsuario ({ setAlert, setActiveView }) {
   // Hook para manejar la creación de usuarios, incluyendo la lógica para el formulario y el tipo de elemento
-  const { formRef, handleSubmit } = useCreate({ setAlert, obtener: 'usuario' })
+  const { formRef, handleSubmit } = useCreate({ setAlert, obtener: 'usuario', setActiveView })
 
   // Obtiene los datos de las tipos de documento y roles, y los filtra para no mostrar aquellos que esten desactivados
   const { elements: tipoDocumento } = useFetch({ setAlert, windowHeight: null, isMaximized: null, obtener: 'tipoDocumento' })

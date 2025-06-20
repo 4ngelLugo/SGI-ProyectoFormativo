@@ -3,8 +3,9 @@ import Input from '../../common/Input'
 import { useCreate, useFetch } from '../../../hooks'
 import '../../../styles/globals/forms.css'
 
-export default function CrearRol ({ setAlert }) {
-  const { formRef, handleSubmit } = useCreate({ setAlert, obtener: 'rol' })
+export default function CrearRol ({ setAlert, setActiveView }) {
+  const { formRef, handleSubmit } = useCreate({ setAlert, obtener: 'rol', setActiveView })
+  
   const { elements } = useFetch({ setAlert, windowHeight: null, isMaximized: null, obtener: 'permisos' })
 
   // Agrupa los permisos por el módulo al que pertenecen

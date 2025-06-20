@@ -45,8 +45,8 @@ export const windowContents = {
           setSearchedItem={setSearchedItem}
           setSearchedEdit={setSearchedEdit}
         />,
-      createElement: ({ setAlert }) =>
-        <CreateElement setAlert={setAlert} />,
+      createElement: ({ setAlert, setActiveView }) =>
+        <CreateElement setAlert={setAlert} setActiveView={setActiveView} />,
       searchElement: ({ setAlert, searchedItem, setSearchedItem }) =>
         <SearchElements
           setAlert={setAlert}
@@ -76,8 +76,8 @@ export const windowContents = {
           setSearchedItem={setSearchedItem}
           setSearchedEdit={setSearchedEdit}
         />,
-      crearUsuario: ({ setAlert }) =>
-        <CrearUsuario setAlert={setAlert} />,
+      crearUsuario: ({ setAlert, setActiveView }) =>
+        <CrearUsuario setAlert={setAlert} setActiveView={setActiveView} />,
       buscarUsuario: ({ setAlert, searchedItem, setSearchedItem }) =>
         <BuscarUsuario
           setAlert={setAlert}
@@ -141,8 +141,8 @@ export const windowContents = {
           setSearchedItem={setSearchedItem}
           setSearchedEdit={setSearchedEdit}
         />,
-      crearRol: ({ setAlert }) =>
-        <CrearRol setAlert={setAlert} />,
+      crearRol: ({ setAlert, setActiveView }) =>
+        <CrearRol setAlert={setAlert} setActiveView={setActiveView} />,
       buscarRol: ({ setAlert, searchedItem, setSearchedItem }) =>
         <BuscarRol
           setAlert={setAlert}
@@ -172,8 +172,8 @@ export const windowContents = {
           setSearchedItem={setSearchedItem}
           setSearchedEdit={setSearchedEdit}
         />,
-      crearPrestamo: ({ setAlert }) =>
-        <CrearPrestamo setAlert={setAlert} />,
+      crearPrestamo: ({ setAlert, setActiveView }) =>
+        <CrearPrestamo setAlert={setAlert} setActiveView={setActiveView} />,
       buscarPrestamo: ({ setAlert, searchedItem, setSearchedItem }) =>
         <BuscarPrestamo
           setAlert={setAlert}

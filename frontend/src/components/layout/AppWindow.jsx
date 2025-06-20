@@ -123,6 +123,8 @@ export default function AppWindow({
           props.setSearchedItem = setSearchedItem
           props.setSearchedEdit = setSearchedEdit
           break
+        case 'createElement':
+          props.setActiveView = setActiveView
         case 'searchElement':
           props.searchedItem = searchedItem
           props.setSearchedItem = setSearchedItem
@@ -142,6 +144,8 @@ export default function AppWindow({
           props.setSearchedItem = setSearchedItem
           props.setSearchedEdit = setSearchedEdit
           break
+        case 'crearUsuario':
+          props.setActiveView = setActiveView
         case 'buscarUsuario':
           props.searchedItem = searchedItem
           props.setSearchedItem = setSearchedItem
@@ -161,13 +165,15 @@ export default function AppWindow({
           props.setSearchedItem = setSearchedItem
           props.setSearchedEdit = setSearchedEdit
           break
+        case 'crearPrestamo':
+          props.setActiveView = setActiveView
         case 'buscarPrestamo':
           props.searchedItem = searchedItem
           props.setSearchedItem = setSearchedItem
           break
       }
     }
-
+    
     if (id === 'terminal') {
       switch (activeView) {
         case 'listarRoles':
@@ -177,6 +183,8 @@ export default function AppWindow({
           props.setSearchedItem = setSearchedItem
           props.setSearchedEdit = setSearchedEdit
           break
+        case 'crearRol':
+          props.setActiveView = setActiveView
         case 'buscarRol':
           props.searchedItem = searchedItem
           props.setSearchedItem = setSearchedItem

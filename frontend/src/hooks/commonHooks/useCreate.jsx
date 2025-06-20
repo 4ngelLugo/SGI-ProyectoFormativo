@@ -8,7 +8,7 @@ import { SaveElementsEndpoint, GuardarUsuarioEndpoint, GuardarRolEndpoint, Guard
  * @param {String} obtener - Tipo de elemento a crear.
  * @returns {Object} - Objeto con la referencia al formulario y la función de envío.
  */
-export const useCreate = ({ setAlert, obtener, fetchElements }) => {
+export const useCreate = ({ setAlert, obtener, fetchElements, setActiveView }) => {
   const endpoints = {
     elemento: SaveElementsEndpoint,
     usuario: GuardarUsuarioEndpoint,
@@ -29,6 +29,13 @@ export const useCreate = ({ setAlert, obtener, fetchElements }) => {
     marca: ObtenerMarcasEndpoint,
     tipoDocumento: ObtenerTipoDocumentoEndpoint,
     prestamo: ObtenerPrestamosEndpoint
+  }
+
+  const vistas = {
+    elemento: 'listElement',
+    usuario: 'listarUsuarios',
+    rol: 'listarRoles',
+    prestamo: 'listarPrestamos',
   }
 
   const fetchApiEndpoint = fetchEndpoints[obtener]
@@ -88,13 +95,17 @@ export const useCreate = ({ setAlert, obtener, fetchElements }) => {
           if (typeof fetchElements === 'function') {
             fetchElements(fetchApiEndpoint)
           }
+
+          if (vistas[obtener]) {
+            setActiveView(vistas[obtener])
+          }
         }
       })
       // En caso de que ocurra un error en la petición, o un error en el servidor, se captura y se muestra un mensaje de error
-      // .catch((error) => {
-      //   console.error(error)
-      //   setAlert({ type: 'error', message: 'Ocurrio un error en la petición', active: true })
-      // })
+      .catch((error) => {
+        console.error(error)
+        setAlert({ type: 'error', message: 'Ocurrio un error en la petición', active: true })
+      })
   }
 
   return {

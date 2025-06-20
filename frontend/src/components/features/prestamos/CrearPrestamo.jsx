@@ -4,7 +4,7 @@ import Select from 'react-select'
 import Input from '../../common/Input'
 import '../../../styles/formPrestamos.css'
 
-export default function CrearPrestamo({ setAlert }) {
+export default function CrearPrestamo({ setAlert, setActiveView }) {
   const [devolutivos, setDevolutivos] = useState([])
   const [consumibles, setConsumibles] = useState([])
   const [seleccionadosDevolutivos, setSeleccionadosDevolutivos] = useState([])
@@ -44,7 +44,7 @@ export default function CrearPrestamo({ setAlert }) {
 
   const usuario = JSON.parse(localStorage.getItem('user'))
 
-  const { formRef, handleSubmit } = useCreate({ setAlert, obtener: 'prestamo' })
+  const { formRef, handleSubmit } = useCreate({ setAlert, obtener: 'prestamo', setActiveView })
 
   return (
     <>

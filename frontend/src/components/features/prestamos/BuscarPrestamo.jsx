@@ -98,7 +98,11 @@ export default function BuscarPrestamo({ setAlert, searchedItem, setSearchedItem
                 <p className='element-info__subtitle'>Prestamo</p>
                 <Info label='ID prestamo' value={element.prestamo.prestamo_id} />
                 <Info label='Usuario' value={element.prestamo.usuario_nombre} />
+                <Info label='Tipo' value={element.prestamo.prestamo_tipo} />
                 <Info label='Estado' value={element.prestamo.estado_prestamo_nombre} />
+                <Info label='Solicitud' value={element.prestamo.prestamo_fecha_solicitud} />
+                <Info label='Entrega' value={element.prestamo.prestamo_fecha_entrega} />
+                <Info label='Devolución' value={element.prestamo.prestamo_fecha_devolucion} />
               </div>
 
               <div className='element-info__container'>

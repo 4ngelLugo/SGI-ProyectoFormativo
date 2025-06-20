@@ -4,9 +4,9 @@ import Input from '../../common/Input'
 import SelectInput from '../../common/SelectInput'
 import '../../../styles/globals/forms.css'
 
-export default function CreateElements({ setAlert }) {
+export default function CreateElements({ setAlert, setActiveView }) {
   // Hook para manejar la creación de elementos, incluyendo la lógica para el formulario y el tipo de elemento
-  const { formRef, handleSubmit } = useCreate({ setAlert, obtener: 'elemento' })
+  const { formRef, handleSubmit } = useCreate({ setAlert, obtener: 'elemento', setActiveView })
 
   // Obtiene los datos de las áreas, categorías y marcas, y filtra los que están activos
   const { elements: areas } = useFetch({ setAlert, windowHeight: null, isMaximized: null, obtener: 'areas' })
