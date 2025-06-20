@@ -3,9 +3,9 @@ import Input from '../../common/Input'
 import SelectInput from '../../common/SelectInput'
 import '../../../styles/globals/forms.css'
 
-export default function EditarUsuario ({ setAlert, searchedEdit }) {
+export default function EditarUsuario ({ setAlert, searchedEdit, setActiveView }) {
   // Hook para manejar la creación de usuarios, incluyendo la lógica para el formulario y el tipo de elemento
-  const { formRef, handleSubmit } = useEdit({ setAlert, obtener: 'usuario' })
+  const { formRef, handleSubmit } = useEdit({ setAlert, obtener: 'usuario', setActiveView })
 
   const { loading, element } = useFetchByCode({ setAlert, codeToSearch: searchedEdit, obtener: 'usuario' })
 

@@ -53,10 +53,11 @@ export const windowContents = {
           searchedItem={searchedItem}
           setSearchedItem={setSearchedItem}
         />,
-      editElement: ({ setAlert, searchedEdit }) =>
+      editElement: ({ setAlert, searchedEdit, setActiveView }) =>
         <EditElement
           setAlert={setAlert}
           searchedEdit={searchedEdit}
+          setActiveView={setActiveView}
         />
     }
   },
@@ -84,10 +85,11 @@ export const windowContents = {
           searchedItem={searchedItem}
           setSearchedItem={setSearchedItem}
         />,
-      editarUsuario: ({ setAlert, searchedEdit }) =>
+      editarUsuario: ({ setAlert, searchedEdit, setActiveView }) =>
         <EditarUsuario
           setAlert={setAlert}
           searchedEdit={searchedEdit}
+          setActiveView={setActiveView}
         />
     }
   },
@@ -149,10 +151,11 @@ export const windowContents = {
           searchedItem={searchedItem}
           setSearchedItem={setSearchedItem}
         />,
-      editarRol: ({ setAlert, searchedEdit }) =>
+      editarRol: ({ setAlert, searchedEdit,setActiveView }) =>
         <EditarRol
           setAlert={setAlert}
           searchedEdit={searchedEdit}
+          setActiveView={setActiveView}
         />
     }
   },

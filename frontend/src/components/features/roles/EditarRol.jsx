@@ -3,9 +3,9 @@ import Input from '../../common/Input'
 import { useEdit, useFetchByCode, useFetch } from '../../../hooks'
 import '../../../styles/globals/forms.css'
 
-export default function EditarRol ({ setAlert, searchedEdit }) {
+export default function EditarRol ({ setAlert, searchedEdit, setActiveView }) {
   // Hook para manejar la edición de elementos, incluyendo la lógica para el formulario y su referencia
-  const { formRef, handleSubmit } = useEdit({ setAlert, obtener: 'rol' })
+  const { formRef, handleSubmit } = useEdit({ setAlert, obtener: 'rol', setActiveView })
 
   // Hook para obtener el elemento a editar por su código
   const { loading, element } = useFetchByCode({ setAlert, codeToSearch: searchedEdit, obtener: 'rol' })

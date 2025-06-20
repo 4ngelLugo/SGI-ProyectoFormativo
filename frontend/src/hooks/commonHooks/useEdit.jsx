@@ -9,7 +9,7 @@ import { UpdateElementsEndpoint, EditarUsuarioEndpoint, EditarRolEndpoint, Edita
  * @param {string} obtener - Tipo de recurso a editar ('elemento', 'rol').
  * @returns {Object} - Referencia al formulario y funciones para enviar datos.
  */
-export const useEdit = ({ setAlert, obtener }) => {
+export const useEdit = ({ setAlert, obtener, setActiveView }) => {
   const endpoints = {
     elemento: UpdateElementsEndpoint,
     usuario: EditarUsuarioEndpoint,
@@ -18,6 +18,13 @@ export const useEdit = ({ setAlert, obtener }) => {
     categoria: EditarCategoriaEndpoint,
     marca: EditarMarcaEndpoint,
     tipoDocumento: EditarTipoDocumentoEndpoint
+  }
+
+  const vistas = {
+    elemento: 'listElement',
+    usuario: 'listarUsuarios',
+    rol: 'listarRoles',
+    prestamo: 'listarPrestamos',
   }
 
   const apiEndpoint = endpoints[obtener]
@@ -62,6 +69,9 @@ export const useEdit = ({ setAlert, obtener }) => {
 
       if (response.success) {
         setAlert({ type: 'success', message: 'Elemento editado correctamente', active: true })
+        if (vistas[obtener]) {
+          setActiveView(vistas[obtener])
+        }
         return true
       }
 

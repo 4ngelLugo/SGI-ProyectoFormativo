@@ -119,13 +119,13 @@ export default function BuscarPrestamo({ setAlert, searchedItem, setSearchedItem
                 <div className="element-info__elements">
                   <p style={{ paddingLeft: '1rem' }} className='element-info__title'>Devolutivos</p>
                   {element.devolutivos && element.devolutivos.map((devo) => (
-                    <Info key={devo.elemento_codigo} label='Devolutivo' value={`${devo.elemento_codigo} - ${devo.elemento_nombre}`} />
+                    <Info key={devo.elemento_codigo} label={devo.elemento_codigo} value={`${devo.elemento_nombre}`} />
                   ))}
                 </div>
                 <div className="element-info__elements">
                   <p style={{ paddingLeft: '1rem' }} className='element-info__title'>Consumibles</p>
                   {element.consumibles && element.consumibles.map((cons) => (
-                    <Info key={cons.elemento_codig} label='Consumible' value={`${cons.elemento_codigo} - ${cons.elemento_nombre}`} />
+                    <Info key={cons.elemento_codigo} label={cons.elemento_codigo} value={`${cons.elemento_nombre} - x${cons.elemento_cantidad}`} />
                   ))}
                 </div>
 

@@ -131,6 +131,7 @@ export default function AppWindow({
           break
         case 'editElement':
           props.searchedEdit = searchedEdit
+          props.setActiveView = setActiveView
           break
       }
     }
@@ -152,6 +153,7 @@ export default function AppWindow({
           break
         case 'editarUsuario':
           props.searchedEdit = searchedEdit
+          props.setActiveView = setActiveView
           break
       }
     }
@@ -173,7 +175,7 @@ export default function AppWindow({
           break
       }
     }
-    
+
     if (id === 'terminal') {
       switch (activeView) {
         case 'listarRoles':
@@ -191,6 +193,7 @@ export default function AppWindow({
           break
         case 'editarRol':
           props.searchedEdit = searchedEdit
+          props.setActiveView = setActiveView
           break
       }
     }
@@ -209,7 +212,7 @@ export default function AppWindow({
   const [manuallyHideLabels, setManuallyHideLabels] = useState(false)
 
   const hideSideBar = useCallback((event) => {
-    if (event.ctrlKey && event.key === 'b') {
+    if (event.ctrlKey && event.key.toLowerCase() === 'b') {
       event.preventDefault()
       sidebarLabelRefs.current.forEach(label => {
         if (label.style.display === 'inline') {
