@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-export const useValidateInput = ({ required, type }) => {
+export const useValidateInput = ({ required, type, direccion }) => {
   const [errorLabel, setErrorLabel] = useState('')
 
   const regexEspeciales = /^[a-zA-ZÀ-ÿ0-9\s_-]*$/
@@ -16,7 +16,7 @@ export const useValidateInput = ({ required, type }) => {
       setErrorLabel('Este campo es obligatorio')
     } else if (type === 'date' && new Date(inputValue) < new Date(today)) {
       setErrorLabel('La fecha no puede ser anterior a hoy')
-    } else if (!regexEspeciales.test(inputValue) && type !== 'email' && type !== 'date') {
+    } else if (!regexEspeciales.test(inputValue) && type !== 'email' && type !== 'date' && !direccion) {
       setErrorLabel('No se permiten caracteres especiales')
     } else {
       setErrorLabel('')

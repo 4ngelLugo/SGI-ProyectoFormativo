@@ -61,7 +61,7 @@ export default function CrearPrestamo({ setAlert, setActiveView }) {
           <Input type='text' placeholder='Nombres y apellidos del solicitante' name='nombre_apellido' required />
           <Input type='tel' placeholder='Teléfono del solicitante' name='telefono' required />
           <Input type='email' placeholder='Correo del solicitante' name='correo' required />
-          <Input type='text' placeholder='Dirección del solicitante' name='direccion' required />
+          <Input type='text' placeholder='Dirección del solicitante' name='direccion' required direccion />
           <div className='prestamo-fechas'>
             <div>
               <label htmlFor='fecha_entrega' className='prestamo-label'>Fecha de entrega al solicitante*</label>
