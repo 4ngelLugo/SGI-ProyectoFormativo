@@ -34,7 +34,7 @@
 
 .window__sidebar {
   max-width  : 14.4rem;
-  min-width  : 14.4rem;
+  min-width  : fit-content;
   height     : 100%;
   padding-top: 2.725em;
 
@@ -65,16 +65,50 @@
   cursor: pointer;
 }
 
+.window__btn--close,
+.window__btn--minimize,
+.window__btn--maximize {
+  position: relative;
+  color   : var(--font-color);
+}
+
 .window__btn--close {
   background-color: #ff5f56;
+}
+
+.window__btn--close::before {
+  content  : "✕";
+  position : absolute;
+  top      : 50%;
+  left     : 50%;
+  transform: translate(-50%, -50%);
+  font-size: 12px;
 }
 
 .window__btn--minimize {
   background-color: #ffe72e;
 }
 
+.window__btn--minimize::before {
+  content  : "−";
+  position : absolute;
+  top      : 50%;
+  left     : 50%;
+  transform: translate(-50%, -50%);
+  font-size: 14px;
+}
+
 .window__btn--maximize {
   background-color: #27c93f;
+}
+
+.window__btn--maximize::before {
+  content  : "▢";
+  position : absolute;
+  top      : 50%;
+  left     : 50%;
+  transform: translate(-50%, -50%);
+  font-size: 11px;
 }
 
 .window__menu {
@@ -92,16 +126,18 @@
 
   display: flex;
 
+  color        : var(--font-color);
   border-radius: 10px;
 
   font-size: .9em;
+  font-weight: 500;
 
   cursor  : pointer;
   overflow: hidden;
 }
 
 .window__menu--item--active {
-  background-color: #4576d2;
+  background-color: var(--main-color);
   color           : #fff;
 }
 
@@ -121,16 +157,19 @@
   justify-content: end;
   gap            : .4em;
 
+  color        : var(--font-color);
   border-bottom: 1px solid #e7e7e7;
 }
 
 .window-main__article {
   padding: .6em;
 
+  position: relative;
+
   flex-grow: 1;
   display  : flex;
   flex-flow: column nowrap;
-  gap      : 1em;
+  gap      : .6em;
 
   overflow-x: hidden;
 
@@ -140,8 +179,57 @@
 .title {
   padding: 0 .5em;
 
+  display        : flex;
+  justify-content: space-between;
+  align-items    : center;
+
+  color: var(--font-color);
+
   font-size  : 1.2em;
   font-weight: 600;
+}
+
+.table__pagination {
+  width  : calc(100% - 1.2em);
+  padding: 1rem;
+
+  position: absolute;
+  bottom  : .6em;
+
+  display        : flex;
+  justify-content: center;
+  align-items    : center;
+  gap            : 0.5rem;
+}
+
+.page-btn,
+.page-number {
+  padding: 0.4rem 0.8rem;
+
+  background-color: #f0f0f3;
+  border-radius   : 10px;
+  box-shadow      : 0 2px 5px rgba(0, 0, 0, 0.1);
+
+  cursor     : pointer;
+  transition : all 0.2s ease-in-out;
+  user-select: none;
+}
+
+.page-btn:hover,
+.page-number:hover {
+  background-color: #e0e0e3;
+}
+
+.page-number.active {
+  background-color: var(--main-color);
+  color           : white;
+  box-shadow      : 0 2px 8px rgba(0, 122, 255, 0.3);
+}
+
+.page-btn.disabled {
+  opacity       : 0.4;
+  cursor        : default;
+  pointer-events: none;
 }
 
 /* ejemplo base para todos */
@@ -222,6 +310,25 @@
   right : 0;
 }
 
+.resizer--top-left {
+  top : 0;
+  left: 0;
+}
+
+.resizer--top-right {
+  top  : 0;
+  right: 0;
+}
+
+.resizer--bottom-left {
+  bottom: 0;
+  left  : 0;
+}
+
+.resizer--bottom-right {
+  bottom: 0;
+  right : 0;
+}
 
 .isMinimizing {
   animation       : minimizeWindow 0.3s ease-in forwards;

@@ -25,8 +25,8 @@ export const useWindowResizable = (winRef, screen, isMaximized, setSize, setPosi
     ]
 
     // Definición del tamaño minimo de la ventana
-    const minWindowWidth = 700
-    const minWindowHeight = 400
+    const minWindowWidth = 600
+    const minWindowHeight = 315
 
     // Función para manejar cuando el usuario hace clic en un manipulador de redimensionado
     const handleMouseDown = (direction, e) => {

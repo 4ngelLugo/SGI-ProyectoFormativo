@@ -1,4 +1,6 @@
-import { useRef, useState } from 'react'
+/* global localStorage */
+import { useRef, useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/common/Navbar'
 import RocketDock from '../components/layout/RocketDock'
 import AppWindow from '../components/layout/AppWindow'
@@ -6,16 +8,25 @@ import Alert from '../components/common/Alert'
 import ContextMenu from '../components/common/ContextMenu'
 import '../styles/desktop.css'
 
-export default function Desktop () {
+export default function Desktop() {
   // Estado array con los IDs de las ventanas abiertas y su estado (visible o minimizada)
   // Estado de la ventana que está al frente (ventana abierta o en la que se hizo clic más recientemente)
   // Estado con la alerta (tipo, mensaje y visibilidad)
   const [openWindows, setOpenWindows] = useState([])
   const [isTop, setIsTop] = useState()
   const [alert, setAlert] = useState({ type: '', message: '', active: false })
+  const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('isAuthenticated'))
 
   // Referencia a la alerta
   const alertRef = useRef(null)
+  const navigate = useNavigate()
+
+  // Verificar autenticación del usuario
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/login')
+    }
+  }, [isAuthenticated])
 
   // Abre una ventana al hacer clic en uno de los iconos del RocketDock y la lleva al frente
   const onIconClick = (name) => {
@@ -73,7 +84,7 @@ export default function Desktop () {
 
   return (
     <main className='mainScreen' ref={mainScreen}>
-      <Navbar windowOnTop={isTop} />
+      <Navbar windowOnTop={isTop} setIsAuthenticated={setIsAuthenticated} />
       <ContextMenu mainScreen={mainScreen.current} />
       <div className='screen'>
         {/* Mapeo de las ventanas abiertas, si la ventana está minimizada no se renderiza */}

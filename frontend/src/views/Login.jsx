@@ -1,16 +1,18 @@
 import '../styles/login.css'
 import LoadingScreen from '../components/common/LoadingScreen'
-import useGetTime from '../hooks/useGetTime'
 import logoSena from '../assets/images/logoSena.png'
 import { useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router'
+import { tryConnect, useGetTime } from '../hooks'
 
 export default function Login () {
   const [loading, setLoading] = useState(true)
+
   const { hour, period, date } = useGetTime()
+
   const timestamp = useRef(null)
   const form = useRef(null)
-  const navigate = useNavigate()
+
+  const { formRef, error, handleSubmit } = tryConnect()
 
   const showLogin = () => {
     const timestampRef = timestamp.current
@@ -29,12 +31,12 @@ export default function Login () {
   useEffect(() => {
     if (loading) return
 
-    document.addEventListener('click', showLogin)
-    document.addEventListener('keydown', showLogin)
+    window.document.addEventListener('click', showLogin)
+    window.document.addEventListener('keydown', showLogin)
 
     return () => {
-      document.removeEventListener('click', showLogin)
-      document.removeEventListener('keydown', showLogin)
+      window.document.removeEventListener('click', showLogin)
+      window.document.removeEventListener('keydown', showLogin)
     }
   }, [loading])
 
@@ -55,10 +57,23 @@ export default function Login () {
           <div className='login-form__logo'>
             <img src={logoSena} alt='Logo SENA' />
           </div>
-          <form action={() => navigate('/desktop')}>
-            <input className='login-form__input' type='number' placeholder='Número de documento' />
-            <input className='login-form__input' type='password' placeholder='Contraseña' />
-            <button type='submit' />
+          <form onSubmit={handleSubmit} ref={formRef}>
+            <input
+              className='login-form__input'
+              type='number'
+              placeholder='Número de documento'
+              name='documento'
+              required
+            />
+            <input
+              className='login-form__input'
+              type='password'
+              placeholder='Contraseña'
+              name='contrasena'
+              required
+            />
+            {error && <div className='login-form__error'>{error}</div>}
+            <button className='login-form__button' type='submit'>Ingresar</button>
           </form>
         </section>
       </div>

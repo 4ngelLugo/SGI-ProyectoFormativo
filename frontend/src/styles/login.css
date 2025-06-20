@@ -82,7 +82,7 @@ body {
   width : 100%;
   height: 100vh;
 
-  background: url('../assets/images/loginBG.webp') center center / cover no-repeat;
+  background: url('../assets/images/fondo.jpeg') center center / cover no-repeat;
 }
 
 /* #region Timestamp */
@@ -120,56 +120,88 @@ body {
 
 /* #region LoginForm */
 .login-form {
-  width : 100%;
-  height: 100vh;
-
+  width          : 100%;
+  height         : 100vh;
   display        : flex;
-  flex-flow      : column nowrap;
+  flex-direction : column;
   justify-content: center;
   align-items    : center;
-  gap            : 3rem;
-
-  transition: all .4s ease-in-out, backdrop-filter .4s ease-in-out;
+  gap            : 2rem;
+  font-family    : -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 .login-form__logo {
-  width: 200px;
+  width : 120px;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.2));
 }
 
 .login-form__logo img {
   width     : 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .login-form form {
-  width    : 40%;
-  max-width: 300px;
-
-  display      : grid;
-  place-content: center;
-  gap          : 1em;
+  width          : 100%;
+  max-width      : 320px;
+  padding        : 2rem;
+  display        : flex;
+  flex-direction : column;
+  align-items    : center;
+  gap            : 1.5rem;
+  border-radius  : 20px;
+  background     : rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(20px);
+  box-shadow     : 0 8px 32px rgba(0, 0, 0, 0.15);
+  border         : 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .login-form__input {
-  width  : 100%;
-  padding: .8em;
+  width           : 100%;
+  padding         : 0.75rem 1rem;
+  border          : none;
+  border-radius   : 12px;
+  background-color: rgba(255, 255, 255, 0.15);
+  color           : #000;
+  font-size       : 1.2rem;
+  font-weight     : 500;
+  transition      : background-color 0.3s ease;
+}
 
-  border       : none;
-  border-radius: 6px;
-
-  background-color: #b0a1d47d;
-  color           : #fff;
-
-  font-size: 1.2rem;
-  font-weight: 600;
+.login-form__input:focus {
+  outline         : none;
+  background-color: rgba(255, 255, 255, 0.3);
 }
 
 .login-form__input::placeholder {
-  color: #fff;
-  opacity: .7;
+  color  : #000000;
+  opacity: 0.6;
 }
-.login-form__input:focus {
-  outline: none;
+
+.login-form__error {
+  padding         : 0.8rem 1.2rem;
+  background-color: rgba(255, 255, 255, 0.8);
+  color           : red;
+  border-radius   : 12px;
+  font-size       : 1.1rem;
+  text-align      : center;
+  box-shadow      : 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.login-form__button {
+  width           : 100%;
+  padding         : 0.75rem 1.5rem;
+  background-color: var(--main-color);
+  color           : white;
+  border          : none;
+  border-radius   : 12px;
+  font-size       : 1.1rem;
+  font-weight     : 600;
+  cursor          : pointer;
+  transition      : background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.login-form__button:hover {
+  background-color: var(--main-dark);
 }
 
 input[type="number"]::-webkit-outer-spin-button,
@@ -182,5 +214,6 @@ input[type="number"] {
   appearance     : none;
   -moz-appearance: textfield;
 }
+
 
 /* #endregion */

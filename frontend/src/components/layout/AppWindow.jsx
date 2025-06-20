@@ -17,7 +17,7 @@ import { Icon } from '@iconify/react'
  * @param {function} setAlert - Función para mostrar alertas.
 */
 
-export default function AppWindow ({
+export default function AppWindow({
   id,
   title,
   isTop,
@@ -41,7 +41,7 @@ export default function AppWindow ({
   const topBarHeight = 35.2
 
   // Estado de maximizado de la ventana y función para alternar entre maximizado y restaurado
-  const { isMaximized, toggleMaximize } = useWindowMaximize(winRef, dragRef, windowPosition, windowSize)
+  const { isMaximized, toggleMaximize } = useWindowMaximize(winRef, dragRef, windowPosition, windowSize, setWindowSize)
   // Configuración de la ventana para permitir el arrastre
   useWindowDraggable(winRef, dragRef, screen, topBarHeight, setWindowPosition)
   // Manejador de zIndex de la ventana
@@ -56,9 +56,6 @@ export default function AppWindow ({
   // Estado para manejar el contenido de la ventana, según la paestaña del menú lateral seleccionada
   const [activeView, setActiveView] = useState()
 
-  // TODO: Validar ID de la ventana antes de crear el estado searchedElement
-  const [searchedElement, setSearchedElement] = useState(null)
-
   // Array de referencias para las pestañas del menú lateral
   const sidebarLabelRefs = useRef([])
   // Contenido de la ventana, obtenido de un objeto de datos según el ID de la ventana
@@ -68,6 +65,10 @@ export default function AppWindow ({
   const setSidebarRef = (el, index) => {
     sidebarLabelRefs.current[index] = el
   }
+
+  // Estados especificos para cada ventana
+  const [searchedItem, setSearchedItem] = useState(null)
+  const [searchedEdit, setSearchedEdit] = useState(null)
 
   // Abre la ventana mostrando automaticamente el contenido de la primera pestaña del menú lateral
   useEffect(() => {
@@ -113,32 +114,102 @@ export default function AppWindow ({
 
     const props = { setAlert }
 
-    switch (activeView) {
-      case 'listElement':
-        props.setActiveView = setActiveView
-        props.setSearchedElement = setSearchedElement
-        break
-      case 'searchElement':
-        props.searchElement = searchedElement
-        props.setSearchedElement = setSearchedElement
-        break
-      case 'editElement':
-        props.searchElement = searchedElement
-        break
+    if (id === 'elementos') {
+      switch (activeView) {
+        case 'listElement':
+          props.windowHeight = windowSize.height
+          props.isMaximized = isMaximized
+          props.setActiveView = setActiveView
+          props.setSearchedItem = setSearchedItem
+          props.setSearchedEdit = setSearchedEdit
+          break
+        case 'searchElement':
+          props.searchedItem = searchedItem
+          props.setSearchedItem = setSearchedItem
+          break
+        case 'editElement':
+          props.searchedEdit = searchedEdit
+          break
+      }
+    }
+
+    if (id === 'usuarios') {
+      switch (activeView) {
+        case 'listarUsuarios':
+          props.windowHeight = windowSize.height
+          props.isMaximized = isMaximized
+          props.setActiveView = setActiveView
+          props.setSearchedItem = setSearchedItem
+          props.setSearchedEdit = setSearchedEdit
+          break
+        case 'buscarUsuario':
+          props.searchedItem = searchedItem
+          props.setSearchedItem = setSearchedItem
+          break
+        case 'editarUsuario':
+          props.searchedEdit = searchedEdit
+          break
+      }
+    }
+
+    if (id === 'prestamos') {
+      switch (activeView) {
+        case 'listarPrestamos':
+          props.windowHeight = windowSize.height
+          props.isMaximized = isMaximized
+          props.setActiveView = setActiveView
+          props.setSearchedItem = setSearchedItem
+          props.setSearchedEdit = setSearchedEdit
+          break
+        case 'buscarPrestamo':
+          props.searchedItem = searchedItem
+          props.setSearchedItem = setSearchedItem
+          break
+      }
+    }
+
+    if (id === 'terminal') {
+      switch (activeView) {
+        case 'listarRoles':
+          props.windowHeight = windowSize.height
+          props.isMaximized = isMaximized
+          props.setActiveView = setActiveView
+          props.setSearchedItem = setSearchedItem
+          props.setSearchedEdit = setSearchedEdit
+          break
+        case 'buscarRol':
+          props.searchedItem = searchedItem
+          props.setSearchedItem = setSearchedItem
+          break
+        case 'editarRol':
+          props.searchedEdit = searchedEdit
+          break
+      }
+    }
+
+    if (id === 'configuración') {
+      props.windowHeight = windowSize.height
+      props.isMaximized = isMaximized
     }
 
     return <ViewComponent {...props} />
-  }, [content?.views, activeView, setAlert, searchedElement])
+  }, [content?.views, activeView, setAlert, searchedItem, windowSize, isMaximized])
 
   // #endregion
 
   // Función para ocultar los textos en el menú lateral al presionar Ctrl + B
+  const [manuallyHideLabels, setManuallyHideLabels] = useState(false)
+
   const hideSideBar = useCallback((event) => {
     if (event.ctrlKey && event.key === 'b') {
       event.preventDefault()
       sidebarLabelRefs.current.forEach(label => {
-        if (label) {
-          label.style.display = label.style.display === 'none' ? 'inline' : 'none'
+        if (label.style.display === 'inline') {
+          setManuallyHideLabels(true)
+          label.style.display = 'none'
+        } else {
+          setManuallyHideLabels(false)
+          label.style.display = 'inline'
         }
       })
     }
@@ -151,6 +222,24 @@ export default function AppWindow ({
     document.addEventListener('keydown', hideSideBar)
     return () => document.removeEventListener('keydown', hideSideBar)
   }, [isTop, hideSideBar])
+
+  // Si la ventana tiene cierto ancho, oculta los textos del menú lateral
+  useEffect(() => {
+    if (windowSize.width <= 700) {
+      sidebarLabelRefs.current.forEach(label => {
+        label.style.display = 'none'
+      })
+    } else if (windowSize.width > 700 && !manuallyHideLabels) {
+      sidebarLabelRefs.current.forEach(label => {
+        label.style.display = 'inline'
+      })
+    }
+  }, [windowSize])
+
+  const capitalizarPrimeraLetra = (texto) => {
+    if (!texto) return ''
+    return texto.charAt(0).toUpperCase() + texto.slice(1).toLowerCase()
+  }
 
   return (
     <section
@@ -185,7 +274,7 @@ export default function AppWindow ({
 
       <main className='window__main'>
         <header className='window-main__header'>
-          <span>{title}</span>
+          <span>{capitalizarPrimeraLetra(title)}</span>
         </header>
         <article className='window-main__article'>
           {renderMainContent()}

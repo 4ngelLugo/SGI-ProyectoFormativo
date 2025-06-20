@@ -1,14 +1,14 @@
 import '../../styles/modal.css'
 
-export default function ConfirmModal ({ icon, title, message, showModal, setShowModal, action }) {
+export default function ConfirmModal({ icon, title, message, showModal, setShowModal, action }) {
   return (
     <div className={`modal--container ${showModal ? 'show' : ''}`}>
       <div className='modal'>
         {icon && <img src={icon} alt='' width='64px' />}
-        <p>{title}</p>
-        <span>{message}</span>
+        {title && <p className='modal--title'>{title}</p>}
+        {message && <span>{message}</span>}
 
-        <div>
+        <div className='modal_buttons'>
           {/* Botones para cancelar o confirmar */}
           <button onClick={() => setShowModal(false)} className='modal--cancel'>Cancelar</button>
           <button

@@ -1,40 +1,90 @@
-import { useState } from 'react'
-import { useFetchElementByCode } from '../../../hooks'
+import { useFetchByCode, useFetch } from '../../../hooks'
+import Select from 'react-select'
 import '../../../styles/globals/lists.css'
+import { useEffect, useState } from 'react'
 
-export default function SearchElements ({ setAlert, searchElement, setSearchedElement }) {
-  const [inputCode, setInputCode] = useState(searchElement || '')
-
+export default function SearchElements ({ setAlert, searchedItem, setSearchedItem }) {
   const {
     loading,
     typing,
     element,
     setElement,
     setLoading
-  } = useFetchElementByCode({ setAlert, codeToSearch: inputCode })
+  } = useFetchByCode({ setAlert, codeToSearch: searchedItem, obtener: 'elemento' })
 
-  const handleOnChange = (e) => {
-    const value = e.target.value
-    setSearchedElement(value)
-    setInputCode(value) // Actualiza el codigo de búsqueda
-    if (value.trim() === '') {
+  const {
+    elements
+  } = useFetch({ setAlert, windowHeight: null, isMaximized: null, obtener: 'elementos' })
+
+  const opciones = elements.map(e => ({
+    value: e.codigo,
+    label: `${e.codigo} - ${e.nombre}`,
+    data: e
+  }))
+  const [selectedOption, setSelectedOption] = useState(null)
+
+  // Cuando cambia searchElement o elements, actualiza el valor del Select
+  useEffect(() => {
+    if (searchedItem && elements.length > 0) {
+      const found = opciones.find(opt => opt.value === searchedItem)
+      setSelectedOption(found || null)
+    } else {
+      setSelectedOption(null)
+    }
+  }, [searchedItem, elements])
+
+  const handleOnChange = (option) => {
+    if (!option) {
+      setSearchedItem('')
       setElement(null)
       setLoading(false)
+      setSelectedOption(null)
+    } else {
+      setSearchedItem(option.value)
+      setSelectedOption(option)
     }
   }
 
   return (
     <>
       <span className='title see-title'>
-        Ver elemento
+        Buscar elemento
         <div className='search-input'>
-          <span>Código</span>
-          <input
-            type='text'
-            value={inputCode}
-            placeholder='Código'
-            onChange={(e) => handleOnChange(e)}
-            className='input'
+          <Select
+            options={opciones}
+            placeholder='Buscar elemento'
+            value={selectedOption}
+            onChange={handleOnChange}
+            isClearable
+            menuPlacement='auto'
+            menuPortalTarget={document.body}
+            styles={{
+              control: (base, state) => ({
+                ...base,
+                borderRadius: '12px',
+                cursor: state.isDisabled ? 'not-allowed' : 'pointer',
+                minWidth: '15em',
+                maxWidth: '15em',
+                width: '15em'
+              }),
+              input: (base) => ({
+                ...base,
+                fontSize: '1rem',
+                color: '#84949f'
+              }),
+              placeholder: (base) => ({
+                ...base,
+                fontSize: '1rem',
+                color: '#84949f'
+              }),
+              singleValue: (base) => ({
+                ...base,
+                paddingLeft: '.3em',
+                fontSize: '1rem'
+              }),
+              menuPortal: base => ({ ...base, zIndex: 9999 }),
+              menu: base => ({ ...base, zIndex: 9999 })
+            }}
           />
         </div>
       </span>
@@ -45,25 +95,28 @@ export default function SearchElements ({ setAlert, searchElement, setSearchedEl
           ? (
             <div className='element-info__container'>
               <Info label='Nombre' value={element.nombre} />
-              <Info label='Placa' value={element.placa} />
-              <Info label='Marca' value={element.marca} />
-              <Info label='Modelo' value={element.modelo} />
-              <Info label='Serial' value={element.serial} />
-              <Info label='Área' value={element.area} />
+              <Info label='Categoria' value={element.categoriaNombre} />
+              <Info label='Área' value={element.areaNombre} />
               <Info label='Tipo' value={element.tipo} />
+              <Info label='Placa' value={element.placa} />
+              <Info label='Serial' value={element.serial} />
+              <Info label='Marca' value={element.marcaNombre} />
+              <Info label='Modelo' value={element.modelo} />
               <Info label='Estado' value={element.estado} />
             </div>
             )
-          : element && element.tipo === 'consumible' && (
-            <div className='element-info__container'>
-              <Info label='Nombre' value={element.nombre} />
-              <Info label='Cantidad' value={`${element.cantidad} ${element.medida}`} />
-              <Info label='Área' value={element.area} />
-              <Info label='Tipo' value={element.tipo} />
-              <Info label='Estado' value={element.estado} />
-            </div>
-          )}
-      {!typing && !element && <p>No se encontró el elemento.</p>}
+          : element && element.tipo === 'consumible'
+            ? (
+              <div className='element-info__container'>
+                <Info label='Nombre' value={element.nombre} />
+                <Info label='Categoria' value={element.categoriaNombre} />
+                <Info label='Área' value={element.areaNombre} />
+                <Info label='Tipo' value={element.tipo} />
+                <Info label='Cantidad' value={`${element.cantidad} ${element.unidadMedida}`} />
+                <Info label='Estado' value={element.estado} />
+              </div>
+              )
+            : !typing && (<p className='notFound--message'>No se encontró el elemento.</p>)}
     </>
   )
 }

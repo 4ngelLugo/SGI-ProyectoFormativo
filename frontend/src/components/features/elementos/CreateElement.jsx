@@ -1,63 +1,56 @@
-import { useCreateElement } from '../../../hooks'
+import { useEffect, useState } from 'react'
+import { useCreate, useFetch } from '../../../hooks'
+import Input from '../../common/Input'
+import SelectInput from '../../common/SelectInput'
 import '../../../styles/globals/forms.css'
 
-export default function CreateElements ({ setAlert }) {
+export default function CreateElements({ setAlert }) {
   // Hook para manejar la creación de elementos, incluyendo la lógica para el formulario y el tipo de elemento
-  const { formRef, tipo, setTipo, handleSubmit } = useCreateElement(setAlert)
+  const { formRef, handleSubmit } = useCreate({ setAlert, obtener: 'elemento' })
+
+  // Obtiene los datos de las áreas, categorías y marcas, y filtra los que están activos
+  const { elements: areas } = useFetch({ setAlert, windowHeight: null, isMaximized: null, obtener: 'areas' })
+  const filteredAreas = areas.filter((el) => el.estado === 'activo')
+
+  const { elements: categorias } = useFetch({ setAlert, windowHeight: null, isMaximized: null, obtener: 'categorias' })
+  const filteredCategorias = categorias.filter((el) => el.estado === 'activo')
+
+  const { elements: marcas } = useFetch({ setAlert, windowHeight: null, isMaximized: null, obtener: 'marcas' })
+  const filteredMarcas = marcas.filter((el) => el.estado === 'activo')
+
+  // Estado para el tipo de elemento que desea registrar el usuario
+  const [tipo, setTipo] = useState('')
 
   return (
     <>
-      <span className='title'>Registrar Elemento</span>
+      <span className='title'>Registrar elemento</span>
 
-      {/* Formulario para registrar un nuevo elemento */}
-      <form className='form' ref={formRef} onSubmit={handleSubmit}>
-        <input type='number' placeholder='Codigo' name='ele_codigo' id='ele_codigo' />
-        <input type='text' placeholder='Nombre' name='ele_nombre' id='ele_nombre' />
-        <input type='number' placeholder='Area' name='ele_area' id='ele_area' />
+      <form className='form form--elements' ref={formRef} onSubmit={handleSubmit}>
+        <p className='message'>Los campos marcados con asterisco (*) son obligatorios.</p>
 
-        {/* Selección del tipo de elemento (devolutivo o consumible) */}
-        <div className={`form__type ${tipo === 'consumible' ? 'form__type--consumible' : ''}`}>
-          <input
-            type='radio'
-            value='devolutivo'
-            name='tipo'
-            id='tipo-devolutivo'
-            checked={tipo === 'devolutivo'}
-            className={tipo === 'devolutivo' ? 'form__type--active' : ''}
-            onChange={() => setTipo('devolutivo')}
-          />
-          <label htmlFor='tipo-devolutivo'>Devolutivo</label>
+        <Input type='number' placeholder='Código (numérico)' name='ele_codigo' required />
+        <Input type='text' placeholder='Nombre' name='ele_nombre' required />
+        <SelectInput options={filteredCategorias} placeholder='Categoría' name='ele_categoria' required setTipo={setTipo} />
+        <SelectInput options={filteredAreas} placeholder='Área' name='ele_area' required />
 
-          <input
-            type='radio'
-            value='consumible'
-            name='tipo'
-            id='tipo-consumible'
-            className={tipo === 'consumible' ? 'form__type--active' : ''}
-            checked={tipo === 'consumible'}
-            onChange={() => setTipo('consumible')}
-          />
-          <label htmlFor='tipo-consumible'>Consumible</label>
-        </div>
+        <input type="hidden" value={tipo} name='ele_tipo' />
 
-        {/* Campos específicos para tipo devolutivo o consumible*/}
-        {
-          tipo === 'devolutivo'
-            ? (
-              <>
-                <input type='number' placeholder='Placa' name='ele_placa' id='ele_placa' />
-                <input type='text' placeholder='Serial' name='ele_serial' id='ele_serial' />
-                <input type='number' placeholder='Marca' name='ele_marca' id='ele_marca' />
-                <input type='text' placeholder='Modelo' name='ele_modelo' id='ele_modelo' />
-              </>
-              )
-            : (
-              <>
-                <input type='number' placeholder='Cantidad' name='ele_cant' id='ele_cant' />
-                <input type='text' placeholder='Unidad de medida' name='ele_medida' id='ele_medida' />
-              </>
-              )
-        }
+        {tipo === 'devolutivo'
+          ? (
+            <>
+              <Input type='text' placeholder='Placa' name='ele_placa' required />
+              <Input type='text' placeholder='Serial' name='ele_serial' required />
+              <SelectInput options={filteredMarcas} placeholder='Marca' name='ele_marca' required />
+              <Input type='text' placeholder='Modelo' name='ele_modelo' required />
+            </>
+          )
+          : tipo === 'consumible' && (
+            <>
+              <Input type='number' placeholder='Cantidad (numérica)' name='ele_cant' required />
+              <Input type='text' placeholder='Unidad de medida' name='ele_medida' required />
+            </>
+          )}
+
         <button className='form__button' type='submit'>Enviar</button>
       </form>
     </>
