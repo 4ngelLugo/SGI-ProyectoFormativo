@@ -73,7 +73,7 @@ export default function Login () {
               required
             />
             {error && <div className='login-form__error'>{error}</div>}
-            <button type='submit'>Ingresar</button>
+            <button className='login-form__button' type='submit'>Ingresar</button>
           </form>
         </section>
       </div>

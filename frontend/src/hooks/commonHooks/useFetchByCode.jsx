@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { FetchElementByCodeEndpoint, ObtenerUsuarioPorCodigoEndpoint, ObtenerCategoriaPorCodigoEndpoint, ObtenerRolPorIDEndpoint, ObtenerAreaPorCodigoEndpoint, ObtenerTipoDocumentoPorCodigoEndpoint } from '../../config/apiRoutes'
+import { FetchElementByCodeEndpoint, ObtenerUsuarioPorCodigoEndpoint, ObtenerCategoriaPorCodigoEndpoint, ObtenerRolPorIDEndpoint, ObtenerAreaPorCodigoEndpoint, ObtenerTipoDocumentoPorCodigoEndpoint, ObtenerPrestamoPorCodigoEndpoint } from '../../config/apiRoutes'
 
 /**
  * Hook para manejar la busqueda de un elemento por su codigo
@@ -16,7 +16,8 @@ export const useFetchByCode = ({ setAlert, codeToSearch, obtener }) => {
     rol: ObtenerRolPorIDEndpoint,
     area: ObtenerAreaPorCodigoEndpoint,
     categoria: ObtenerCategoriaPorCodigoEndpoint,
-    tipoDocumento: ObtenerTipoDocumentoPorCodigoEndpoint
+    tipoDocumento: ObtenerTipoDocumentoPorCodigoEndpoint,
+    prestamo: ObtenerPrestamoPorCodigoEndpoint
   }
 
   const apiEndpoint = endpoints[obtener]

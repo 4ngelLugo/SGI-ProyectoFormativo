@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { FetchElementsEndpoint, ObtenerUsuariosEndpoint, ObtenerRolesEndpoint, ObtenerPermisosEndpoint, ObtenerAreasEndpoint, ObtenerCategoriasEndpoint, ObtenerMarcasEndpoint, ObtenerTipoDocumentoEndpoint } from '../../config/apiRoutes'
+import { FetchElementsEndpoint, ObtenerUsuariosEndpoint, ObtenerRolesEndpoint, ObtenerPermisosEndpoint, ObtenerAreasEndpoint, ObtenerCategoriasEndpoint, ObtenerMarcasEndpoint, ObtenerTipoDocumentoEndpoint, ObtenerPrestamosEndpoint } from '../../config/apiRoutes'
 
 /**
  * Calcula el límite inicial de elementos según el alto de pantalla.
@@ -35,7 +35,8 @@ export const useFetch = ({ setAlert, windowHeight, isMaximized, obtener }) => {
     areas: ObtenerAreasEndpoint,
     categorias: ObtenerCategoriasEndpoint,
     marcas: ObtenerMarcasEndpoint,
-    tipoDocumento: ObtenerTipoDocumentoEndpoint
+    tipoDocumento: ObtenerTipoDocumentoEndpoint,
+    prestamos: ObtenerPrestamosEndpoint
   }
 
   const apiEndpoint = endpoints[obtener]

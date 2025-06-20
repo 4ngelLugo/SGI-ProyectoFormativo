@@ -1,7 +1,7 @@
 import { useValidateInput } from '../../hooks/commonHooks/useValidateInput'
 
-export default function Input ({ type, placeholder, name, defaultValue, required }) {
-  const { errorLabel, validate } = useValidateInput({ required, type })
+export default function Input({ type, placeholder, name, defaultValue, required }) {
+  const { errorLabel, validate, today } = useValidateInput({ required, type })
 
   return (
     <div>
@@ -13,6 +13,7 @@ export default function Input ({ type, placeholder, name, defaultValue, required
         onBlur={validate}
         style={errorLabel ? { borderColor: 'red' } : undefined}
         defaultValue={defaultValue && defaultValue}
+        min={type === 'date' ? today : ''}
       />
       <p className='errorLabel'>{errorLabel}</p>
     </div>

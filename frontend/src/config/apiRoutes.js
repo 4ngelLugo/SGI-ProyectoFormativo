@@ -44,3 +44,9 @@ export const ObtenerTipoDocumentoPorCodigoEndpoint = `${API_BASE}/aspectos_gener
 export const GuardarTipoDocumentoEndpoint = `${API_BASE}/aspectos_generales/tipoDocumento/api/guardarAPI.php`
 export const EditarTipoDocumentoEndpoint = `${API_BASE}/aspectos_generales/tipoDocumento/api/editarAPI.php`
 export const DesactivarTipoDocumentoEndpoint = `${API_BASE}/aspectos_generales/tipoDocumento/api/desactivarAPI.php`
+
+export const ObtenerPrestamosEndpoint = `${API_BASE}/prestamos/api/listarPrestamos.php`
+export const ObtenerPrestamoPorCodigoEndpoint = `${API_BASE}/prestamos/api/obtenerPrestamoCompleto.php?prestamo_id=`
+export const GuardarPrestamoEndpoint = `${API_BASE}/prestamos/api/generarPrestamo.php`
+export const EditarPrestamoEndpoint = `${API_BASE}/prestamos/api/actualizarPrestamo.php`
+export const DesactivarPrestamoEndpoint = `${API_BASE}/prestamos/api/inhabilitarPrestamo.php`

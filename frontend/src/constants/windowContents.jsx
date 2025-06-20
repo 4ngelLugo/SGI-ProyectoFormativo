@@ -9,6 +9,8 @@ import BuscarUsuario from '../components/features/usuarios/BuscarUsuario'
 import EditarUsuario from '../components/features/usuarios/EditarUsuario'
 
 import CrearPrestamo from '../components/features/prestamos/CrearPrestamo'
+import ListarPrestamos from '../components/features/prestamos/ListarPrestamos'
+import BuscarPrestamo from '../components/features/prestamos/BuscarPrestamo'
 
 import ListarRoles from '../components/features/roles/ListarRoles'
 import CrearRol from '../components/features/roles/CrearRol'
@@ -27,7 +29,7 @@ const iconos = {
 }
 
 export const windowContents = {
-  finder: {
+  elementos: {
     sidebar: [
       { key: 'listElement', icon: iconos.listar, label: 'Listar elementos' },
       { key: 'createElement', icon: iconos.crear, label: 'Crear elemento' },
@@ -58,7 +60,7 @@ export const windowContents = {
         />
     }
   },
-  appstore: {
+  usuarios: {
     sidebar: [
       { key: 'listarUsuarios', icon: iconos.listar, label: 'Listar usuarios' },
       { key: 'crearUsuario', icon: iconos.crear, label: 'Crear usuario' },
@@ -89,7 +91,7 @@ export const windowContents = {
         />
     }
   },
-  settings: {
+  configuración: {
     sidebar: [
       { key: 'listarAreas', icon: iconos.listar, label: 'Listar Areas' },
       { key: 'listarCategorias', icon: iconos.listar, label: 'Listar Categorias' },
@@ -154,13 +156,30 @@ export const windowContents = {
         />
     }
   },
-  mail: {
+  prestamos: {
     sidebar: [
-      { key: 'crearPrestamo', icon: iconos.crear, label: 'Solicitar Prestamo' }
+      { key: 'listarPrestamos', icon: iconos.listar, label: 'Listar Prestamos' },
+      { key: 'crearPrestamo', icon: iconos.crear, label: 'Solicitar Prestamo' },
+      { key: 'buscarPrestamo', icon: iconos.buscar, label: 'Buscar Prestamo' },
     ],
     views: {
+      listarPrestamos: ({ setAlert, windowHeight, isMaximized, setActiveView, setSearchedItem, setSearchedEdit }) =>
+        <ListarPrestamos
+          setAlert={setAlert}
+          windowHeight={windowHeight}
+          isMaximized={isMaximized}
+          setActiveView={setActiveView}
+          setSearchedItem={setSearchedItem}
+          setSearchedEdit={setSearchedEdit}
+        />,
       crearPrestamo: ({ setAlert }) =>
-        <CrearPrestamo setAlert={setAlert} />
+        <CrearPrestamo setAlert={setAlert} />,
+      buscarPrestamo: ({ setAlert, searchedItem, setSearchedItem }) =>
+        <BuscarPrestamo
+          setAlert={setAlert}
+          searchedItem={searchedItem}
+          setSearchedItem={setSearchedItem}
+        />,
     }
   }
 }

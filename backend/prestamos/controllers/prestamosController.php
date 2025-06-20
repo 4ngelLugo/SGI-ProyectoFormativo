@@ -7,9 +7,9 @@ class PrestamosController
     public function crearSolicitud(array $data)
     {
         $idPrestamo = Prestamo::generarPrestamo($data);
-        if ($data['usertype'] === 'Instructor') {
-            $tipoPrestamo = "Reserva" ?? 'Prestamo inmediato';
-        }
+
+        $tipoPrestamo = $data['usertype'] === 'Instructor' ? "Reserva" : 'Prestamo inmediato';
+
         // Solo notificar si es tipo Reserva
         if ($tipoPrestamo === 'Reserva') {
             $wsData = [

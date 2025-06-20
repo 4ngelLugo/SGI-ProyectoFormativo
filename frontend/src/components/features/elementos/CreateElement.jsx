@@ -19,11 +19,7 @@ export default function CreateElements({ setAlert }) {
   const filteredMarcas = marcas.filter((el) => el.estado === 'activo')
 
   // Estado para el tipo de elemento que desea registrar el usuario
-  const [tipo, setTipo] = useState(null)
-
-  useEffect(() => {
-    console.log(tipo)
-  }, [tipo])
+  const [tipo, setTipo] = useState('')
 
   return (
     <>

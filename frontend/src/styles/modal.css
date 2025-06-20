@@ -43,7 +43,7 @@
 
   color: #333;
 
-  font-size  : 1em;
+  font-size  : 1.2rem;
   font-weight: 500;
 }
 
@@ -80,7 +80,7 @@
   border       : none;
   border-radius: 0.5rem;
 
-  font-size: 0.875em;
+  font-size: 1.1rem;
 
   cursor    : pointer;
   transition: background 0.2s ease;

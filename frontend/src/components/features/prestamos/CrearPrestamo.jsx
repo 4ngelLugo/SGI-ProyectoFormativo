@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
+import { useCreate, useFetch } from '../../../hooks'
 import Select from 'react-select'
-import { useFetch } from '../../../hooks'
-import '../../../styles/tablaPrestamos.css'
+import Input from '../../common/Input'
+import '../../../styles/formPrestamos.css'
 
-export default function CrearPrestamo ({ setAlert }) {
+export default function CrearPrestamo({ setAlert }) {
   const [devolutivos, setDevolutivos] = useState([])
   const [consumibles, setConsumibles] = useState([])
   const [seleccionadosDevolutivos, setSeleccionadosDevolutivos] = useState([])
@@ -41,27 +42,52 @@ export default function CrearPrestamo ({ setAlert }) {
     setSeleccionadosConsumibles(datos)
   }
 
+  const usuario = JSON.parse(localStorage.getItem('user'))
+
+  const { formRef, handleSubmit } = useCreate({ setAlert, obtener: 'prestamo' })
+
   return (
     <>
       <span className='title'>Solicitar Prestamo</span>
-      <form className='form'>
+      <form className='form' ref={formRef} onSubmit={handleSubmit}>
+        <p className='message'>Los campos marcados con asterisco (*) son obligatorios.</p>
+
+        <input type="hidden" value='Almacenista' name='usertype' />
+        <input type="hidden" value={usuario.documento} name='usuario_documento' />
+
         <section className='prestamo-solicitante'>
           <h3 className='prestamo-seccion-titulo'>Información del solicitante</h3>
-          <input type='number' placeholder='Documento del solicitante*' name='identificacion' className='prestamo-input' />
-          <input type='text' placeholder='Nombre y apellido del solicitante*' name='nombre_apellido' className='prestamo-input' />
-          <input type='tel' placeholder='Teléfono del solicitante*' name='telefono' className='prestamo-input' />
-          <input type='email' placeholder='Correo del solicitante*' name='correo' className='prestamo-input' />
+          <Input type='number' placeholder='Documento del solicitante' name='identificacion' required />
+          <Input type='text' placeholder='Nombres y apellidos del solicitante' name='nombre_apellido' required />
+          <Input type='tel' placeholder='Teléfono del solicitante' name='telefono' required />
+          <Input type='email' placeholder='Correo del solicitante' name='correo' required />
+          <Input type='text' placeholder='Dirección del solicitante' name='direccion' required />
           <div className='prestamo-fechas'>
             <div>
-              <label htmlFor='entrega' className='prestamo-label'>Fecha de entrega*</label>
-              <input type='date' name='fecha_entrega' id='entrega' className='prestamo-input' />
+              <label htmlFor='fecha_entrega' className='prestamo-label'>Fecha de entrega al solicitante*</label>
+              <Input type='date' placeholder='Fecha de entrega' name='fecha_entrega' required />
             </div>
             <div>
-              <label htmlFor='devolucion' className='prestamo-label'>Fecha de devolución*</label>
-              <input type='date' name='fecha_devolucion' id='devolucion' className='prestamo-input' />
+              <label htmlFor='fecha_devolucion' className='prestamo-label'>Fecha de devolución de elementos*</label>
+              <Input type='date' placeholder='Fecha de devolución' name='fecha_devolucion' required />
             </div>
           </div>
-          <input type='text' placeholder='Destino de los elementos*' name='destino_general' className='prestamo-input' />
+          <Input type='text' placeholder='Destino de los elementos' name='destino_general' required />
+
+          <div className='prestamo-tipo'>
+            <label className='prestamo-label'>Tipo de solicitud*</label>
+            <div className='prestamo-radio-opciones'>
+              <label className='prestamo-radio-label'>
+                <input type='radio' name='tipo_prestamo' value='inmediato' required />
+                Préstamo inmediato
+              </label>
+              <label className='prestamo-radio-label'>
+                <input type='radio' name='tipo_prestamo' value='reserva' required />
+                Reserva
+              </label>
+            </div>
+          </div>
+
         </section>
 
         <section className='prestamo-consumibles'>
@@ -69,11 +95,34 @@ export default function CrearPrestamo ({ setAlert }) {
           <Select
             options={devolutivos}
             isMulti
+            name='devolutivos[]'
             onChange={handleChangeDevolutivos}
             className='prestamo-select'
             placeholder='Buscar devolutivos'
+            menuPlacement='auto'
             menuPortalTarget={document.body}
             styles={{
+              control: (base, state) => ({
+                ...base,
+                height: '43.03px',
+                borderRadius: '12px',
+                cursor: state.isDisabled ? 'not-allowed' : 'pointer'
+              }),
+              input: (base) => ({
+                ...base,
+                fontSize: '1rem',
+                color: '#84949f'
+              }),
+              placeholder: (base) => ({
+                ...base,
+                fontSize: '1rem',
+                color: '#84949f'
+              }),
+              singleValue: (base) => ({
+                ...base,
+                paddingLeft: '.3em',
+                fontSize: '1rem'
+              }),
               menuPortal: base => ({ ...base, zIndex: 9999 }),
               menu: base => ({ ...base, zIndex: 9999 })
             }}
@@ -93,11 +142,34 @@ export default function CrearPrestamo ({ setAlert }) {
           <Select
             options={consumibles}
             isMulti
+            name='consumibles[]'
             onChange={handleChangeConsumibles}
             className='prestamo-select'
             placeholder='Buscar consumibles'
+            menuPlacement='auto'
             menuPortalTarget={document.body}
             styles={{
+              control: (base, state) => ({
+                ...base,
+                height: '43.03px',
+                borderRadius: '12px',
+                cursor: state.isDisabled ? 'not-allowed' : 'pointer'
+              }),
+              input: (base) => ({
+                ...base,
+                fontSize: '1rem',
+                color: '#84949f'
+              }),
+              placeholder: (base) => ({
+                ...base,
+                fontSize: '1rem',
+                color: '#84949f'
+              }),
+              singleValue: (base) => ({
+                ...base,
+                paddingLeft: '.3em',
+                fontSize: '1rem'
+              }),
               menuPortal: base => ({ ...base, zIndex: 9999 }),
               menu: base => ({ ...base, zIndex: 9999 })
             }}
@@ -110,7 +182,7 @@ export default function CrearPrestamo ({ setAlert }) {
 
                 <input
                   type='number'
-                  name={`consumibles[${data.codigo}][cantidad]`}
+                  // name={`consumibles[${data.codigo}][cantidad]`}
                   placeholder='Cantidad'
                   min='1'
                   max={data.cantidad}
@@ -123,6 +195,11 @@ export default function CrearPrestamo ({ setAlert }) {
               </div>
             ))}
           </div>
+        </section>
+
+        <section>
+          <label htmlFor='observaciones' className='prestamo-label'>Observaciones</label>
+          <textarea name='observaciones' id='observaciones' className='prestamo-textarea' placeholder='Escribe observaciones aquí...'></textarea>
         </section>
 
         <button className='form__button' type='submit'>Enviar</button>

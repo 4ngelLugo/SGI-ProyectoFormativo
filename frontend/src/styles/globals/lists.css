@@ -31,10 +31,15 @@
 }
 
 .element-info__container {
+  padding: .8rem 20px;
+
   display              : grid;
   grid-template-columns: repeat(2, 1fr);
   gap                  : 12px;
-  padding              : 20px;
+}
+
+.element-info__subtitle {
+  grid-column: 1/-1;
 }
 
 .element-info {
@@ -52,6 +57,7 @@
   color      : var(--font-color);
   font-size  : 15px;
   flex       : 1;
+  grid-column: 1/-1;
 }
 
 .element-info__content {
@@ -60,4 +66,12 @@
   font-size  : 15px;
   color      : var(--font-color);
   font-weight: 400;
+}
+
+.element-info__elements {
+  grid-column: 1/-1;
+
+  display              : grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap                  : 12px;
 }

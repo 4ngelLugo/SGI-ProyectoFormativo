@@ -17,7 +17,7 @@ import { Icon } from '@iconify/react'
  * @param {function} setAlert - Función para mostrar alertas.
 */
 
-export default function AppWindow ({
+export default function AppWindow({
   id,
   title,
   isTop,
@@ -114,7 +114,7 @@ export default function AppWindow ({
 
     const props = { setAlert }
 
-    if (id === 'finder') {
+    if (id === 'elementos') {
       switch (activeView) {
         case 'listElement':
           props.windowHeight = windowSize.height
@@ -133,7 +133,7 @@ export default function AppWindow ({
       }
     }
 
-    if (id === 'appstore') {
+    if (id === 'usuarios') {
       switch (activeView) {
         case 'listarUsuarios':
           props.windowHeight = windowSize.height
@@ -148,6 +148,22 @@ export default function AppWindow ({
           break
         case 'editarUsuario':
           props.searchedEdit = searchedEdit
+          break
+      }
+    }
+
+    if (id === 'prestamos') {
+      switch (activeView) {
+        case 'listarPrestamos':
+          props.windowHeight = windowSize.height
+          props.isMaximized = isMaximized
+          props.setActiveView = setActiveView
+          props.setSearchedItem = setSearchedItem
+          props.setSearchedEdit = setSearchedEdit
+          break
+        case 'buscarPrestamo':
+          props.searchedItem = searchedItem
+          props.setSearchedItem = setSearchedItem
           break
       }
     }
@@ -171,7 +187,7 @@ export default function AppWindow ({
       }
     }
 
-    if (id === 'settings') {
+    if (id === 'configuración') {
       props.windowHeight = windowSize.height
       props.isMaximized = isMaximized
     }
@@ -220,6 +236,11 @@ export default function AppWindow ({
     }
   }, [windowSize])
 
+  const capitalizarPrimeraLetra = (texto) => {
+    if (!texto) return ''
+    return texto.charAt(0).toUpperCase() + texto.slice(1).toLowerCase()
+  }
+
   return (
     <section
       ref={winRef}
@@ -253,7 +274,7 @@ export default function AppWindow ({
 
       <main className='window__main'>
         <header className='window-main__header'>
-          <span>{title}</span>
+          <span>{capitalizarPrimeraLetra(title)}</span>
         </header>
         <article className='window-main__article'>
           {renderMainContent()}

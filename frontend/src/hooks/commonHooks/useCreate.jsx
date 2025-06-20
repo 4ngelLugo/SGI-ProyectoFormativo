@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { SaveElementsEndpoint, GuardarUsuarioEndpoint, GuardarRolEndpoint, GuardarAreaEndpoint, GuardarCategoriaEndpoint, GuardarMarcaEndpoint, GuardarTipoDocumentoEndpoint, FetchElementsEndpoint, ObtenerUsuariosEndpoint, ObtenerRolesEndpoint, ObtenerAreasEndpoint, ObtenerCategoriasEndpoint, ObtenerMarcasEndpoint, ObtenerTipoDocumentoEndpoint } from '../../config/apiRoutes'
+import { SaveElementsEndpoint, GuardarUsuarioEndpoint, GuardarRolEndpoint, GuardarAreaEndpoint, GuardarCategoriaEndpoint, GuardarMarcaEndpoint, GuardarTipoDocumentoEndpoint, FetchElementsEndpoint, ObtenerUsuariosEndpoint, ObtenerRolesEndpoint, ObtenerAreasEndpoint, ObtenerCategoriasEndpoint, ObtenerMarcasEndpoint, ObtenerTipoDocumentoEndpoint, GuardarPrestamoEndpoint, ObtenerPrestamosEndpoint } from '../../config/apiRoutes'
 
 /**
  * Hook para manejar la creación de un nuevo elemento.
@@ -16,7 +16,8 @@ export const useCreate = ({ setAlert, obtener, fetchElements }) => {
     area: GuardarAreaEndpoint,
     categoria: GuardarCategoriaEndpoint,
     marca: GuardarMarcaEndpoint,
-    tipoDocumento: GuardarTipoDocumentoEndpoint
+    tipoDocumento: GuardarTipoDocumentoEndpoint,
+    prestamo: GuardarPrestamoEndpoint,
   }
 
   const fetchEndpoints = {
@@ -26,7 +27,8 @@ export const useCreate = ({ setAlert, obtener, fetchElements }) => {
     area: ObtenerAreasEndpoint,
     categoria: ObtenerCategoriasEndpoint,
     marca: ObtenerMarcasEndpoint,
-    tipoDocumento: ObtenerTipoDocumentoEndpoint
+    tipoDocumento: ObtenerTipoDocumentoEndpoint,
+    prestamo: ObtenerPrestamosEndpoint
   }
 
   const fetchApiEndpoint = fetchEndpoints[obtener]
@@ -88,11 +90,11 @@ export const useCreate = ({ setAlert, obtener, fetchElements }) => {
           }
         }
       })
-    // En caso de que ocurra un error en la petición, o un error en el servidor, se captura y se muestra un mensaje de error
-      .catch((error) => {
-        console.error(error)
-        setAlert({ type: 'error', message: 'Ocurrio un error en la petición', active: true })
-      })
+      // En caso de que ocurra un error en la petición, o un error en el servidor, se captura y se muestra un mensaje de error
+      // .catch((error) => {
+      //   console.error(error)
+      //   setAlert({ type: 'error', message: 'Ocurrio un error en la petición', active: true })
+      // })
   }
 
   return {
