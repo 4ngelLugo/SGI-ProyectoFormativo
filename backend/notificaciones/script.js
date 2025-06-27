@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const userId = 123;
 
     function fetchNotifications() {
+
         fetch('api/obtenerNotificaciones.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -112,7 +113,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
 
-        // Botón "Ver más"
+        // Boton ver mas
         expandBtn.addEventListener('click', (e) => {
             e.stopPropagation();
 
@@ -153,11 +154,11 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Abrir/cerrar bandeja
+    // Abrir y cerrar bandeja
     notificationToggle.addEventListener('click', () => {
         notificationTray.classList.toggle('open');
         if (notificationTray.classList.contains('open')) {
-            fetchNotifications(); // Cargar solo si se abre
+            fetchNotifications(); 
         }
     });
 

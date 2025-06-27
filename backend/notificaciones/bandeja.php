@@ -28,14 +28,13 @@
       <span id="clearBtn" class="clear-btn">Limpiar</span>
     </div>
 
-    <!-- Contenedor para notificaciones NO LEÍDAS -->
     <div class="notification-section-title">No Leídas</div>
     <div class="notification-list" id="unreadList"></div>
 
     <!-- Separador -->
     <div class="separator"></div>
 
-    <!-- Contenedor para notificaciones LEÍDAS -->
+
     <div class="notification-section-title">Leídas</div>
     <div class="notification-list" id="readList"></div>
   </div>

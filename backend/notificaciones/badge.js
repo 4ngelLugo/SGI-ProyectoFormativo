@@ -24,5 +24,5 @@ function fetchUnreadCount() {
   });
 }
 
-// Ejecutar al cargar
+
 document.addEventListener("DOMContentLoaded", fetchUnreadCount);
