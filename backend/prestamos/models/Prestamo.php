@@ -2,90 +2,58 @@
 require_once __DIR__ . '/../../config/Database.php';
 class Prestamo
 {
-
-  private $id;
-  private $fecha;
-  private $usuario;
   private $conn;
+  private Elemento $elemento_modelo;
+  private Solicitante $solicitante_modelo;
+  private $tabla_prestamos = 'prestamos';
+  private $tabla_solicitantes = 'solicitantes';
+  private $error_return = "";
 
-  public function __construct($id, $fecha, $usuario)
+  public function __construct($db, $elemento, $solicitante)
   {
-    $this->id = $id;
-    $this->fecha = $fecha;
-    $this->usuario = $usuario;
-
-    $database = new Database();
-    $this->conn = $database->getConnection();
+    $this->conn = $db;
+    $this->elemento_modelo = $elemento;
+    $this->solicitante_modelo = $solicitante;
   }
-
-  public static function generarPrestamo(array $data)
+  public function generarPrestamo(array $data)
   {
-    $database = new Database();
-    $conn = $database->getConnection();
-
-    if (
-      empty($data['identificacion']) ||
-      empty($data['nombre_apellido']) ||
-      empty($data['correo']) ||
-      empty($data['telefono']) ||
-      empty($data['direccion'])
-    ) {
-      throw new Exception("Faltan datos del solicitante");
-    }
-
     try {
-      $conn->begin_transaction();
+      $this->conn->begin_transaction();
 
-      // 1. Insertar o actualizar solicitante
-      $querySolicitante = "INSERT INTO solicitantes (
-                solicitante_documento, 
-                solicitante_nombre, 
-                solicitante_correo, 
-                solicitante_telefono, 
-                solicitante_direccion
-            ) VALUES (?, ?, ?, ?, ?)
-            ON DUPLICATE KEY UPDATE 
-                solicitante_nombre = VALUES(solicitante_nombre),
-                solicitante_correo = VALUES(solicitante_correo),
-                solicitante_telefono = VALUES(solicitante_telefono),
-                solicitante_direccion = VALUES(solicitante_direccion)";
+      // 1. Insertar o actualizar solicitante si el documento es el mismo
 
-      $stmtSolicitante = $conn->prepare($querySolicitante);
-      $stmtSolicitante->bind_param(
-        "sssss",
-        $data['identificacion'],
-        $data['nombre_apellido'],
-        $data['correo'],
-        $data['telefono'],
-        $data['direccion']
-      );
+      $solicitante = $this->solicitante_modelo->crearSolicitante($data);
 
-      if (!$stmtSolicitante->execute()) {
-        throw new Exception("Error al registrar solicitante: " . $stmtSolicitante->error);
+      if (!isset($solicitante['success'])) {
+        $this->error_return = "error al crear solicitante";
+        throw new Exception("Error al crear solicitante");
       }
 
       // 2. Insertar préstamo
-      $tipoPrestamo = $data['usertype'] === 'Instructor' ? 'Reserva' : 'Prestamo inmediato';
-      $estado_prestamo_id = ($tipoPrestamo === 'Almacenista') ? 1 : 2; // 1: En espera, 2: Aprobado
+      $estado_prestamo_id = ($data['tipo_prestamo'] === 'reserva') ? 1 : 2; // En espera, Entregado
 
-      $queryPrestamo = "INSERT INTO prestamo (
-                usuario_documento,
-                solicitante_documento,
-                prestamo_tipo,
-                prestamo_fecha_solicitud,
-                prestamo_fecha_entrega,
-                prestamo_fecha_devolucion,
-                prestamo_destino,
-                prestamo_observacion,
-                estado_prestamo_id
-            ) VALUES (?, ?, ?, CURDATE(), ?, ?, ?, ?, ?)";
+      $queryPrestamo = "INSERT INTO {$this->tabla_prestamos} (
+        usuario_documento,
+        solicitante_documento,
+        prestamo_tipo,
+        prestamo_fecha_solicitud,
+        prestamo_fecha_entrega,
+        prestamo_fecha_devolucion,
+        prestamo_destino,
+        prestamo_observacion,
+        estado_prestamo_id
+        ) VALUES (?, ?, ?, CURDATE(), ?, ?, ?, ?, ?)";
 
-      $stmtPrestamo = $conn->prepare($queryPrestamo);
+      $stmtPrestamo = $this->conn->prepare($queryPrestamo);
+
+      if (!$stmtPrestamo) {
+        throw new Exception("Prepare failed: " . $this->conn->error);
+      }
+
       $stmtPrestamo->bind_param(
         "sssssssi",
         $data['usuario_documento'],
         $data['identificacion'],
-        // $tipoPrestamo,
         $data['tipo_prestamo'],
         $data['fecha_entrega'],
         $data['fecha_devolucion'],
@@ -95,161 +63,382 @@ class Prestamo
       );
 
       if (!$stmtPrestamo->execute()) {
-        throw new Exception("Error al crear préstamo: " . $stmtPrestamo->error);
+        $this->error_return = "error al crear prestamo";
+        throw new Exception("Execute failed (Crear prestamo): " . $stmtPrestamo->error);
       }
 
       // Obtener ID del préstamo recién creado
-      $prestamo_id = $conn->insert_id;
+      $prestamo_id = $this->conn->insert_id;
+
+      $queryElemento = "INSERT INTO prestamo_elementos (
+          prestamo_id,
+          elemento_codigo,
+          prestamo_elemento_cantidad)
+          VALUES (?, ?, ?)";
+      $stmtElemento = $this->conn->prepare($queryElemento);
+
+      if (!$stmtElemento) {
+        throw new Exception("Prepare failed: " . $this->conn->error);
+      }
+
+      $default = 1;
 
       // 3. Insertar elementos devolutivos
-      if (!empty($data['devolutivos'])) {
-        $queryElemento = "INSERT INTO prestamo_elementos (prestamo_id, elemento_codigo) VALUES (?, ?)";
-        $stmtElemento = $conn->prepare($queryElemento);
-
+      if (!empty($data['devolutivos'][0])) {
         foreach ($data['devolutivos'] as $elemento_codigo) {
-          $stmtElemento->bind_param("ss", $prestamo_id, $elemento_codigo);
+          $stmtElemento->bind_param(
+            "isi",
+            $prestamo_id,
+            $elemento_codigo,
+            $default
+          );
+
           if (!$stmtElemento->execute()) {
-            throw new Exception("Error al insertar elemento devolutivo: " . $stmtElemento->error);
+            $this->error_return = "error al asignar devolutivo";
+            throw new Exception("Execute failed (Asignar elemento devolutivo a prestamo): " . $stmtElemento->error);
+          }
+
+          $estado = $data['tipo_prestamo'] == "inmediato" ? 2 : 3;
+
+          $cambiar_estado = $this->elemento_modelo->cambiarEstadoElemento($elemento_codigo, $estado);
+          if (!isset($cambiar_estado['success'])) {
+            $this->error_return = "error al asignar devolutivo";
+            throw new Exception("Execute failed (Cambiar estado de elemento devolutivo): " . $stmtElemento->error);
           }
         }
       }
 
       // 4. Insertar elementos consumibles
-      if (!empty($data['consumibles'])) {
-        $queryElemento = "INSERT INTO prestamo_elementos (prestamo_id, elemento_codigo) VALUES (?, ?)";
-        $stmtElemento = $conn->prepare($queryElemento);
+      if (!empty($data['consumibles'][0]['codigo'])) {
+        foreach ($data['consumibles'] as $elemento) {
+          $stmtElemento->bind_param(
+            "isi",
+            $prestamo_id,
+            $elemento['codigo'],
+            $elemento['cantidad']
+          );
 
-        foreach ($data['consumibles'] as $elemento_codigo) {
-          $stmtElemento->bind_param("ss", $prestamo_id, $elemento_codigo);
           if (!$stmtElemento->execute()) {
-            throw new Exception("Error al insertar elemento consumible: " . $stmtElemento->error);
+            $this->error_return = "error al asignar consumible";
+            throw new Exception("Execute failed (Asignar elemento consumible a prestamo): " . $stmtElemento->error);
+          }
+
+          $cambiar_cantidad = $this->elemento_modelo->cambiarCantidadConsumible($elemento['codigo'], "restar", $elemento['cantidad']);
+
+          if (!isset($cambiar_cantidad['success'])) {
+            $this->error_return = "error al asignar consumible";
+            throw new Exception("Execute failed (Restar cantidad de elemento consumible): " . $stmtElemento->error);
           }
         }
       }
 
-      $conn->commit();
-      return ['success' => true, 'prestamo_id' => $prestamo_id];
+      $this->conn->commit();
+      return ["success" => true];
     } catch (Exception $e) {
-      $conn->rollback();
-      return ['success' => false, 'error' => $e->getMessage()];
-    } finally {
-      $database->closeConnection();
+      $this->conn->rollback();
+      $this->logError($e->getMessage());
+
+      return !empty($this->error_return) ? ["error" => $this->error_return] : [];
     }
   }
-
-  public static function listarPrestamos()
+  public function obtenerTodosLosPrestamos()
   {
-    $database = new Database();
-    $conn = $database->getConnection();
-
-    $prestamos = [];
-    $query = "SELECT 
-                p.prestamo_id,
-                p.usuario_documento,
-                u.usuario_nombre,
-                p.solicitante_documento,
-                s.solicitante_nombre,
-                p.prestamo_tipo,
-                p.prestamo_fecha_solicitud,
-                p.prestamo_fecha_entrega,
-                p.prestamo_fecha_devolucion,
-                p.prestamo_destino,
-                p.prestamo_observacion,
-                p.estado_prestamo_id,
-                e.estado_prestamo_nombre
-                FROM prestamo p
-                LEFT JOIN estados_prestamos e ON p.estado_prestamo_id = e.estado_prestamo_id
-                LEFT JOIN usuarios u ON p.usuario_documento = u.usuario_documento
-                LEFT JOIN solicitantes s ON p.solicitante_documento = s.solicitante_documento
-                ORDER BY p.prestamo_fecha_solicitud DESC";
-
-    $result = $conn->query($query);
-
-    if ($result && $result->num_rows > 0) {
-      while ($row = $result->fetch_assoc()) {
-        $prestamos[] = $row;
-      }
-    }
-
-    $database->closeConnection();
-    return $prestamos;
-  }
-
-
-  public static function editarPrestamo($prestamo_id, $fecha_devolucion, $estado_prestamo_id)
-  {
-    $database = new Database();
-    $conn = $database->getConnection();
-
-    $query = "UPDATE prestamo SET prestamo_fecha_devolucion = ?, estado_prestamo_id = ? WHERE prestamo_id = ?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("sis", $fecha_devolucion, $estado_prestamo_id, $prestamo_id);
-
-    $result = $stmt->execute();
-    $stmt->close();
-    $database->closeConnection();
-
-    return $result;
-  }
-
-  public static function inhabilitarPrestamo($prestamo_id)
-  {
-    $database = new Database();
-    $conn = $database->getConnection();
-
-    $query = "UPDATE prestamo SET estado_prestamo_id = 4 WHERE prestamo_id = ?"; //4 es Inhabilitado
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("s", $prestamo_id);
-
-    $result = $stmt->execute();
-    $stmt->close();
-    $database->closeConnection();
-
-    return $result;
-  }
-
-  public static function getSolicitanteByIdentificacion(string $identificacion)
-  {
-    $database = new Database();
-    $conn = $database->getConnection();
-
-    $query = "SELECT 
-                solicitante_documento, 
-                solicitante_nombre, 
-                solicitante_correo, 
-                solicitante_telefono, 
-                solicitante_direccion
-              FROM solicitantes
-              WHERE solicitante_documento = ?";
-
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("s", $identificacion);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    return $result->fetch_assoc();
-  }
-
-  public static function actualizarPrestamoCompleto(array $data)
-  {
-    $database = new Database();
-    $conn = $database->getConnection();
-
     try {
-      $conn->begin_transaction();
+      $sql = "SELECT 
+        p.prestamo_id as id,
+        p.usuario_documento as usuarioDocumento,
+        u.usuario_nombre as usuarioNombre,
+        u.usuario_apellido as usuarioApellido,
+        p.solicitante_documento as solicitanteDocumento,
+        s.solicitante_nombre as solicitanteNombre,
+        p.prestamo_tipo as prestamoTipo,
+        p.prestamo_fecha_solicitud as prestamoFechaSolicitud,
+        p.prestamo_fecha_entrega as prestamoFechaEntrega,
+        p.prestamo_fecha_devolucion as prestamoFechaDevolucion,
+        p.prestamo_destino as prestamoDestino,
+        p.prestamo_observacion as prestamoObservacion,
+        p.estado_prestamo_id as estadoId,
+        e.estado_prestamo_nombre as estado
+        FROM {$this->tabla_prestamos} p
+        LEFT JOIN estados_prestamos e ON p.estado_prestamo_id = e.estado_prestamo_id
+        LEFT JOIN usuarios u ON p.usuario_documento = u.usuario_documento
+        LEFT JOIN {$this->tabla_solicitantes} s ON p.solicitante_documento = s.solicitante_documento
+        ORDER BY p.prestamo_id ASC";
+      $stmt = $this->conn->prepare($sql);
+
+      if (!$stmt) {
+        throw new Exception("Prepare failed: " . $this->conn->error);
+      }
+
+      if (!$stmt->execute()) {
+        $this->error_return = "error al obtener prestamos";
+        throw new Exception("Execute failed (Obtener todos los prestamos): " . $stmt->error);
+      }
+
+      // Obtiene el resultado de la consulta y verifica si hay filas
+      $resultado = $stmt->get_result();
+      return ["success" => true, "data" => $resultado->fetch_all(MYSQLI_ASSOC)];
+    } catch (Exception $e) {
+      $this->logError($e->getMessage());
+
+      return !empty($this->error_return) ? ["error" => $this->error_return] : [];
+    }
+  }
+
+  public function obtenerPrestamoPorID(int $prestamo_id)
+  {
+    try {
+      $this->conn->begin_transaction();
+
+      // 1. Obtener datos del prestamo, el usuario que lo aprobo y el solicitante
+      $sqlPrestamo = "SELECT
+        p.prestamo_id as id,
+        p.usuario_documento,
+        p.solicitante_documento,
+        p.prestamo_tipo,
+        p.prestamo_fecha_solicitud,
+        p.prestamo_fecha_entrega,
+        p.prestamo_fecha_devolucion,
+        p.prestamo_destino,
+        p.prestamo_observacion,
+        p.estado_prestamo_id as estadoId,
+        e.estado_prestamo_nombre as estado,
+        u.usuario_nombre,
+        u.usuario_apellido,
+        s.solicitante_nombre,
+        s.solicitante_telefono,
+        s.solicitante_correo,
+        s.solicitante_direccion
+        FROM {$this->tabla_prestamos} p
+        LEFT JOIN estados_prestamos e ON p.estado_prestamo_id = e.estado_prestamo_id
+        LEFT JOIN usuarios u ON p.usuario_documento = u.usuario_documento
+        LEFT JOIN {$this->tabla_solicitantes} s ON p.solicitante_documento = s.solicitante_documento
+        WHERE p.prestamo_id = ?
+        ORDER BY p.prestamo_id ASC";
+      $stmtPrestamo = $this->conn->prepare($sqlPrestamo);
+
+      if (!$stmtPrestamo) {
+        throw new Exception("Prepare failed: " . $this->conn->error);
+      }
+
+      $stmtPrestamo->bind_param("i", $prestamo_id);
+
+      if (!$stmtPrestamo->execute()) {
+        $this->error_return = "error al obtener prestamo";
+        throw new Exception("Execute failed (Obtener prestamo por id): " . $stmtPrestamo->error);
+      }
+
+      $resultPrestamo = $stmtPrestamo->get_result();
+      if ($resultPrestamo->num_rows <= 0) {
+        $this->error_return = "no existe";
+        throw new Exception("No se encontro ningun prestamo con el id proporcionado");
+      }
+      $prestamo = $resultPrestamo->fetch_assoc();
+
+      // 2. Obtener datos de los elementos prestados
+      $sqlElementos = "SELECT *
+        FROM prestamo_elementos pe
+        INNER JOIN elementos e
+        ON pe.elemento_codigo = e.elemento_codigo
+        WHERE pe.prestamo_id = ?";
+      $stmtElementos = $this->conn->prepare($sqlElementos);
+
+      if (!$stmtElementos) {
+        throw new Exception("Prepare failed: " . $this->conn->error);
+      }
+
+      $stmtElementos->bind_param("i", $prestamo_id);
+
+      if (!$stmtElementos->execute()) {
+        $this->error_return = "error al obtener prestamo";
+        throw new Exception("Execute failed (Obtener prestamo por id): " . $stmtElementos->error);
+      }
+
+      $resultElementos = $stmtElementos->get_result();
+      $elementos = $resultElementos->fetch_all(MYSQLI_ASSOC);
+
+      $this->conn->commit();
+      return [
+        "prestamo" => $prestamo,
+        "elementos" => $elementos
+      ];
+    } catch (Exception $e) {
+      $this->conn->rollback();
+      $this->logError($e->getMessage());
+
+      return !empty($this->error_return) ? ["error" => $this->error_return] : [];
+    }
+  }
+
+  public function editarObservacionPrestamo(int $prestamo_id, string $observacion)
+  {
+    try {
+
+      $query = "UPDATE {$this->tabla_prestamos} 
+        SET prestamo_observacion = ?
+        WHERE prestamo_id = ?";
+      $stmt = $this->conn->prepare($query);
+
+      if (!$stmt) {
+        throw new Exception("Prepare failed: " . $this->conn->error);
+      }
+
+      $stmt->bind_param("si", $observacion, $prestamo_id);
+
+      if (!$stmt->execute()) {
+        $this->error_return = "error al editar prestamo";
+        throw new Exception("Execute failed (Editar observacion de prestamo): " . $stmt->error);
+      }
+
+      return ["success" => true];
+    } catch (Exception $e) {
+      $this->logError($e->getMessage());
+
+      return !empty($this->error_return) ? ["error" => $this->error_return] : [];
+    }
+  }
+
+  public function cambiarEstadoPrestamo(int $prestamo_id, int $estado)
+  {
+    try {
+      $this->conn->begin_transaction();
+
+      $sqlPrestamo = "UPDATE {$this->tabla_prestamos}
+        SET estado_prestamo_id = ?
+        WHERE prestamo_id = ?";
+      $stmtPrestamo = $this->conn->prepare($sqlPrestamo);
+
+      if (!$stmtPrestamo) {
+        throw new Exception("Prepare failed: " . $this->conn->error);
+      }
+
+      $stmtPrestamo->bind_param("ii", $estado, $prestamo_id);
+
+      if (!$stmtPrestamo->execute()) {
+        $this->error_return = "error al editar prestamo";
+        throw new Exception("Execute failed (Cambiar estado de prestamo): " . $stmtPrestamo->error);
+      }
+
+      if ($estado === 2) {
+        $estado_elemento = 2;
+      } else if ($estado === 5) {
+        $estado_elemento = 1;
+      }
+
+      $sqlElementos = "SELECT * FROM prestamo_elementos
+        WHERE prestamo_id = ?";
+      $stmtElementos = $this->conn->prepare($sqlElementos);
+
+      if (!$stmtElementos) {
+        throw new Exception("Prepare failed: " . $this->conn->error);
+      }
+
+      $stmtElementos->bind_param("i", $prestamo_id);
+
+      if (!$stmtElementos->execute()) {
+        $this->error_return = "error al editar prestamo";
+        throw new Exception("Execute failed (Cambiar estado de elementos): " . $stmtElementos->error);
+      }
+
+      $resultado = $stmtElementos->get_result();
+      if ($resultado->num_rows > 0) $elementos = $resultado->fetch_all(MYSQLI_ASSOC);
+
+      foreach ($elementos as $elemento) {
+        $cambiar_estado = $this->elemento_modelo->cambiarEstadoElemento($elemento['elemento_codigo'], $estado_elemento);
+
+        if (!isset($cambiar_estado['success'])) {
+          $this->error_return = "error al editar prestamo";
+          throw new Exception("Execute failed (Cambiar estado de elemento): " . $stmtElementos->error);
+        }
+      }
+
+      $this->conn->commit();
+      return ["success" => true];
+    } catch (Exception $e) {
+      $this->conn->rollback();
+      $this->logError($e->getMessage());
+
+      return !empty($this->error_return) ? ["error" => $this->error_return] : [];
+    }
+  }
+
+  public function inhabilitarPrestamo(int $prestamo_id)
+  {
+    try {
+      $this->conn->begin_transaction();
+
+      $sqlPrestamo = "UPDATE {$this->tabla_prestamos}
+      SET estado_prestamo_id = 4
+      WHERE prestamo_id = ?"; // 4: Cancelado
+      $stmtPrestamo = $this->conn->prepare($sqlPrestamo);
+
+      if (!$stmtPrestamo) {
+        throw new Exception("Prepare failed: " . $this->conn->error);
+      }
+
+      $stmtPrestamo->bind_param("i", $prestamo_id);
+
+      if (!$stmtPrestamo->execute()) {
+        $this->error_return = "error al editar prestamo";
+        throw new Exception("Execute failed (Cambiar estado de prestamo): " . $stmtPrestamo->error);
+      }
+
+      $estado_elementos = 1;
+
+      $sqlElementos = "SELECT * FROM prestamo_elementos
+        WHERE prestamo_id = ?";
+      $stmtElementos = $this->conn->prepare($sqlElementos);
+
+      if (!$stmtElementos) {
+        throw new Exception("Prepare failed: " . $this->conn->error);
+      }
+
+      $stmtElementos->bind_param("i", $prestamo_id);
+
+      if (!$stmtElementos->execute()) {
+        $this->error_return = "error al editar prestamo";
+        throw new Exception("Execute failed (Cambiar estado de elementos): " . $stmtElementos->error);
+      }
+
+      $resultado = $stmtElementos->get_result();
+      if ($resultado->num_rows > 0) $elementos = $resultado->fetch_all(MYSQLI_ASSOC);
+
+      foreach ($elementos as $elemento) {
+        $cambiar_estado = $this->elemento_modelo->cambiarEstadoElemento($elemento['elemento_codigo'], $estado_elementos);
+
+        if (!isset($cambiar_estado['success'])) {
+          $this->error_return = "error al editar prestamo";
+          throw new Exception("Execute failed (Cambiar estado de elemento): " . $stmtElementos->error);
+        }
+      }
+
+      $this->conn->commit();
+      return ["success" => true];
+    } catch (Exception $e) {
+      $this->conn->rollback();
+      $this->logError($e->getMessage());
+
+      return !empty($this->error_return) ? ["error" => $this->error_return] : [];
+    }
+  }
+
+  public function actualizarPrestamoCompleto(array $data)
+  {
+    try {
+      $this->conn->begin_transaction();
 
       // 1. Actualizar préstamo
       $query = "UPDATE prestamo SET
-                    usuario_documento = ?,
-                    solicitante_documento = ?,
-                    prestamo_tipo = ?,
-                    prestamo_fecha_solicitud = ?,
-                    prestamo_fecha_entrega = ?,
-                    prestamo_fecha_devolucion = ?,
-                    prestamo_destino = ?,
-                    prestamo_observacion = ?
-                  WHERE prestamo_id = ?";
-      $stmt = $conn->prepare($query);
+                usuario_documento = ?,
+                solicitante_documento = ?,
+                prestamo_tipo = ?,
+                prestamo_fecha_solicitud = ?,
+                prestamo_fecha_entrega = ?,
+                prestamo_fecha_devolucion = ?,
+                prestamo_destino = ?,
+                prestamo_observacion = ?
+                WHERE prestamo_id = ?";
+      $stmt = $this->conn->prepare($query);
       $stmt->bind_param(
         "sssssssss",
         $data['usuario_documento'],
@@ -265,29 +454,29 @@ class Prestamo
 
       if (!$stmt->execute()) {
         $stmt->close();
-        throw new Exception("Error al actualizar préstamo: " . $conn->error);
+        throw new Exception("Error al editar préstamo: " . $this->conn->error);
       }
       $stmt->close();
 
       // 2. Eliminar elementos anteriores
       $query = "DELETE FROM prestamo_elementos WHERE prestamo_id = ?";
-      $stmt = $conn->prepare($query);
+      $stmt = $this->conn->prepare($query);
       $stmt->bind_param("s", $data['prestamo_id']);
       if (!$stmt->execute()) {
         $stmt->close();
-        throw new Exception("Error al eliminar elementos: " . $conn->error);
+        throw new Exception("Error al eliminar elementos: " . $this->conn->error);
       }
       $stmt->close();
 
       // 3. Insertar nuevos devolutivos
       if (!empty($data['devolutivos'])) {
         $query = "INSERT INTO prestamo_elementos (prestamo_id, elemento_codigo) VALUES (?, ?)";
-        $stmt = $conn->prepare($query);
+        $stmt = $this->conn->prepare($query);
         foreach ($data['devolutivos'] as $codigo) {
           $stmt->bind_param("ss", $data['prestamo_id'], $codigo);
           if (!$stmt->execute()) {
             $stmt->close();
-            throw new Exception("Error al insertar devolutivo: " . $conn->error);
+            throw new Exception("Error al insertar devolutivo: " . $this->conn->error);
           }
         }
         $stmt->close();
@@ -296,161 +485,29 @@ class Prestamo
       // 4. Insertar nuevos consumibles
       if (!empty($data['consumibles'])) {
         $query = "INSERT INTO prestamo_elementos (prestamo_id, elemento_codigo) VALUES (?, ?)";
-        $stmt = $conn->prepare($query);
+        $stmt = $this->conn->prepare($query);
         foreach ($data['consumibles'] as $codigo) {
           $stmt->bind_param("ss", $data['prestamo_id'], $codigo);
           if (!$stmt->execute()) {
             $stmt->close();
-            throw new Exception("Error al insertar consumible: " . $conn->error);
+            throw new Exception("Error al insertar consumible: " . $this->conn->error);
           }
         }
         $stmt->close();
       }
 
-      $conn->commit();
+      $this->conn->commit();
       return true;
     } catch (Exception $e) {
-      $conn->rollback();
+      $this->conn->rollback();
       throw $e;
+    } finally {
+      $this->conn->close();
     }
   }
 
-  public static function obtenerPrestamoCompleto(string $prestamo_id)
+  private function logError($message)
   {
-    $database = new Database();
-    $conn = $database->getConnection();
-
-    try {
-      // 1. Obtener préstamo
-      $query = "SELECT p.*, e.estado_prestamo_nombre, u.usuario_nombre 
-                FROM prestamo p
-                LEFT JOIN estados_prestamos e ON p.estado_prestamo_id = e.estado_prestamo_id
-                LEFT JOIN usuarios u ON p.usuario_documento = u.usuario_documento
-                WHERE p.prestamo_id = ?";
-      $stmt = $conn->prepare($query);
-      $stmt->bind_param("s", $prestamo_id);
-      $stmt->execute();
-      $result = $stmt->get_result();
-      $prestamo = $result->fetch_assoc();
-
-      if (!$prestamo) {
-        throw new Exception("Préstamo no encontrado");
-      }
-
-      // 2. Obtener solicitante
-      $query = "SELECT * FROM solicitantes WHERE solicitante_documento = ?";
-      $stmt = $conn->prepare($query);
-      $stmt->bind_param("s", $prestamo['solicitante_documento']);
-      $stmt->execute();
-      $result = $stmt->get_result();
-      $solicitante = $result->fetch_assoc();
-
-      // 3. Obtener elementos devolutivos
-      $query = "SELECT e.* FROM prestamo_elementos pe
-                      JOIN elementos e ON pe.elemento_codigo = e.elemento_codigo
-                      WHERE pe.prestamo_id = ? AND e.elemento_tipo = 'devolutivo'";
-      $stmt = $conn->prepare($query);
-      $stmt->bind_param("s", $prestamo_id);
-      $stmt->execute();
-      $result = $stmt->get_result();
-      $devolutivos = [];
-      while ($row = $result->fetch_assoc()) {
-        $devolutivos[] = $row;
-      }
-
-      // 4. Obtener elementos consumibles
-      $query = "SELECT e.* FROM prestamo_elementos pe
-                      JOIN elementos e ON pe.elemento_codigo = e.elemento_codigo
-                      WHERE pe.prestamo_id = ? AND e.elemento_tipo = 'consumible'";
-      $stmt = $conn->prepare($query);
-      $stmt->bind_param("s", $prestamo_id);
-      $stmt->execute();
-      $result = $stmt->get_result();
-      $consumibles = [];
-      while ($row = $result->fetch_assoc()) {
-        $consumibles[] = $row;
-      }
-
-      // 5. Obtener todos los elementos (para Select2 en edición)
-      $query = "SELECT elemento_codigo, elemento_nombre, elemento_tipo FROM elementos";
-      $result = $conn->query($query);
-      $todos_elementos = [];
-      while ($row = $result->fetch_assoc()) {
-        $todos_elementos[] = $row;
-      }
-
-      return [
-        "prestamo" => $prestamo,
-        "solicitante" => $solicitante,
-        "devolutivos" => $devolutivos,
-        "consumibles" => $consumibles,
-        "todos_elementos" => $todos_elementos
-      ];
-    } catch (Exception $e) {
-      throw new Exception("Error en modelo: " . $e->getMessage());
-    }
-  }
-
-  public static function actualizarElementos(string $prestamo_id, array $devolutivos = [], array $consumibles = [])
-  {
-    $database = new Database();
-    $conn = $database->getConnection();
-
-    try {
-      // Insertar devolutivos
-      if (!empty($devolutivos)) {
-        $query = "INSERT INTO prestamo_elementos (prestamo_id, elemento_codigo) VALUES (?, ?)";
-        $stmt = $conn->prepare($query);
-
-        foreach ($devolutivos as $codigo) {
-          $stmt->bind_param("ss", $prestamo_id, $codigo);
-          if (!$stmt->execute()) {
-            throw new Exception("Error al insertar devolutivos: " . $stmt->error);
-          }
-        }
-      }
-
-      // Insertar consumibles
-      if (!empty($consumibles)) {
-        $query = "INSERT INTO prestamo_elementos (prestamo_id, elemento_codigo) VALUES (?, ?)";
-        $stmt = $conn->prepare($query);
-
-        foreach ($consumibles as $codigo) {
-          $stmt->bind_param("ss", $prestamo_id, $codigo);
-          if (!$stmt->execute()) {
-            throw new Exception("Error al insertar consumibles: " . $stmt->error);
-          }
-        }
-      }
-    } catch (Exception $e) {
-      $conn->rollback();
-      throw $e;
-    }
-  }
-
-
-  public function getId()
-  {
-    return $this->id;
-  }
-  public function getFecha()
-  {
-    return $this->fecha;
-  }
-  public function getUsuario()
-  {
-    return $this->usuario;
-  }
-  public function setId($id)
-  {
-    $this->id = $id;
-  }
-  public function setFecha($fecha)
-  {
-    $this->fecha = $fecha;
-  }
-  public function setUsuario($usuario)
-  {
-    $this->usuario = $usuario;
+    error_log("[" . date("Y-m-d H:i:s") . "] $message" . PHP_EOL, 3, __DIR__ . "/../../logs/php_errors.log");
   }
 }

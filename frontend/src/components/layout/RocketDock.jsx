@@ -11,7 +11,7 @@ const imageList = Object.entries(images)
   })
   .sort((a, b) => {
     const order = [
-      'elementos', 'usuarios', 'prestamos', 'terminal', 'configuración', 'ayuda'
+      'elementos', 'usuarios', 'prestamos', 'maps', 'terminal', 'configuración', 'ayuda'
     ]
 
     return order.indexOf(a.name) - order.indexOf(b.name)
@@ -54,13 +54,13 @@ export default function RocketDock ({ onIconClick, openWindows }) {
 }
 
 // Componente para renderizar cada objeto del RocketDock
-function RocketDockItem({ icon, onClick, open, name }) {
+function RocketDockItem ({ icon, onClick, open, name }) {
   return (
     <div
       className={`rocketDock--item tooltip-container ${open ? 'rocketDock--item__open' : ''}`}
       onClick={onClick}
     >
-      <span className='tooltip' style={{bottom: '170%'}}>{name}</span>
+      <span className='tooltip' style={{ bottom: '170%' }}>{name}</span>
       <img src={icon} alt={`${icon} icon`} className='rocketDock--item__icon' />
       {open && <div className='rocketDock--item__indicator' />}
     </div>

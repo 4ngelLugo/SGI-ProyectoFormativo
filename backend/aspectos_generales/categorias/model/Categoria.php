@@ -2,7 +2,8 @@
 class CategoriaModel
 {
   private $conn;
-  public $tabla = "categorias";
+  private $tabla = "categorias";
+  private $error_return = "";
 
   public function __construct($db)
   {
@@ -11,141 +12,179 @@ class CategoriaModel
 
   public function guardarCategoria($nombre, $tipo)
   {
-    $query = "INSERT INTO {$this->tabla} (categoria_nombre, categoria_tipo) VALUES (?, ?)";
-    $stmt = $this->conn->prepare($query);
+    try {
+      $query = "INSERT INTO {$this->tabla} (
+        categoria_nombre,
+        categoria_tipo
+        ) VALUES (?, ?)";
+      $stmt = $this->conn->prepare($query);
 
-    if (!$stmt) {
-      $this->logError("Prepare failed: " . $this->conn->error);
-      return null;
+      if (!$stmt) {
+        throw new Exception("Prepare failed: " . $this->conn->error);
+      }
+
+      $stmt->bind_param(
+        "ss",
+        $nombre,
+        $tipo
+      );
+      
+      if (!$stmt->execute()) {
+        $this->error_return = "error al guardar";
+        throw new Exception("Execute failed (Crear categoria): " . $stmt->error);
+      }
+
+      return ["success" => true];
+    } catch (Exception $e) {
+      $this->logError($e->getMessage());
+
+      return !empty($this->error_return) ? ["error" => $this->error_return] : [];
     }
-
-    $stmt->bind_param("ss", $nombre, $tipo);
-
-    if ($stmt->execute()) return true;
-
-    // Registrar error en archivo
-    $this->logError("Execute failed (Guardar área): " . $stmt->error);
-    return null;
   }
 
   public function obtenerTodasLasCategorias()
   {
-    $query = "SELECT
+    try {
+      $query = "SELECT 
               categoria_id as id,
               categoria_nombre as nombre,
               categoria_tipo as tipo,
               categoria_estado as estado
               FROM {$this->tabla}";
-    $stmt = $this->conn->prepare($query);
+      $stmt = $this->conn->prepare($query);
 
-    if (!$stmt) {
-      $this->logError("Prepare failed: " . $this->conn->error);
-      return null;
+      if (!$stmt) {
+        throw new Exception("Prepare failed: " . $this->conn->error);
+      }
+
+      if (!$stmt->execute()) {
+        $this->error_return = "error al obtener";
+        throw new Exception("Execute failed (Obtener todas las categorias): " . $stmt->error);
+      }
+
+      $resultado = $stmt->get_result();
+      return ["success" => true, "data" => $resultado->fetch_all(MYSQLI_ASSOC)];
+    } catch (Exception $e) {
+      $this->logError($e->getMessage());
+
+      return !empty($this->error_return) ? ["error" => $this->error_return] : [];
     }
-
-    if ($stmt->execute()) {
-      $result = $stmt->get_result();
-      return $result->fetch_all(MYSQLI_ASSOC);
-    }
-
-    // Registrar error en archivo
-    $this->logError("Execute failed (Obtener todas las áreas): " . $stmt->error);
-    return null;
   }
 
   public function obtenerCategoriaPorId($id)
   {
-    $query = "SELECT
-              categoria_id as id,
-              categoria_nombre as nombre,
-              categoria_tipo as tipo,
-              categoria_estado as estado
-              FROM {$this->tabla}
-              WHERE categoria_id = ?";
-    $stmt = $this->conn->prepare($query);
+    try {
+      $query = "SELECT 
+        categoria_id as id,
+        categoria_nombre as nombre,
+        categoria_estado as estado,
+        categoria_tipo as tipo
+        FROM {$this->tabla} 
+        WHERE categoria_id = ?";
+      $stmt = $this->conn->prepare($query);
 
-    if (!$stmt) {
-      $this->logError("Prepare failed: " . $this->conn->error);
-      return null;
+      if (!$stmt) {
+        throw new Exception("Prepare failed: " . $this->conn->error);
+      }
+
+      $stmt->bind_param("i", $id);
+
+      if (!$stmt->execute()) {
+        $this->error_return = "error al obtener";
+        throw new Exception("Execute failed (Obtener categoria por codigo): " . $stmt->error);
+      }
+
+      // Obtiene el resultado de la consulta y verifica si hay filas
+      $resultado = $stmt->get_result();
+      if ($resultado->num_rows > 0) return $resultado->fetch_assoc();
+    } catch (Exception $e) {
+      $this->logError($e->getMessage());
+
+      return !empty($this->error_return) ? ["error" => $this->error_return] : [];
     }
-
-    $stmt->bind_param("i", $id);
-
-    if ($stmt->execute()) {
-      $result = $stmt->get_result();
-
-      if ($result->num_rows > 0) return $result->fetch_assoc();
-    }
-
-    $this->logError("Execute failed (Obtener área por id): " . $stmt->error);
-    return null;
   }
 
   public function obtenerCategoriaPorNombre($nombre)
   {
-    $query = "SELECT 
+    try {
+      $query = "SELECT 
               categoria_id as id,
               categoria_nombre as nombre,
-              categoria_tipo as tipo,
-              categoria_estado as estado
+              categoria_estado as estado,
+              categoria_tipo as tipo
               FROM {$this->tabla} 
               WHERE categoria_nombre = ?";
-    $stmt = $this->conn->prepare($query);
+      $stmt = $this->conn->prepare($query);
 
-    if (!$stmt) {
-      $this->logError("Prepare failed: " . $this->conn->error);
-      return null;
+      if (!$stmt) {
+        throw new Exception("Prepare failed: " . $this->conn->error);
+      }
+
+      $stmt->bind_param("s", $nombre);
+
+      if (!$stmt->execute()) {
+        $this->error_return = "error al obtener";
+        throw new Exception("Execute failed (Obtener categoria por nombre): " . $stmt->error);
+      }
+
+      // Obtiene el resultado de la consulta y verifica si hay filas
+      $resultado = $stmt->get_result();
+      if ($resultado->num_rows > 0) return $resultado->fetch_assoc();
+    } catch (Exception $e) {
+      $this->logError($e->getMessage());
+
+      return !empty($this->error_return) ? ["error" => $this->error_return] : [];
     }
-
-    $stmt->bind_param("s", $nombre);
-
-    if ($stmt->execute()) {
-      $result = $stmt->get_result();
-
-      if ($result->num_rows > 0) return $result->fetch_assoc();
-    }
-
-    $this->logError("Execute failed (Obtener área por nombre): " . $stmt->error);
-    return null;
   }
 
-  public function editarCategoria($id, $nombre, $tipo)
+  public function editarCategoria($id, $nombre)
   {
-    $query = "UPDATE {$this->tabla}
-              SET categoria_nombre = ?,
-              categoria_tipo = ?
-              WHERE categoria_id = ?";
-    $stmt = $this->conn->prepare($query);
+    try {
+      $query = "UPDATE {$this->tabla} SET categoria_nombre = ? WHERE categoria_id = ?";
+      $stmt = $this->conn->prepare($query);
 
-    if (!$stmt) {
-      $this->logError("Prepare failed: " . $this->conn->error);
-      return null;
+      if (!$stmt) {
+        throw new Exception("Prepare failed: " . $this->conn->error);
+      }
+
+      $stmt->bind_param("si", $nombre, $id);
+
+      if (!$stmt->execute()) {
+        $this->error_return = "error al crear";
+        throw new Exception("Execute failed (Editar categoria): " . $stmt->error);
+      }
+
+      return ["success" => true];
+    } catch (Exception $e) {
+      $this->logError($e->getMessage());
+
+      return !empty($this->error_return) ? ["error" => $this->error_return] : [];
     }
-
-    $stmt->bind_param("ssi", $nombre, $tipo, $id);
-
-    if ($stmt->execute()) return true;
-
-    $this->logError("Execute failed (Editar área): " . $stmt->error);
-    return null;
   }
 
   public function desactivarCategoria($id)
   {
-    $query = "UPDATE {$this->tabla} SET categoria_estado = 'desactivado' WHERE categoria_id = ?";
-    $stmt = $this->conn->prepare($query);
+    try {
+      $query = "UPDATE {$this->tabla} SET categoria_estado = 'desactivado' WHERE categoria_id = ?";
+      $stmt = $this->conn->prepare($query);
 
-    if (!$stmt) {
-      $this->logError("Prepare failed: " . $this->conn->error);
-      return null;
+      if (!$stmt) {
+        throw new Exception("Prepare failed: " . $this->conn->error);
+      }
+
+      $stmt->bind_param("i", $id);
+
+      if (!$stmt->execute()) {
+        $this->error_return = "error al crear";
+        throw new Exception("Execute failed (Deshabilitar categoria): " . $stmt->error);
+      }
+
+      return ["success" => true];
+    } catch (Exception $e) {
+      $this->logError($e->getMessage());
+
+      return !empty($this->error_return) ? ["error" => $this->error_return] : [];
     }
-
-    $stmt->bind_param("i", $id);
-
-    if ($stmt->execute()) return true;
-
-    $this->logError("Execute failed (Desactivar área): " . $stmt->error);
-    return null;
   }
 
   private function logError($message)

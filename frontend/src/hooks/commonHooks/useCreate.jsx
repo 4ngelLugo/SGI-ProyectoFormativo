@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { SaveElementsEndpoint, GuardarUsuarioEndpoint, GuardarRolEndpoint, GuardarAreaEndpoint, GuardarCategoriaEndpoint, GuardarMarcaEndpoint, GuardarTipoDocumentoEndpoint, FetchElementsEndpoint, ObtenerUsuariosEndpoint, ObtenerRolesEndpoint, ObtenerAreasEndpoint, ObtenerCategoriasEndpoint, ObtenerMarcasEndpoint, ObtenerTipoDocumentoEndpoint, GuardarPrestamoEndpoint, ObtenerPrestamosEndpoint } from '../../config/apiRoutes'
-
+import { MESSAGES } from '../../constants/messages'
 /**
  * Hook para manejar la creación de un nuevo elemento.
  *
@@ -17,7 +17,7 @@ export const useCreate = ({ setAlert, obtener, fetchElements, setActiveView }) =
     categoria: GuardarCategoriaEndpoint,
     marca: GuardarMarcaEndpoint,
     tipoDocumento: GuardarTipoDocumentoEndpoint,
-    prestamo: GuardarPrestamoEndpoint,
+    prestamo: GuardarPrestamoEndpoint
   }
 
   const fetchEndpoints = {
@@ -35,26 +35,42 @@ export const useCreate = ({ setAlert, obtener, fetchElements, setActiveView }) =
     elemento: 'listElement',
     usuario: 'listarUsuarios',
     rol: 'listarRoles',
-    prestamo: 'listarPrestamos',
+    prestamo: 'listarPrestamos'
   }
 
   const fetchApiEndpoint = fetchEndpoints[obtener]
-
   const apiEndpoint = endpoints[obtener]
 
   // Referencia al formulario para acceder a los datos
   const formRef = useRef(null)
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
+
+    const errorLabels = formRef.current.querySelectorAll('.errorLabel')
+    const tieneErrores = [...errorLabels].some(p => p.textContent !== '')
+
+    if (tieneErrores) {
+      setAlert({
+        type: 'error',
+        message: 'Hay errores en el formulario',
+        active: true
+      })
+      return
+    }
 
     const formData = new FormData(formRef.current)
 
     if (!apiEndpoint) {
-      setAlert({ type: 'error', message: 'Tipo de operación inválido', active: true })
+      setAlert({
+        type: 'error',
+        message: 'Tipo de operación inválido',
+        active: true
+      })
       return
     }
 
+    // En caso de que se intente crear un rol, verifica que se seleccione por lo menos un permiso
     if (obtener === 'rol') {
       const form = formRef.current
       const checkboxes = form.querySelectorAll('input[name="permisos[]"]:checked')
@@ -69,43 +85,54 @@ export const useCreate = ({ setAlert, obtener, fetchElements, setActiveView }) =
       }
     }
 
-    // Realiza la peticion al endpoint de guardar elementos, usando el metodo POST y enviando el objeto FormData
-    fetch(apiEndpoint, {
-      method: 'POST',
-      body: formData,
-      credentials: 'include'
-    })
-      .then((res) => res.json())
-      .then((response) => {
-        // Verifica si la respuesta contiene un error o un mensaje de exito
-        if (response.error) {
-          const messages = {
-            'metodo invalido': 'Error en el metodo de envio',
-            'campos vacios': 'Por favor complete todos los campos',
-            'ya existe': `Ya existe este ${obtener}`,
-            'error al guardar': `Ocurrio un error al crear el ${obtener}`,
-            'error de conexion a la base de datos': 'Error al conectar con la base de datos',
-            'contrasenas no coinciden': 'Las contraseñas no coinciden',
-            'correo no valido': 'Correo electrónico no válido'
-          }
-          setAlert({ type: 'error', message: messages[response.error] || 'Error desconocido', active: true })
-        } else if (response.success) {
-          setAlert({ type: 'success', message: `${obtener} guardado correctamente`, active: true })
+    try {
+      // Realiza la peticion al endpoint de guardar elementos, usando el metodo POST y enviando el objeto FormData
+      const res = await fetch(apiEndpoint, {
+        method: 'POST',
+        body: formData,
+        credentials: 'include'
+      })
 
-          if (typeof fetchElements === 'function') {
-            fetchElements(fetchApiEndpoint)
-          }
+      const response = await res.json()
 
-          if (vistas[obtener]) {
-            setActiveView(vistas[obtener])
-          }
+      // Verifica si la respuesta contiene un error o un mensaje de exito
+      if (response.error) {
+        setAlert({
+          type: 'error',
+          message: MESSAGES[obtener][response.error] || 'Error desconocido',
+          active: true
+        })
+        return false
+      }
+
+      if (response.success) {
+        setAlert({
+          type: 'success',
+          message: MESSAGES[obtener].successCreate,
+          active: true
+        })
+
+        if (typeof fetchElements === 'function') {
+          fetchElements(fetchApiEndpoint)
         }
-      })
+
+        if (vistas[obtener]) {
+          setActiveView(vistas[obtener])
+        }
+
+        return true
+      }
+
       // En caso de que ocurra un error en la petición, o un error en el servidor, se captura y se muestra un mensaje de error
-      .catch((error) => {
-        console.error(error)
-        setAlert({ type: 'error', message: 'Ocurrio un error en la petición', active: true })
+    } catch (error) {
+      console.error(error)
+      setAlert({
+        type: 'error',
+        message: 'Ocurrió un error en la petición',
+        active: true
       })
+      return false
+    }
   }
 
   return {

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import { FetchElementsEndpoint, ObtenerUsuariosEndpoint, ObtenerRolesEndpoint, ObtenerPermisosEndpoint, ObtenerAreasEndpoint, ObtenerCategoriasEndpoint, ObtenerMarcasEndpoint, ObtenerTipoDocumentoEndpoint, ObtenerPrestamosEndpoint } from '../../config/apiRoutes'
-
+import { FetchElementsEndpoint, ObtenerUsuariosEndpoint, ObtenerRolesEndpoint, ObtenerPermisosEndpoint, ObtenerAreasEndpoint, ObtenerCategoriasEndpoint, ObtenerMarcasEndpoint, ObtenerTipoDocumentoEndpoint, ObtenerPrestamosEndpoint, CuentaElementosPrestados, CuentaPrestamosUsuario, ObtenerSolicitantesEndpoint } from '../../config/apiRoutes'
+import { MESSAGES } from '../../constants/messages'
 /**
  * Calcula el límite inicial de elementos según el alto de pantalla.
  *
@@ -36,7 +36,10 @@ export const useFetch = ({ setAlert, windowHeight, isMaximized, obtener }) => {
     categorias: ObtenerCategoriasEndpoint,
     marcas: ObtenerMarcasEndpoint,
     tipoDocumento: ObtenerTipoDocumentoEndpoint,
-    prestamos: ObtenerPrestamosEndpoint
+    prestamos: ObtenerPrestamosEndpoint,
+    elementosPrestados: CuentaElementosPrestados,
+    prestamosUsuarios: CuentaPrestamosUsuario,
+    solicitantes: ObtenerSolicitantesEndpoint
   }
 
   const apiEndpoint = endpoints[obtener]
@@ -50,6 +53,8 @@ export const useFetch = ({ setAlert, windowHeight, isMaximized, obtener }) => {
 
   // Estados para manejar los elementos a mostrar, el elemento a deshabilitar y el estado del modal
   const [elements, setElements] = useState([])
+  const [allElements, setAllElements] = useState([])
+  const [filteredElements, setFilteredElements] = useState(undefined)
   const [page, setPage] = useState(1)
   const [maxPage, setMaxPage] = useState(null)
   const [limit, setLimit] = useState(initialLimit)
@@ -57,12 +62,15 @@ export const useFetch = ({ setAlert, windowHeight, isMaximized, obtener }) => {
   const screen = document.querySelector('.screen')
   const screenRect = screen.getBoundingClientRect()
 
+  // Calcula el espacio para filas segun el tamaño de las ventanas y si estan maximizadas o no
   const prevHeight = useRef(isMaximized ? Math.floor((screenRect.height - 86) / 52) : Math.floor((windowHeight - 86) / 52))
 
+  // Si la pagina actual es mayor a la pagina maxima, establece la pagina actual igual a la maxima
   useEffect(() => {
     if (page > maxPage && maxPage !== null) setPage(maxPage)
   }, [page, maxPage])
 
+  // Efecto para calcular el limite de filas en las tablas según la altura de las ventanas
   useEffect(() => {
     if (!windowHeight) return
 
@@ -86,22 +94,64 @@ export const useFetch = ({ setAlert, windowHeight, isMaximized, obtener }) => {
   }, [windowHeight, isMaximized, elements])
 
   // Función reutilizable para una petición fetch
-  const fetchElements = (apiEndpoint) => {
-    fetch(apiEndpoint)
-      .then((res) => res.json())
-      .then((response) => {
-        const offset = (page - 1) * limit
-        setMaxPage(Math.ceil(response.length / limit))
+  const fetchElements = async (apiEndpoint) => {
+    if (!apiEndpoint) {
+      setAlert({
+        type: 'error',
+        message: 'Tipo de operación inválido',
+        active: true
+      })
+      return
+    }
 
-        // Establece el estado de los elementos con la respuesta de la API
-        if (response.length > 0) setElements(response.slice(offset, offset + limit))
-        else setElements(response)
+    try {
+      const res = await fetch(apiEndpoint)
+
+      const response = await res.json()
+
+      // console.log(response)
+      if (response.error) {
+        setAlert({
+          type: 'error',
+          message: MESSAGES[obtener][response.error] || 'Error desconocido',
+          active: true
+        })
+        return false
+      }
+
+      if (response.success) {
+        const data = response.data
+
+        const activeElements = Array.isArray(data)
+          ? data.filter(el => {
+            const estado = el.estado?.toLowerCase()
+            return estado !== 'deshabilitado' &&
+              estado !== 'inhabilitado' &&
+              estado !== 'inactivo' &&
+              estado !== 'desactivado'
+          })
+          : []
+
+        setAllElements(data)
+
+        const dataToPage = filteredElements || activeElements
+        const offset = (page - 1) * limit
+        setMaxPage(Math.ceil(dataToPage.length / limit))
+        setElements(dataToPage.slice(offset, offset + limit))
+
+        return true
+      }
+
+      // En caso de que ocurra un error en la petición, o un error en el servidor, se captura y se muestra un mensaje de error
+    } catch (error) {
+      console.error(error)
+      setAlert({
+        type: 'error',
+        message: 'Ocurrió un error en la petición',
+        active: true
       })
-      .catch(error => {
-        // En caso de que ocurra un error en la petición, o un error en el servidor, se captura y se muestra un mensaje de error
-        console.error(error)
-        setAlert({ type: 'error', message: 'Error al cargar los elementos', active: true })
-      })
+      return false
+    }
   }
 
   // Realiza la petición para obtener los elementos de la API
@@ -112,9 +162,13 @@ export const useFetch = ({ setAlert, windowHeight, isMaximized, obtener }) => {
   return {
     elements,
     setElements,
+    allElements,
+    filteredElements,
+    setFilteredElements,
     page,
     setPage,
     maxPage,
+    setMaxPage,
     fetchElements
   }
 }

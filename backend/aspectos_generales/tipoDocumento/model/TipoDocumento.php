@@ -2,7 +2,8 @@
 class TipoDocumentoModel
 {
   private $conn;
-  public $tabla = "tipo_documento";
+  private $tabla = "tipo_documento";
+  private $error_return = "";
 
   public function __construct($db)
   {
@@ -11,130 +12,164 @@ class TipoDocumentoModel
 
   public function guardarTipoDocumento($nombre)
   {
-    $query = "INSERT INTO {$this->tabla} (tipo_docu_nombre) VALUES (?)";
-    $stmt = $this->conn->prepare($query);
+    try {
+      $query = "INSERT INTO {$this->tabla} (tipo_docu_nombre) VALUES (?)";
+      $stmt = $this->conn->prepare($query);
 
-    if (!$stmt) {
-      $this->logError("Prepare failed: " . $this->conn->error);
-      return null;
+      if (!$stmt) {
+        throw new Exception("Prepare failed: " . $this->conn->error);
+      }
+
+      $stmt->bind_param("s", $nombre);
+
+      if (!$stmt->execute()) {
+        $this->error_return = "error al guardar tipo documento";
+        throw new Exception("Execute failed (Crear tipo de documento): " . $stmt->error);
+      }
+
+      return ["success" => true];
+    } catch (Exception $e) {
+      $this->logError($e->getMessage());
+
+      return !empty($this->error_return) ? ["error" => $this->error_return] : [];
     }
-
-    $stmt->bind_param("s", $nombre);
-
-    if ($stmt->execute()) return true;
-
-    // Registrar error en archivo
-    $this->logError("Execute failed (Guardar área): " . $stmt->error);
-    return null;
   }
 
   public function obtenerTodosLosTipoDocumentos()
   {
-    $query = "SELECT
+    try {
+      $query = "SELECT
               tipo_docu_id as id,
               tipo_docu_nombre as nombre,
               tipo_docu_estado as estado
               FROM {$this->tabla}";
-    $stmt = $this->conn->prepare($query);
+      $stmt = $this->conn->prepare($query);
 
-    if (!$stmt) {
-      $this->logError("Prepare failed: " . $this->conn->error);
-      return null;
+      if (!$stmt) {
+        throw new Exception("Prepare failed: " . $this->conn->error);
+      }
+
+      if (!$stmt->execute()) {
+        $this->error_return = "error al obtener tipos documento";
+        throw new Exception("Execute failed (Obtener todos los tipos de documento): " . $stmt->error);
+      }
+
+      $resultado = $stmt->get_result();
+      return ["success" => true, "data" => $resultado->fetch_all(MYSQLI_ASSOC)];
+    } catch (Exception $e) {
+      $this->logError($e->getMessage());
+
+      return !empty($this->error_return) ? ["error" => $this->error_return] : [];
     }
-
-    if ($stmt->execute()) {
-      $result = $stmt->get_result();
-      return $result->fetch_all(MYSQLI_ASSOC);
-    }
-
-    // Registrar error en archivo
-    $this->logError("Execute failed (Obtener todas las áreas): " . $stmt->error);
-    return null;
   }
 
   public function obtenerTipoDocumentoPorId($id)
   {
-    $query = "SELECT
+    try {
+      $query = "SELECT
               tipo_docu_id as id,
               tipo_docu_nombre as nombre,
               tipo_docu_estado as estado
               FROM {$this->tabla}
               WHERE tipo_docu_id = ?";
-    $stmt = $this->conn->prepare($query);
+      $stmt = $this->conn->prepare($query);
 
-    if (!$stmt) {
-      $this->logError("Prepare failed: " . $this->conn->error);
-      return null;
+      if (!$stmt) {
+        throw new Exception("Prepare failed: " . $this->conn->error);
+      }
+
+      $stmt->bind_param("i", $id);
+
+      if (!$stmt->execute()) {
+        $this->error_return = "error al obtener tipo documento";
+        throw new Exception("Execute failed (Obtener tipo de documento por codigo): " . $stmt->error);
+      }
+
+      // Obtiene el resultado de la consulta y verifica si hay filas
+      $resultado = $stmt->get_result();
+      if ($resultado->num_rows > 0) return $resultado->fetch_assoc();
+    } catch (Exception $e) {
+      $this->logError($e->getMessage());
+
+      return !empty($this->error_return) ? ["error" => $this->error_return] : [];
     }
-
-    $stmt->bind_param("i", $id);
-
-    if ($stmt->execute()) {
-      $result = $stmt->get_result();
-
-      if ($result->num_rows > 0) return $result->fetch_assoc();
-    }
-
-    $this->logError("Execute failed (Obtener área por id): " . $stmt->error);
-    return null;
   }
 
   public function obtenerTipoDocumentoPorNombre($nombre)
   {
-    $query = "SELECT * FROM {$this->tabla} WHERE tipo_docu_nombre = ?";
-    $stmt = $this->conn->prepare($query);
+    try {
+      $query = "SELECT * FROM {$this->tabla} WHERE tipo_docu_nombre = ?";
+      $stmt = $this->conn->prepare($query);
 
-    if (!$stmt) {
-      $this->logError("Prepare failed: " . $this->conn->error);
-      return null;
+      if (!$stmt) {
+        throw new Exception("Prepare failed: " . $this->conn->error);
+      }
+
+      $stmt->bind_param("s", $nombre);
+
+      if (!$stmt->execute()) {
+        $this->error_return = "error al obtener tipo documento";
+        throw new Exception("Execute failed (Obtener tipo de documento por nombre): " . $stmt->error);
+      }
+
+      // Obtiene el resultado de la consulta y verifica si hay filas
+      $resultado = $stmt->get_result();
+      if ($resultado->num_rows > 0) return $resultado->fetch_assoc();
+    } catch (Exception $e) {
+      $this->logError($e->getMessage());
+
+      return !empty($this->error_return) ? ["error" => $this->error_return] : [];
     }
-
-    $stmt->bind_param("s", $nombre);
-
-    if ($stmt->execute()) {
-      $result = $stmt->get_result();
-
-      if ($result->num_rows > 0) return $result->fetch_assoc();
-    }
-
-    $this->logError("Execute failed (Obtener área por nombre): " . $stmt->error);
-    return null;
   }
 
   public function editarTipoDocumento($id, $nombre)
   {
-    $query = "UPDATE {$this->tabla} SET tipo_docu_nombre = ? WHERE tipo_docu_id = ?";
-    $stmt = $this->conn->prepare($query);
+    try {
+      $query = "UPDATE {$this->tabla} SET tipo_docu_nombre = ? WHERE tipo_docu_id = ?";
+      $stmt = $this->conn->prepare($query);
 
-    if (!$stmt) {
-      $this->logError("Prepare failed: " . $this->conn->error);
-      return null;
+      if (!$stmt) {
+        throw new Exception("Prepare failed: " . $this->conn->error);
+      }
+
+      $stmt->bind_param("si", $nombre, $id);
+
+      if (!$stmt->execute()) {
+        $this->error_return = "error al editar tipo documento";
+        throw new Exception("Execute failed (Editar tipo de documento): " . $stmt->error);
+      }
+
+      return ["success" => true];
+    } catch (Exception $e) {
+      $this->logError($e->getMessage());
+
+      return !empty($this->error_return) ? ["error" => $this->error_return] : [];
     }
-
-    $stmt->bind_param("si", $nombre, $id);
-
-    if ($stmt->execute()) return true;
-
-    $this->logError("Execute failed (Editar área): " . $stmt->error);
-    return null;
   }
 
   public function desactivarTipoDocumento($id)
   {
-    $query = "UPDATE {$this->tabla} SET tipo_docu_estado = 'desactivado' WHERE tipo_docu_id = ?";
-    $stmt = $this->conn->prepare($query);
+    try {
+      $query = "UPDATE {$this->tabla} SET tipo_docu_estado = 'desactivado' WHERE tipo_docu_id = ?";
+      $stmt = $this->conn->prepare($query);
 
-    if (!$stmt) {
-      $this->logError("Prepare failed: " . $this->conn->error);
-      return null;
+      if (!$stmt) {
+        throw new Exception("Prepare failed: " . $this->conn->error);
+      }
+
+      $stmt->bind_param("i", $id);
+
+      if (!$stmt->execute()) {
+        $this->error_return = "error al desactivar tiopo documento";
+        throw new Exception("Execute failed (Deshabilitar tipo de documento): " . $stmt->error);
+      }
+
+      return ["success" => true];
+    } catch (Exception $e) {
+      $this->logError($e->getMessage());
+
+      return !empty($this->error_return) ? ["error" => $this->error_return] : [];
     }
-
-    $stmt->bind_param("i", $id);
-
-    if ($stmt->execute()) return true;
-
-    $this->logError("Execute failed (Desactivar área): " . $stmt->error);
-    return null;
   }
 
   private function logError($message)
