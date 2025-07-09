@@ -25,7 +25,7 @@ export const useManejarPrestamo = ({ setAlert, fetchElements }) => {
       if (data.error) {
         setAlert({
           type: 'error',
-          message: MESSAGES[obtener][response.error] || 'Error desconocido',
+          message: MESSAGES.prestamo[response.error] || 'Error desconocido',
           active: true
         })
       }
