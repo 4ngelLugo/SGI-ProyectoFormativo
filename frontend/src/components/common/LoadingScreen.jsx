@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import macIcon from '../../assets/images/macIcon.webp'
+import placeholderIcon from '../../assets/images/placeholderIcon.jpg'
 
 export default function LoadingScreen ({ setLoading }) {
   const loadingScreen = useRef()
@@ -30,7 +30,7 @@ export default function LoadingScreen ({ setLoading }) {
     <>
       <section className='loading-screen' ref={loadingScreen}>
         <div className='loading-screen__logo'>
-          <img src={macIcon} alt='Ícono de macOS' />
+          <img src={placeholderIcon} alt='Ícono de macOS' />
         </div>
 
         <div className='loading-screen__bar'>

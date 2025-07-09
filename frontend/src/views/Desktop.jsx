@@ -28,6 +28,12 @@ export default function Desktop () {
     }
   }, [isAuthenticated])
 
+  useEffect(() => {
+    if (localStorage.getItem('isAuthenticated') !== 'true') {
+      navigate('/login')
+    }
+  }, [])
+
   // Abre una ventana al hacer clic en uno de los iconos del RocketDock y la lleva al frente
   const onIconClick = (name) => {
     setOpenWindows((prev) => {
@@ -85,7 +91,7 @@ export default function Desktop () {
   return (
     <main className='mainScreen' ref={mainScreen}>
       <Navbar windowOnTop={isTop} setIsAuthenticated={setIsAuthenticated} />
-      <ContextMenu mainScreen={mainScreen.current} />
+      {/* <ContextMenu mainScreen={mainScreen.current} /> */}
       <div className='screen'>
         {/* Mapeo de las ventanas abiertas, si la ventana está minimizada no se renderiza */}
         {openWindows.map((window) => (

@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { DeactivateElementsEndPoint, DesactivarRolEndpoint, FetchElementsEndpoint, ObtenerRolesEndpoint, DesactivarUsuarioEndpoint, ObtenerUsuariosEndpoint, DesactivarAreaEndpoint, ObtenerAreasEndpoint, DesactivarCategoriaEndpoint, ObtenerCategoriasEndpoint, DesactivarMarcaEndpoint, ObtenerMarcasEndpoint, DesactivarTipoDocumentoEndpoint, ObtenerTipoDocumentoEndpoint } from '../../config/apiRoutes'
-
+import { DeactivateElementsEndPoint, DesactivarRolEndpoint, FetchElementsEndpoint, ObtenerRolesEndpoint, DesactivarUsuarioEndpoint, ObtenerUsuariosEndpoint, DesactivarAreaEndpoint, ObtenerAreasEndpoint, DesactivarCategoriaEndpoint, ObtenerCategoriasEndpoint, DesactivarMarcaEndpoint, ObtenerMarcasEndpoint, DesactivarTipoDocumentoEndpoint, ObtenerTipoDocumentoEndpoint, DesactivarPrestamoEndpoint, ObtenerPrestamosEndpoint } from '../../config/apiRoutes'
+import { MESSAGES } from '../../constants/messages'
 /**
  * Hook para manejar la busqueda de un elemento por su codigo
  *
@@ -16,7 +16,8 @@ export const useDeactivate = ({ setAlert, obtener, fetchElements }) => {
     area: DesactivarAreaEndpoint,
     categoria: DesactivarCategoriaEndpoint,
     marca: DesactivarMarcaEndpoint,
-    tipoDocumento: DesactivarTipoDocumentoEndpoint
+    tipoDocumento: DesactivarTipoDocumentoEndpoint,
+    prestamo: DesactivarPrestamoEndpoint
   }
 
   const apiEndpoint = endpoints[obtener]
@@ -28,45 +29,71 @@ export const useDeactivate = ({ setAlert, obtener, fetchElements }) => {
     area: ObtenerAreasEndpoint,
     categoria: ObtenerCategoriasEndpoint,
     marca: ObtenerMarcasEndpoint,
-    tipoDocumento: ObtenerTipoDocumentoEndpoint
+    tipoDocumento: ObtenerTipoDocumentoEndpoint,
+    prestamo: ObtenerPrestamosEndpoint
   }
 
   const fetchApiEndpoint = fetchEndpoints[obtener]
 
-  const [deactivateElement, setDeactivateElement] = useState({ codigo: null, nombre: null })
+  // Información para mostrar la alerta de confirmación al deshabilitar
+  const [deactivateElement, setDeactivateElement] = useState({
+    codigo: null,
+    nombre: null,
+    usuario: null,
+    solicitante: null
+  })
   const [showModal, setShowModal] = useState(false)
 
   // Función que realiza una petición a la API para deshabilitar un elemento, según su codigo
-  const handleDeactivate = () => {
-    fetch(apiEndpoint, {
-      method: 'POST',
-      body: JSON.stringify(deactivateElement),
-      credentials: 'include'
-    })
-      .then(res => res.json())
-      .then(response => {
-        // Verifica si la respuesta contiene un error o un mensaje de exito
-        if (response.error) {
-          // Según el error, la alerta muestra un mensaje diferente
-          const messages = {
-            'metodo invalido': 'Error en el metodo de envio',
-            'campos vacios': `No se encontró el ${obtener}`,
-            'no existe': `El ${obtener} a desactivar no existe`,
-            'error al desactivar': `Ocurrió un error al desactivar el ${obtener}`,
-            'error de conexion a la base de datos': 'Error al conectar con la base de datos'
-          }
-          setAlert({ type: 'error', message: messages[response.error] || 'Error desconocido', active: true })
-        } else if (response.success) {
-          // Si la desactivación fue exitosa, se actualiza el estado de los elementos
-          fetchElements(fetchApiEndpoint)
-          setAlert({ type: 'success', message: 'Elemento desactivado correctamente', active: true })
-        }
+  const handleDeactivate = async () => {
+    if (!apiEndpoint) {
+      setAlert({
+        type: 'error',
+        message: 'Tipo de operación inválido',
+        active: true
       })
-      .catch(error => {
-        // En caso de que ocurra un error en la petición, o un error en el servidor, se captura y se muestra un mensaje de error
-        console.error(error)
-        setAlert({ type: 'error', message: 'Ocurrió un error en la petición', active: true })
+      return
+    }
+
+    try {
+      const res = await fetch(apiEndpoint, {
+        method: 'POST',
+        body: JSON.stringify(deactivateElement),
+        credentials: 'include'
       })
+
+      const response = await res.json()
+
+      // Verifica si la respuesta contiene un error o un mensaje de exito
+      if (response.error) {
+        setAlert({
+          type: 'error',
+          message: MESSAGES[obtener][response.error] || 'Error desconocido',
+          active: true
+        })
+        return false
+      }
+
+      if (response.success) {
+        fetchElements(fetchApiEndpoint)
+        setAlert({
+          type: 'success',
+          message: MESSAGES[obtener].successDeactivate,
+          active: true
+        })
+        return true
+      }
+
+      // En caso de que ocurra un error en la petición, o un error en el servidor, se captura y se muestra un mensaje de error
+    } catch (error) {
+      console.error(error)
+      setAlert({
+        type: 'error',
+        message: 'Ocurrió un error en la petición',
+        active: true
+      })
+      return false
+    }
   }
 
   return {

@@ -1,3 +1,4 @@
+/* global localStorage */
 import appleLogo from '../../assets/images/macIcon.webp'
 import cerrar from '../../assets/icons/cerrar.svg'
 import ConfirmModal from './ConfirmModal'

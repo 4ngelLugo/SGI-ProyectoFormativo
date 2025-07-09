@@ -15,7 +15,7 @@ export default function ListElements ({ setAlert, windowHeight, isMaximized }) {
 
   // Hook para manejar la lista de elementos y su paginación
   const {
-    elements,
+    allElements: elements,
     setElements,
     page,
     setPage,

@@ -12,46 +12,35 @@ class RolController
 
   public function guardarRol($nombre, $permisos_ids = [])
   {
+    // Validar que los campos requeridos no esten vacios
     if (empty($nombre) || empty($permisos_ids)) return ["error" => "campos vacios"];
 
+    // Validar que no exista un elemento con el mismo codigo en la base de datos antes de crear uno nuevo
     $verificar_rol = $this->rol_modelo->obtenerRolPorNombre($nombre);
-    if ($verificar_rol) return ["error" => "ya existe"];
+    if (isset($verificar_rol['success'])) return ["error" => "ya existe rol"];
 
-    $guardar_rol = $this->rol_modelo->guardarRol($nombre, $permisos_ids);
-    if ($guardar_rol) return ["success" => true];
+    $resultado = $this->rol_modelo->guardarRol($nombre, $permisos_ids);
+    if ($resultado) return $resultado;
 
-    return ["error" => "error al guardar"];
+    return ["error" => "error al guardar rol"];
   }
 
   public function obtenerTodosLosRoles()
   {
-    $todos_los_roles = $this->rol_modelo->obtenerTodosLosRoles();
+    $resultado = $this->rol_modelo->obtenerTodosLosRoles();
+    if ($resultado) return $resultado;
 
-    if ($todos_los_roles) return $todos_los_roles;
-
-    return ["error" => "error al obtener"];
+    return ["error" => "error al obtener roles"];
   }
 
   public function obtenerRolPorId($id)
   {
-    if (empty($id)) return ["error" => "campos vacios"];
+    if (empty($id)) return ["error" => "campos vacios rol"];
 
-    $rol = $this->rol_modelo->obtenerRolPorId($id);
+    $resultado = $this->rol_modelo->obtenerRolPorId($id);
+    if ($resultado) return $resultado;
 
-    if ($rol) return $rol;
-
-    return ["error" => "no existe"];
-  }
-
-  public function obtenerRolPorNombre($nombre)
-  {
-    if (empty($nombre)) return ["error" => "campos vacios"];
-
-    $rol = $this->rol_modelo->obtenerRolPorNombre($nombre);
-
-    if ($rol) return $rol;
-
-    return ["error" => "error al obtener por nombre"];
+    return ["error" => "error al obtener rol"];
   }
 
   public function editarRol($id, $nombre, $permisos_ids = [])
@@ -59,12 +48,12 @@ class RolController
     if (empty($id) || empty($nombre) || empty($permisos_ids)) return ["error" => "campos vacios"];
 
     $verificar_rol = $this->rol_modelo->obtenerRolPorId($id);
-    if (!$verificar_rol) return ["error" => "no existe"];
+    if (!$verificar_rol) return ["error" => "no existe rol"];
 
-    $guardar_rol = $this->rol_modelo->editarRol($id, $nombre, $permisos_ids);
-    if ($guardar_rol) return ["success" => true];
+    $resultado = $this->rol_modelo->editarRol($id, $nombre, $permisos_ids);
+    if ($resultado) return $resultado;
 
-    return ["error" => "error al guardar rol"];
+    return ["error" => "error al editar rol"];
   }
 
   public function desactivarRol($id)
@@ -72,12 +61,12 @@ class RolController
     if (empty($id)) return ["error" => "campos vacios"];
 
     $verificar_rol = $this->rol_modelo->obtenerRolPorId($id);
-    if (!$verificar_rol) return ["error" => "no existe"];
+    if (!$verificar_rol) return ["error" => "no existe rol"];
 
-    $desactivar_rol = $this->rol_modelo->desactivarRol($id);
+    $resultado = $this->rol_modelo->desactivarRol($id);
 
-    if ($desactivar_rol) return ["success" => true];
+    if ($resultado) return $resultado;
 
-    return ["error" => "error al desactivar"];
+    return ["error" => "error al desactivar rol"];
   }
 }

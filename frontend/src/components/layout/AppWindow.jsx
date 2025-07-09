@@ -125,6 +125,7 @@ export default function AppWindow ({
           break
         case 'createElement':
           props.setActiveView = setActiveView
+          break
         case 'searchElement':
           props.searchedItem = searchedItem
           props.setSearchedItem = setSearchedItem
@@ -147,6 +148,7 @@ export default function AppWindow ({
           break
         case 'crearUsuario':
           props.setActiveView = setActiveView
+          break
         case 'buscarUsuario':
           props.searchedItem = searchedItem
           props.setSearchedItem = setSearchedItem
@@ -169,9 +171,14 @@ export default function AppWindow ({
           break
         case 'crearPrestamo':
           props.setActiveView = setActiveView
+          break
         case 'buscarPrestamo':
           props.searchedItem = searchedItem
           props.setSearchedItem = setSearchedItem
+          break
+        case 'editarPrestamo':
+          props.searchedEdit = searchedEdit
+          props.setActiveView = setActiveView
           break
       }
     }
@@ -187,6 +194,7 @@ export default function AppWindow ({
           break
         case 'crearRol':
           props.setActiveView = setActiveView
+          break
         case 'buscarRol':
           props.searchedItem = searchedItem
           props.setSearchedItem = setSearchedItem

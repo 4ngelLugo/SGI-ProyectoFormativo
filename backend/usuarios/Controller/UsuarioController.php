@@ -9,89 +9,107 @@ class UsuarioController
     $this->usuario_modelo = new UsuarioModel($db);
   }
 
-  public function guardarUsuario($documento, $tipo_documento, $nombres, $apellidos, $telefono, $correo, $contrasena, $confirmar, $rol)
+  public function guardarUsuario(array $datos)
   {
+    // Validar que los campos requeridos no esten vacios
     if (
-      empty($documento)
-      || empty($tipo_documento)
-      || empty($nombres)
-      || empty($apellidos)
-      || empty($telefono)
-      || empty($correo)
-      || empty($contrasena)
-      || empty($confirmar)
-      || empty($rol)
+      empty($datos['documento'])
+      || empty($datos['tipo_documento'])
+      || empty($datos['nombres'])
+      || empty($datos['apellidos'])
+      || empty($datos['telefono'])
+      || empty($datos['correo'])
+      || empty($datos['contrasena'])
+      || empty($datos['confirmar'])
+      || empty($datos['rol'])
     ) return ["error" => "campos vacios"];
 
-    if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) return ["error" => "correo no valido"];
+    // Valida que el correo sea valido según el filtro de PHP
+    if (!filter_var($datos['correo'], FILTER_VALIDATE_EMAIL)) return ["error" => "correo no valido"];
 
-    if ($contrasena !== $confirmar) return ["error" => "contrasenas no coinciden"];
+    // Asegura que el usuario confirme la contraseña de manera correcta
+    if ($datos['contrasena'] !== $datos['confirmar']) return ["error" => "contrasenas no coinciden"];
 
-    $validar_usuario = $this->usuario_modelo->obtenerUsuarioPorDocumento($documento);
-    if ($validar_usuario) return ["error" => "ya existe"];
+    // Validar que no exista un usuario con el mismo documento en la base de datos antes de crear uno nuevo
+    $validar_usuario = $this->usuario_modelo->obtenerUsuarioPorDocumento($datos['documento']);
+    if (isset($validar_usuario['documento'])) return ["error" => "ya existe usuario"];
 
-    $hashed_password = password_hash($contrasena, PASSWORD_DEFAULT);
+    // Validar que no exista un usuario con el mismo correo en la base de datos antes de crear uno nuevo
+    $validar_usuari_correo = $this->usuario_modelo->obtenerUsuarioPorCorreo($datos['correo']);
+    if (isset($validar_usuari_correo['documento'])) return ["error" => "ya existe correo"];
 
-    $result = $this->usuario_modelo->guardarUsuario($documento, $tipo_documento, $nombres, $apellidos, $telefono, $correo, $hashed_password, $rol);
+    // Encripta la contraseña para almacenarla de forma segura, y remplaza el campo de contraseña en el array de datos
+    $hashed_password = password_hash($datos['contrasena'], PASSWORD_DEFAULT);
+    $datos['contrasena'] = $hashed_password;
 
-    if ($result) return ['success' => true];
+    // Crear el usuario desde el modelo y recibe mensajes de exito o error
+    $resultado = $this->usuario_modelo->guardarUsuario($datos);
+    if ($resultado) return $resultado;
 
-    return ["error" => "error al guardar"];
+    return ["error" => "error al guardar usuario"];
   }
 
-  public function obtenerTodosLosUsuarios($estado = "activo")
+  public function obtenerTodosLosUsuarios()
   {
-    $todos_los_usuarios = $this->usuario_modelo->obtenerTodosLosUsuarios($estado);
+    // Obtiene todos los usuarios desde el modelo y recibe mensajes de exito o error
+    $resultado = $this->usuario_modelo->obtenerTodosLosUsuarios();
+    if ($resultado) return $resultado;
 
-    if ($todos_los_usuarios) return $todos_los_usuarios;
-
-    return ["error" => "error al obtener"];
+    return ["error" => "error al obtener usuarios"];
   }
 
-  public function obtenerUsuarioPorDocumento($documento)
+  public function obtenerUsuarioPorDocumento(int $documento)
   {
-    if (empty($documento)) return ["error" => "campos vacios"];
+    // Validar que los campos requeridos no esten vacios
+    if (empty($documento)) return ["error" => "campos vacios usuario"];
 
-    $usuario = $this->usuario_modelo->obtenerUsuarioPorDocumento($documento);
+    // Obtiene el usuario desde el modelo y recibe mensajes de exito o error
+    $resultado = $this->usuario_modelo->obtenerUsuarioPorDocumento($documento);
+    if ($resultado) return $resultado;
 
-    if ($usuario) return $usuario;
-
-    return ["error" => "no existe"];
+    return ["error" => "error al obtener usuario"];
   }
 
-  public function editarUsuario($documento, $tipo_documento, $nombres, $apellidos, $telefono, $correo, $rol)
+  public function editarUsuario(array $datos)
   {
+    // Validar que los campos requeridos no esten vacios
     if (
-      empty($documento)
-      || empty($tipo_documento)
-      || empty($nombres)
-      || empty($apellidos)
-      || empty($telefono)
-      || empty($correo)
-      || empty($rol)
+      empty($datos['documento'])
+      || empty($datos['tipo_documento'])
+      || empty($datos['nombres'])
+      || empty($datos['apellidos'])
+      || empty($datos['telefono'])
+      || empty($datos['correo'])
     ) return ["error" => "campos vacios"];
 
-    $validar_usuario = $this->usuario_modelo->obtenerUsuarioPorDocumento($documento);
-    if (!$validar_usuario) return ["error" => "no existe"];
+    // Valida que el correo sea valido según el filtro de PHP
+    if (!filter_var($datos['correo'], FILTER_VALIDATE_EMAIL)) return ["error" => "correo no valido"];
 
-    $result = $this->usuario_modelo->editarUsuario($documento, $tipo_documento, $nombres, $apellidos, $telefono, $correo, $rol);
-    if ($result) return ["success" => true];
+    // Validar que el usuario a editar exista el la base de datos antes de intentar editarlo
+    $validar_usuario = $this->usuario_modelo->obtenerUsuarioPorDocumento($datos['documento']);
+    if (!$validar_usuario) return ["error" => "no existe usuario"];
 
-    return ["error" => "error al actualizar"];
+    // Editar el usuario desde el modelo y recibir mensajes de exito o error
+    $resultado = $this->usuario_modelo->editarUsuario($datos);
+    if ($resultado) return $resultado;
+
+    return ["error" => "error al editar usuario"];
   }
 
-  public function desactivarUsuario($documento)
+  public function desactivarUsuario(int $documento)
   {
+    // Validar que los campos requeridos no esten vacios
     if (empty($documento)) return ["error" => "campos vacios"];
 
+    // Validar que el usuario a editar exista el la base de datos antes de intentar editarlo
     $validar_usuario = $this->usuario_modelo->obtenerUsuarioPorDocumento($documento);
-    if (!$validar_usuario) return ["error" => "no existe"];
+    if (!$validar_usuario) return ["error" => "no existe usuario"];
 
-    $result = $this->usuario_modelo->desactivarUsuario($documento);
+    // Deshabilitar el usuario desde el modelo y recibir mensajes de exito o error
+    $resultado = $this->usuario_modelo->desactivarUsuario($documento);
+    if ($resultado) return $resultado;
 
-    if ($result) return ["success" => true];
-
-    return ["error" => "error al desactivar"];
+    return ["error" => "error al desactivar usuario"];
   }
 
   // PARA HACER

@@ -2,7 +2,8 @@
 class AreaModel
 {
   private $conn;
-  public $tabla = "areas";
+  private $tabla = "areas";
+  private $error_return = "";
 
   public function __construct($db)
   {
@@ -11,130 +12,164 @@ class AreaModel
 
   public function guardarArea($nombre)
   {
-    $query = "INSERT INTO {$this->tabla} (area_nombre) VALUES (?)";
-    $stmt = $this->conn->prepare($query);
+    try {
+      $query = "INSERT INTO {$this->tabla} (area_nombre) VALUES (?)";
+      $stmt = $this->conn->prepare($query);
 
-    if (!$stmt) {
-      $this->logError("Prepare failed: " . $this->conn->error);
-      return null;
+      if (!$stmt) {
+        throw new Exception("Prepare failed: " . $this->conn->error);
+      }
+
+      $stmt->bind_param("s", $nombre);
+
+      if (!$stmt->execute()) {
+        $this->error_return = "error al guardar area";
+        throw new Exception("Execute failed (Crear area): " . $stmt->error);
+      }
+
+      return ["success" => true];
+    } catch (Exception $e) {
+      $this->logError($e->getMessage());
+
+      return !empty($this->error_return) ? ["error" => $this->error_return] : [];
     }
-
-    $stmt->bind_param("s", $nombre);
-
-    if ($stmt->execute()) return true;
-
-    // Registrar error en archivo
-    $this->logError("Execute failed (Guardar área): " . $stmt->error);
-    return null;
   }
 
   public function obtenerTodasLasAreas()
   {
-    $query = "SELECT 
+    try {
+      $query = "SELECT 
               area_id as id,
               area_nombre as nombre,
               area_estado as estado
               FROM {$this->tabla}";
-    $stmt = $this->conn->prepare($query);
+      $stmt = $this->conn->prepare($query);
 
-    if (!$stmt) {
-      $this->logError("Prepare failed: " . $this->conn->error);
-      return null;
+      if (!$stmt) {
+        throw new Exception("Prepare failed: " . $this->conn->error);
+      }
+
+      if (!$stmt->execute()) {
+        $this->error_return = "error al obtener areas";
+        throw new Exception("Execute failed (Obtener todas las areas): " . $stmt->error);
+      }
+
+      $resultado = $stmt->get_result();
+      return ["success" => true, "data" => $resultado->fetch_all(MYSQLI_ASSOC)];
+    } catch (Exception $e) {
+      $this->logError($e->getMessage());
+
+      return !empty($this->error_return) ? ["error" => $this->error_return] : [];
     }
-
-    if ($stmt->execute()) {
-      $result = $stmt->get_result();
-      return $result->fetch_all(MYSQLI_ASSOC);
-    }
-
-    // Registrar error en archivo
-    $this->logError("Execute failed (Obtener todas las áreas): " . $stmt->error);
-    return null;
   }
 
   public function obtenerAreaPorId($id)
   {
-    $query = "SELECT 
+    try {
+      $query = "SELECT 
               area_id as id,
               area_nombre as nombre,
               area_estado as estado
               FROM {$this->tabla} 
               WHERE area_id = ?";
-    $stmt = $this->conn->prepare($query);
+      $stmt = $this->conn->prepare($query);
 
-    if (!$stmt) {
-      $this->logError("Prepare failed: " . $this->conn->error);
-      return null;
+      if (!$stmt) {
+        throw new Exception("Prepare failed: " . $this->conn->error);
+      }
+
+      $stmt->bind_param("i", $id);
+
+      if (!$stmt->execute()) {
+        $this->error_return = "error al obtener area";
+        throw new Exception("Execute failed (Obtener area por codigo): " . $stmt->error);
+      }
+
+      // Obtiene el resultado de la consulta y verifica si hay filas
+      $resultado = $stmt->get_result();
+      if ($resultado->num_rows > 0) return $resultado->fetch_assoc();
+    } catch (Exception $e) {
+      $this->logError($e->getMessage());
+
+      return !empty($this->error_return) ? ["error" => $this->error_return] : [];
     }
-
-    $stmt->bind_param("i", $id);
-
-    if ($stmt->execute()) {
-      $result = $stmt->get_result();
-
-      if ($result->num_rows > 0) return $result->fetch_assoc();
-    }
-
-    $this->logError("Execute failed (Obtener área por id): " . $stmt->error);
-    return null;
   }
 
   public function obtenerAreaPorNombre($nombre)
   {
-    $query = "SELECT * FROM {$this->tabla} WHERE area_nombre = ?";
-    $stmt = $this->conn->prepare($query);
+    try {
+      $query = "SELECT * FROM {$this->tabla} WHERE area_nombre = ?";
+      $stmt = $this->conn->prepare($query);
 
-    if (!$stmt) {
-      $this->logError("Prepare failed: " . $this->conn->error);
-      return null;
+      if (!$stmt) {
+        throw new Exception("Prepare failed: " . $this->conn->error);
+      }
+
+      $stmt->bind_param("s", $nombre);
+
+      if (!$stmt->execute()) {
+        $this->error_return = "error al obtener area";
+        throw new Exception("Execute failed (Obtener area por nombre): " . $stmt->error);
+      }
+
+      // Obtiene el resultado de la consulta y verifica si hay filas
+      $resultado = $stmt->get_result();
+      if ($resultado->num_rows > 0) return $resultado->fetch_assoc();
+    } catch (Exception $e) {
+      $this->logError($e->getMessage());
+
+      return !empty($this->error_return) ? ["error" => $this->error_return] : [];
     }
-
-    $stmt->bind_param("s", $nombre);
-
-    if ($stmt->execute()) {
-      $result = $stmt->get_result();
-
-      if ($result->num_rows > 0) return $result->fetch_assoc();
-    }
-
-    $this->logError("Execute failed (Obtener área por nombre): " . $stmt->error);
-    return null;
   }
 
   public function editarArea($id, $nombre)
   {
-    $query = "UPDATE {$this->tabla} SET area_nombre = ? WHERE area_id = ?";
-    $stmt = $this->conn->prepare($query);
+    try {
+      $query = "UPDATE {$this->tabla} SET area_nombre = ? WHERE area_id = ?";
+      $stmt = $this->conn->prepare($query);
 
-    if (!$stmt) {
-      $this->logError("Prepare failed: " . $this->conn->error);
-      return null;
+      if (!$stmt) {
+        throw new Exception("Prepare failed: " . $this->conn->error);
+      }
+
+      $stmt->bind_param("si", $nombre, $id);
+
+      if (!$stmt->execute()) {
+        $this->error_return = "error al editar area";
+        throw new Exception("Execute failed (Editar area): " . $stmt->error);
+      }
+
+      return ["success" => true];
+    } catch (Exception $e) {
+      $this->logError($e->getMessage());
+
+      return !empty($this->error_return) ? ["error" => $this->error_return] : [];
     }
-
-    $stmt->bind_param("si", $nombre, $id);
-
-    if ($stmt->execute()) return true;
-
-    $this->logError("Execute failed (Editar área): " . $stmt->error);
-    return null;
   }
 
   public function desactivarArea($id)
   {
-    $query = "UPDATE {$this->tabla} SET area_estado = 'desactivado' WHERE area_id = ?";
-    $stmt = $this->conn->prepare($query);
+    try {
+      $query = "UPDATE {$this->tabla} SET area_estado = 'desactivado' WHERE area_id = ?";
+      $stmt = $this->conn->prepare($query);
 
-    if (!$stmt) {
-      $this->logError("Prepare failed: " . $this->conn->error);
-      return null;
+      if (!$stmt) {
+        throw new Exception("Prepare failed: " . $this->conn->error);
+      }
+
+      $stmt->bind_param("i", $id);
+
+      if (!$stmt->execute()) {
+        $this->error_return = "error al desactivar area";
+        throw new Exception("Execute failed (Deshabilitar area): " . $stmt->error);
+      }
+
+      return ["success" => true];
+    } catch (Exception $e) {
+      $this->logError($e->getMessage());
+
+      return !empty($this->error_return) ? ["error" => $this->error_return] : [];
     }
-
-    $stmt->bind_param("i", $id);
-
-    if ($stmt->execute()) return true;
-
-    $this->logError("Execute failed (Desactivar área): " . $stmt->error);
-    return null;
   }
 
   private function logError($message)

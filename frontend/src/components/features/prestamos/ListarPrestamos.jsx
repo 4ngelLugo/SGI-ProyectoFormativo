@@ -1,4 +1,4 @@
-import { useFetch, useDeactivate } from '../../../hooks'
+import { useFetch, useDeactivate, useManejarPrestamo } from '../../../hooks'
 import TooltipCell from '../../common/TooltipCell'
 import ConfirmModal from '../../common/ConfirmModal'
 import Pagination from '../../common/Pagination'
@@ -24,7 +24,9 @@ export default function ListarPrestamos ({ setAlert, windowHeight, isMaximized, 
     showModal,
     setShowModal,
     handleDeactivate
-  } = useDeactivate({ setAlert, obtener: 'elemento', fetchElements })
+  } = useDeactivate({ setAlert, obtener: 'prestamo', fetchElements })
+
+  const { handlePrestamo } = useManejarPrestamo({ setAlert, fetchElements })
 
   // Maneja la activación de la vista para ver detalles de un elemento específico
   const handleView = (codigo, view) => {
@@ -36,9 +38,25 @@ export default function ListarPrestamos ({ setAlert, windowHeight, isMaximized, 
   }
 
   // Maneja la activación del modal para deshabilitar un elemento
-  const handleAlert = (codigo, nombre) => {
-    setDeactivateElement({ code: codigo, nombre }) // Configura el elemento a deshabilitar
+  const handleAlert = (codigo, usuario, solicitante) => {
+    setDeactivateElement({
+      codigo,
+      nombre: null,
+      usuario,
+      solicitante
+    }) // Configura el elemento a deshabilitar
     setShowModal(true) // Muestra el modal de confirmación
+  }
+
+  const formatFecha = (fechaISO) => {
+    const [year, month, day] = fechaISO.split('-') // divide por guiones
+    const fecha = new Date(year, month - 1, day) // month empieza en 0
+
+    const dia = fecha.getDate()
+    const mes = new Intl.DateTimeFormat('es-CO', { month: 'long' }).format(fecha)
+    const anio = fecha.getFullYear()
+
+    return `${dia}, ${mes} de ${anio}`
   }
 
   return (
@@ -49,7 +67,7 @@ export default function ListarPrestamos ({ setAlert, windowHeight, isMaximized, 
         <thead className='table__header'>
           <tr className='table__row'>
             <th>ID</th>
-            <th>Usuario</th>
+            <th>Prestamista</th>
             <th>Solicitante</th>
             <th>Fecha Solicitud</th>
             <th>Fecha Entrega</th>
@@ -59,34 +77,76 @@ export default function ListarPrestamos ({ setAlert, windowHeight, isMaximized, 
           </tr>
         </thead>
         <tbody className='table__body'>
-          {elements && elements.length > 0 && elements.map(({ prestamo_id, usuario_nombre, solicitante_nombre, prestamo_fecha_solicitud, prestamo_fecha_entrega, prestamo_fecha_devolucion, estado_prestamo_nombre }, index) => (
-            <tr key={index} className={`table__row ${index % 2 === 1 ? 'table__row--alt' : ''}`}>
+          {
+            elements && elements.length > 0
+              ? elements.map(({ id, usuarioNombre, usuarioApellido, solicitanteNombre, prestamoFechaSolicitud, prestamoFechaEntrega, prestamoFechaDevolucion, estado, estadoId }, index) => (
+                <tr
+                  key={index}
+                  className={
+                    `table__row
+                ${index % 2 === 1 ? 'table__row--alt' : ''}
+                ${estadoId === 4 ? 'cancelado' : ''}
+                ${estadoId === 3 ? 'atrasado' : ''}
+              `
+                  }
+                >
 
-              <TooltipCell text={prestamo_id} />
-              <TooltipCell text={usuario_nombre} />
-              <TooltipCell text={solicitante_nombre} />
-              <TooltipCell text={prestamo_fecha_solicitud} />
-              <TooltipCell text={prestamo_fecha_entrega} />
-              <TooltipCell text={prestamo_fecha_devolucion} />
-              <TooltipCell text={estado_prestamo_nombre} />
+                  <TooltipCell text={id} />
+                  <TooltipCell text={`${usuarioNombre} ${usuarioApellido}`} />
+                  <TooltipCell text={solicitanteNombre} />
+                  <TooltipCell text={formatFecha(prestamoFechaSolicitud)} />
+                  <TooltipCell text={formatFecha(prestamoFechaEntrega)} />
+                  <TooltipCell text={formatFecha(prestamoFechaDevolucion)} />
+                  <TooltipCell text={estado} />
 
-              <td className='table__body--actions'>
-                {/* Iconos de acciones para cada elemento */}
-                <div className='tooltip-container'>
-                  <Icon icon='system-uicons:eye' width='24' strokeWidth={1.2} onClick={() => handleView(prestamo_id, 'buscarPrestamo')} />
-                  <span className='tooltip'>Ver</span>
-                </div>
-                {/* <div className='tooltip-container'>
-                  <Icon icon='system-uicons:create' width='24' strokeWidth={1.2} onClick={() => handleView(prestamo_id, 'editElement')} />
-                  <span className='tooltip'>Editar</span>
-                </div>
-                <div className='tooltip-container'>
-                  <Icon icon='system-uicons:trash' width='24' strokeWidth={1.2} onClick={() => handleAlert(prestamo_id, nombre)} />
-                  <span className='tooltip'>Deshabilitar</span>
-                </div> */}
-              </td>
-            </tr>
-          ))}
+                  <td className='table__body--actions'>
+                    {/* Iconos de acciones para cada elemento */}
+                    <div className='tooltip-container'>
+                      <Icon icon='system-uicons:eye' width='24' strokeWidth={1.2} onClick={() => handleView(id, 'buscarPrestamo')} />
+                      <span className='tooltip'>Ver más detalles</span>
+                    </div>
+                    <div className='tooltip-container'>
+                      <Icon icon='system-uicons:create' width='24' strokeWidth={1.2} onClick={() => handleView(id, 'editarPrestamo')} />
+                      <span className='tooltip'>Editar</span>
+                    </div>
+                    {estadoId !== 4 && estadoId !== 5 && (
+                      <div className='tooltip-container'>
+                        <Icon icon='system-uicons:cross-circle' width='24' strokeWidth={1.2} onClick={() => handleAlert(id, usuarioNombre, solicitanteNombre)} />
+                        <span className='tooltip'>Cancelar</span>
+                      </div>
+                    )}
+                    {estadoId === 1 && (
+                      <div className='tooltip-container'>
+                        <Icon
+                          icon='system-uicons:inbox-alt'
+                          width='24'
+                          strokeWidth={1.2}
+                          onClick={() => handlePrestamo(id, 'entregar')}
+                        />
+                        <span className='tooltip'>Entregar</span>
+                      </div>
+                    )}
+
+                    {(estadoId === 2 || estadoId === 3) && (
+                      <div className='tooltip-container'>
+                        <Icon
+                          icon='system-uicons:check-circle-outside'
+                          width='24'
+                          strokeWidth={1.2}
+                          onClick={() => handlePrestamo(id, 'completar')}
+                        />
+                        <span className='tooltip'>Completar</span>
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              ))
+              : (
+                <tr>
+                  <td colSpan={7} className='notFound--message'>No se encontró ningun prestamo.</td>
+                </tr>
+                )
+          }
         </tbody>
       </table>
 
@@ -94,12 +154,28 @@ export default function ListarPrestamos ({ setAlert, windowHeight, isMaximized, 
 
       <ConfirmModal
         icon={danger}
-        title='¿Está seguro que desea deshabilitar este elemento?'
-        message={`${deactivateElement.code} - ${deactivateElement.nombre}`}
+        title='¿Está seguro que desea cancelar este prestamo?'
+        message={
+          <MensajeDesactivar
+            codigo={deactivateElement.codigo}
+            usuario={deactivateElement.usuario}
+            solicitante={deactivateElement.solicitante}
+          />
+        }
         showModal={showModal}
         setShowModal={setShowModal}
         action={handleDeactivate}
       />
+    </>
+  )
+}
+
+const MensajeDesactivar = ({ codigo, usuario, solicitante }) => {
+  return (
+    <>
+      <p>ID del prestamo: {codigo}</p>
+      <p>Prestamista: {usuario}</p>
+      <p>Solicitante: {solicitante}</p>
     </>
   )
 }

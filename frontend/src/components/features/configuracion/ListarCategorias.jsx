@@ -15,7 +15,7 @@ export default function ListarCategorias ({ setAlert, windowHeight, isMaximized 
 
   // Hook para manejar la lista de elementos y su paginación
   const {
-    elements,
+    allElements: elements,
     setElements,
     page,
     setPage,

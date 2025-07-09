@@ -52,7 +52,6 @@
 }
 
 .element-info__title {
-  width      : fit-content;
   font-weight: 600;
   color      : var(--font-color);
   font-size  : 15px;
@@ -74,4 +73,8 @@
   display              : grid;
   grid-template-columns: repeat(2, 1fr);
   gap                  : 12px;
+}
+
+svg {
+  outline: none;
 }

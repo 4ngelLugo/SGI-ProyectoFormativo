@@ -1,6 +1,6 @@
 import { useRef } from 'react'
-import { UpdateElementsEndpoint, EditarUsuarioEndpoint, EditarRolEndpoint, EditarAreaEndpoint, EditarCategoriaEndpoint, EditarMarcaEndpoint, EditarTipoDocumentoEndpoint } from '../../config/apiRoutes'
-
+import { UpdateElementsEndpoint, EditarUsuarioEndpoint, EditarRolEndpoint, EditarAreaEndpoint, EditarCategoriaEndpoint, EditarMarcaEndpoint, EditarTipoDocumentoEndpoint, EditarObservacionPrestamo } from '../../config/apiRoutes'
+import { MESSAGES } from '../../constants/messages'
 /**
  * Hook para manejar la edición de un elemento.
  * Soporta tanto el envío desde formularios HTML como desde objetos JS.
@@ -17,7 +17,8 @@ export const useEdit = ({ setAlert, obtener, setActiveView }) => {
     area: EditarAreaEndpoint,
     categoria: EditarCategoriaEndpoint,
     marca: EditarMarcaEndpoint,
-    tipoDocumento: EditarTipoDocumentoEndpoint
+    tipoDocumento: EditarTipoDocumentoEndpoint,
+    prestamo: EditarObservacionPrestamo
   }
 
   const vistas = {
@@ -30,22 +31,46 @@ export const useEdit = ({ setAlert, obtener, setActiveView }) => {
   const apiEndpoint = endpoints[obtener]
   const formRef = useRef(null)
 
+  // Función para editar a través de un formulario
   const handleSubmit = (e) => {
     e.preventDefault()
+
+    const errorLabels = formRef.current.querySelectorAll('.errorLabel')
+    const tieneErrores = [...errorLabels].some(p => p.textContent !== '')
+
+    if (tieneErrores) {
+      setAlert({
+        type: 'error',
+        message: 'Hay errores en el formulario',
+        active: true
+      })
+      return
+    }
+
     const formData = new FormData(formRef.current)
     sendRequest(formData)
   }
 
+  // Función para editar directamente en la tabla
   const submitData = async (data) => {
     const formData = new FormData()
     Object.entries(data).forEach(([key, value]) => {
       formData.append(key, value)
     })
 
-    return await sendRequest(formData) // Retorna true o false
+    return await sendRequest(formData)
   }
 
   const sendRequest = async (formData) => {
+    if (!apiEndpoint) {
+      setAlert({
+        type: 'error',
+        message: 'Tipo de operación inválido',
+        active: true
+      })
+      return
+    }
+
     try {
       const res = await fetch(apiEndpoint, {
         method: 'POST',
@@ -56,31 +81,36 @@ export const useEdit = ({ setAlert, obtener, setActiveView }) => {
       const response = await res.json()
 
       if (response.error) {
-        const messages = {
-          'metodo invalido': 'Error en el método de envío',
-          'error de conexion a la base de datos': 'Error al conectar con la base de datos',
-          'campos vacios': 'Por favor complete todos los campos',
-          'no existe': `No se encontró el ${obtener}`,
-          'error al actualizar': `Ocurrió un error al editar el ${obtener}`
-        }
-        setAlert({ type: 'error', message: messages[response.error] || 'Error desconocido', active: true })
+        setAlert({
+          type: 'error',
+          message: MESSAGES[obtener][response.error] || 'Error desconocido',
+          active: true
+        })
         return false
       }
 
       if (response.success) {
-        setAlert({ type: 'success', message: 'Elemento editado correctamente', active: true })
+        setAlert({
+          type: 'success',
+          message: MESSAGES[obtener].successUpdate,
+          active: true
+        })
+
         if (vistas[obtener]) {
           setActiveView(vistas[obtener])
         }
+
         return true
       }
 
-      // Caso inesperado
-      setAlert({ type: 'error', message: 'Respuesta inesperada del servidor', active: true })
-      return false
+      // En caso de que ocurra un error en la petición, o un error en el servidor, se captura y se muestra un mensaje de error
     } catch (error) {
       console.error(error)
-      setAlert({ type: 'error', message: 'Ocurrió un error en la petición', active: true })
+      setAlert({
+        type: 'error',
+        message: 'Ocurrió un error en la petición',
+        active: true
+      })
       return false
     }
   }

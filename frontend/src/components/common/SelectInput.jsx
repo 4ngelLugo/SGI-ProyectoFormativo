@@ -61,7 +61,8 @@ export default function SelectInput ({ options, placeholder, name, defaultValue,
           placeholder: (base) => ({
             ...base,
             fontSize: '1rem',
-            color: '#84949f'
+            color: '#84949f',
+            paddingLeft: '.35rem'
           }),
           singleValue: (base) => ({
             ...base,
@@ -73,7 +74,7 @@ export default function SelectInput ({ options, placeholder, name, defaultValue,
         }}
       />
 
-      <p className='errorLabel'>{errorLabel}</p>
+      {errorLabel && <p className='errorLabel'>{errorLabel}</p>}
     </div>
   )
 }

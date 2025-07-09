@@ -14,3 +14,5 @@ export { useFetchByCode } from './commonHooks/useFetchByCode'
 export { useFetch } from './commonHooks/useFetch'
 export { useEdit } from './commonHooks/useEdit'
 export { useDeactivate } from './commonHooks/useDeactivate'
+
+export { useManejarPrestamo } from './useManejarPrestamo'

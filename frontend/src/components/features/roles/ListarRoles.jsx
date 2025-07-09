@@ -9,7 +9,7 @@ import { Icon } from '@iconify/react'
 export default function ListarRoles ({ setAlert, windowHeight, isMaximized, setActiveView, setSearchedItem, setSearchedEdit }) {
   // Hook para manejar la lista de elementos y su paginación
   const {
-    elements,
+    allElements: elements,
     setElements,
     page,
     setPage,
@@ -35,7 +35,7 @@ export default function ListarRoles ({ setAlert, windowHeight, isMaximized, setA
   }
 
   const handleAlert = (codigo, nombre) => {
-    setDeactivateElement({ code: codigo, nombre }) // Configura el elemento a deshabilitar
+    setDeactivateElement({ codigo, nombre }) // Configura el elemento a deshabilitar
     setShowModal(true) // Muestra el modal de confirmación
   }
 
@@ -85,7 +85,7 @@ export default function ListarRoles ({ setAlert, windowHeight, isMaximized, setA
       <ConfirmModal
         icon={danger}
         title='¿Está seguro que desea deshabilitar este rol?'
-        message={`${deactivateElement.code} - ${deactivateElement.nombre}`}
+        message={`${deactivateElement.codigo} - ${deactivateElement.nombre}`}
         showModal={showModal}
         setShowModal={setShowModal}
         action={handleDeactivate}

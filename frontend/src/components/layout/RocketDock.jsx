@@ -11,7 +11,7 @@ const imageList = Object.entries(images)
   })
   .sort((a, b) => {
     const order = [
-      'elementos', 'usuarios', 'prestamos', 'terminal', 'configuración', 'ayuda'
+      'elementos', 'usuarios', 'prestamos', 'maps', 'terminal', 'configuración', 'ayuda'
     ]
 
     return order.indexOf(a.name) - order.indexOf(b.name)
