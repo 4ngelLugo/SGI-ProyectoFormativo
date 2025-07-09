@@ -220,3 +220,31 @@
   grid-template-columns: repeat(2, 1fr);
   gap                  : 1em;
 }
+
+.recomendacion {
+  grid-column: 1/-1;
+}
+
+.recomendacion__textarea {
+  width     : 100%;
+  min-height: 120px;
+  padding   : 0.7rem 1rem;
+
+  background-color: #fff;
+  color           : #2c3e50;
+  border          : 1px solid #dcdcdc;
+  border-radius   : 8px;
+
+  font-size  : 1rem;
+  font-family: inherit;
+
+  resize: vertical;
+}
+
+.recomendacion__label {
+  margin-bottom: 0.3rem;
+
+  color: #2f3640;
+
+  font-size: 1rem;
+}

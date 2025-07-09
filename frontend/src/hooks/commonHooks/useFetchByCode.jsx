@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { FetchElementByCodeEndpoint, ObtenerUsuarioPorCodigoEndpoint, ObtenerCategoriaPorCodigoEndpoint, ObtenerRolPorIDEndpoint, ObtenerAreaPorCodigoEndpoint, ObtenerTipoDocumentoPorCodigoEndpoint, ObtenerPrestamoPorCodigoEndpoint } from '../../config/apiRoutes'
-
+import { MESSAGES } from '../../constants/messages'
 /**
  * Hook para manejar la busqueda de un elemento por su codigo
  *
@@ -27,31 +27,51 @@ export const useFetchByCode = ({ setAlert, codeToSearch, obtener }) => {
     return
   }
 
-  // Estado para guardar si la pagina esta guardando está cargando
-  // Estado para guardar si el usuario está escribiendo
+  // Estado para guardar si la pagina está cargando
   // Estado para almacenar los datos del elemento
   const [loading, setLoading] = useState(false)
-  const [typing, setTyping] = useState(false)
   const [element, setElement] = useState(null)
 
   // Función para buscar un elemento por su codigo, haciendo una petición a la API
   const fetchElement = async (code) => {
+    if (!apiEndpoint) {
+      setAlert({
+        type: 'error',
+        message: 'Tipo de operación inválido',
+        active: true
+      })
+      return
+    }
+
     try {
       const res = await fetch(`${apiEndpoint}${code}`)
+
       const response = await res.json()
 
       // Si la respuesta tiene error, se muestra una alerta y se limpia el estado del elemento
       if (response.error) {
-        setAlert({ type: 'error', message: response.error, active: true })
+        setAlert({
+          type: 'error',
+          message: MESSAGES[obtener][response.error] || 'Error desconocido',
+          active: true
+        })
         setElement(null)
+
+        return false
       } else {
         setElement(response)
+
+        return true
       }
+
+      // En caso de que ocurra un error en la petición, o un error en el servidor, se captura y se muestra un mensaje de error
     } catch (error) {
-      // Si ocurre un error en la solicitud, se muestra una alerta de error
-      setAlert({ type: 'error', message: 'Ocurrió un error en la petición', active: true })
+      setAlert({
+        type: 'error',
+        message: 'Ocurrió un error en la petición',
+        active: true
+      })
       setElement(null)
-      setTyping(false)
     }
   }
 
@@ -61,20 +81,17 @@ export const useFetchByCode = ({ setAlert, codeToSearch, obtener }) => {
     if (!codeToSearch) {
       setElement(null)
       setLoading(false)
-      setTyping(false)
       return
     }
 
-    // Marca que se está escribiendo y comienza a cargar
-    setTyping(true)
+    // Comienza a cargar
     setLoading(true)
 
-    // Configura un temporizador de 0.7 segundos para evitar llamadas a la API innecesarias mientras el usuario escribe
+    // Configura un temporizador de 0.5 segundos para evitar llamadas a la API innecesarias
     const timer = setTimeout(async () => {
-      setTyping(false)
       await fetchElement(codeToSearch)
       setLoading(false)
-    }, 700)
+    }, 500)
 
     // Limpia el temporizador si el componente se desmonta o si el código de búsqueda cambia
     return () => clearTimeout(timer)
@@ -82,7 +99,6 @@ export const useFetchByCode = ({ setAlert, codeToSearch, obtener }) => {
 
   return {
     loading,
-    typing,
     element,
     setElement,
     setLoading

@@ -61,6 +61,14 @@
   max-width: fit-content;
 }
 
+.cancelado .td-text{
+  color: var(--font-light-color);
+}
+
+.atrasado .td-text{
+  color: red;
+}
+
 .table__row--alt {
   background-color: var(--hightlight-bg);
 }
@@ -85,6 +93,7 @@
 }
 
 .table__body--actions svg {
+  color     : var(--font-color);
   cursor    : pointer;
   transition: transform 0.2s ease;
 }

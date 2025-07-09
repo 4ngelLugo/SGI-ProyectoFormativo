@@ -11,6 +11,7 @@ import EditarUsuario from '../components/features/usuarios/EditarUsuario'
 import CrearPrestamo from '../components/features/prestamos/CrearPrestamo'
 import ListarPrestamos from '../components/features/prestamos/ListarPrestamos'
 import BuscarPrestamo from '../components/features/prestamos/BuscarPrestamo'
+import EditarPrestamo from '../components/features/prestamos/EditarPrestamo'
 
 import ListarRoles from '../components/features/roles/ListarRoles'
 import CrearRol from '../components/features/roles/CrearRol'
@@ -21,6 +22,9 @@ import ListarAreas from '../components/features/configuracion/ListarAreas'
 import ListarCategorias from '../components/features/configuracion/ListarCategorias'
 import ListarMarcas from '../components/features/configuracion/ListarMarcas'
 import ListarTipoDocumento from '../components/features/configuracion/ListarTipoDocumento'
+
+import ElementosPrestados from '../components/features/reportes/ElementosPrestados'
+import PrestamosUsuarios from '../components/features/reportes/PrestamosUsuarios'
 
 const iconos = {
   listar: 'system-uicons:clipboard-notes',
@@ -93,6 +97,18 @@ export const windowContents = {
         />
     }
   },
+  maps: {
+    sidebar: [
+      { key: 'elementosPrestados', icon: iconos.listar, label: 'Elementos Prestados' },
+      { key: 'prestamosUsuarios', icon: iconos.listar, label: 'Prestamos por usuario' }
+    ],
+    views: {
+      elementosPrestados: ({ setAlert }) =>
+        <ElementosPrestados setAlert={setAlert} />,
+      prestamosUsuarios: ({ setAlert }) =>
+        <PrestamosUsuarios setAlert={setAlert} />
+    }
+  },
   configuración: {
     sidebar: [
       { key: 'listarAreas', icon: iconos.listar, label: 'Listar Areas' },
@@ -151,7 +167,7 @@ export const windowContents = {
           searchedItem={searchedItem}
           setSearchedItem={setSearchedItem}
         />,
-      editarRol: ({ setAlert, searchedEdit,setActiveView }) =>
+      editarRol: ({ setAlert, searchedEdit, setActiveView }) =>
         <EditarRol
           setAlert={setAlert}
           searchedEdit={searchedEdit}
@@ -163,7 +179,7 @@ export const windowContents = {
     sidebar: [
       { key: 'listarPrestamos', icon: iconos.listar, label: 'Listar Prestamos' },
       { key: 'crearPrestamo', icon: iconos.crear, label: 'Solicitar Prestamo' },
-      { key: 'buscarPrestamo', icon: iconos.buscar, label: 'Buscar Prestamo' },
+      { key: 'buscarPrestamo', icon: iconos.buscar, label: 'Buscar Prestamo' }
     ],
     views: {
       listarPrestamos: ({ setAlert, windowHeight, isMaximized, setActiveView, setSearchedItem, setSearchedEdit }) =>
@@ -183,6 +199,12 @@ export const windowContents = {
           searchedItem={searchedItem}
           setSearchedItem={setSearchedItem}
         />,
+      editarPrestamo: ({ setAlert, searchedEdit, setActiveView }) =>
+        <EditarPrestamo
+          setAlert={setAlert}
+          searchedEdit={searchedEdit}
+          setActiveView={setActiveView}
+        />
     }
   }
 }

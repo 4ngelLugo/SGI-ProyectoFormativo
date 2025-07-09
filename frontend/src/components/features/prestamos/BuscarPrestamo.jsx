@@ -3,7 +3,7 @@ import Select from 'react-select'
 import '../../../styles/globals/lists.css'
 import { useEffect, useState } from 'react'
 
-export default function BuscarPrestamo({ setAlert, searchedItem, setSearchedItem }) {
+export default function BuscarPrestamo ({ setAlert, searchedItem, setSearchedItem }) {
   const {
     loading,
     typing,
@@ -12,13 +12,16 @@ export default function BuscarPrestamo({ setAlert, searchedItem, setSearchedItem
     setLoading
   } = useFetchByCode({ setAlert, codeToSearch: searchedItem, obtener: 'prestamo' })
 
+  const devolutivos = element?.elementos.filter(el => el.elemento_tipo === 'devolutivo') || []
+  const consumibles = element?.elementos.filter(el => el.elemento_tipo === 'consumible') || []
+
   const {
     elements
   } = useFetch({ setAlert, windowHeight: null, isMaximized: null, obtener: 'prestamos' })
 
   const opciones = elements.map(e => ({
-    value: e.prestamo_id,
-    label: `${e.prestamo_id}`,
+    value: e.id,
+    label: `${e.id}`,
     data: e
   }))
   const [selectedOption, setSelectedOption] = useState(null)
@@ -43,6 +46,17 @@ export default function BuscarPrestamo({ setAlert, searchedItem, setSearchedItem
       setSearchedItem(option.value)
       setSelectedOption(option)
     }
+  }
+
+  const formatFecha = (fechaISO) => {
+    const [year, month, day] = fechaISO.split('-') // divide por guiones
+    const fecha = new Date(year, month - 1, day) // month empieza en 0
+
+    const dia = fecha.getDate()
+    const mes = new Intl.DateTimeFormat('es-CO', { month: 'long' }).format(fecha)
+    const anio = fecha.getFullYear()
+
+    return `${dia}, ${mes} de ${anio}`
   }
 
   return (
@@ -96,49 +110,51 @@ export default function BuscarPrestamo({ setAlert, searchedItem, setSearchedItem
             <>
               <div className='element-info__container'>
                 <p className='element-info__subtitle'>Prestamo</p>
-                <Info label='ID prestamo' value={element.prestamo.prestamo_id} />
-                <Info label='Usuario' value={element.prestamo.usuario_nombre} />
+                <Info label='ID prestamo' value={element.prestamo.id} />
+                <Info label='Prestamista' value={`${element.prestamo.usuario_nombre} ${element.prestamo.usuario_apellido}`} />
                 <Info label='Tipo' value={element.prestamo.prestamo_tipo} />
-                <Info label='Estado' value={element.prestamo.estado_prestamo_nombre} />
-                <Info label='Solicitud' value={element.prestamo.prestamo_fecha_solicitud} />
-                <Info label='Entrega' value={element.prestamo.prestamo_fecha_entrega} />
-                <Info label='Devolución' value={element.prestamo.prestamo_fecha_devolucion} />
+                <Info label='Estado' value={element.prestamo.estado} />
+                <Info label='Solicitud' value={formatFecha(element.prestamo.prestamo_fecha_solicitud)} />
+                <Info label='Entrega' value={formatFecha(element.prestamo.prestamo_fecha_entrega)} />
+                <Info label='Devolución' value={formatFecha(element.prestamo.prestamo_fecha_devolucion)} />
               </div>
 
               <div className='element-info__container'>
                 <p className='element-info__subtitle'>Solicitante</p>
-                <Info label='Documento' value={element.solicitante.solicitante_documento} />
-                <Info label='Nombre' value={element.solicitante.solicitante_nombre} />
-                <Info label='Correo' value={element.solicitante.solicitante_correo} />
-                <Info label='Telefono' value={element.solicitante.solicitante_telefono} />
-                <Info label='Direccion' value={element.solicitante.solicitante_direccion} />
+                <Info label='Documento' value={element.prestamo.solicitante_documento} />
+                <Info label='Nombre' value={element.prestamo.solicitante_nombre} />
+                <Info label='Correo' value={element.prestamo.solicitante_correo} />
+                <Info label='Telefono' value={element.prestamo.solicitante_telefono} />
+                <Info label='Direccion' value={element.prestamo.solicitante_direccion} />
               </div>
 
               <div className='element-info__container'>
                 <p className='element-info__subtitle'>Elementos</p>
-                <div className="element-info__elements">
-                  <p style={{ paddingLeft: '1rem' }} className='element-info__title'>Devolutivos</p>
-                  {element.devolutivos && element.devolutivos.map((devo) => (
-                    <Info key={devo.elemento_codigo} label={devo.elemento_codigo} value={`${devo.elemento_nombre}`} />
-                  ))}
-                </div>
-                <div className="element-info__elements">
-                  <p style={{ paddingLeft: '1rem' }} className='element-info__title'>Consumibles</p>
-                  {element.consumibles && element.consumibles.map((cons) => (
-                    <Info key={cons.elemento_codigo} label={cons.elemento_codigo} value={`${cons.elemento_nombre} - x${cons.elemento_cantidad}`} />
-                  ))}
-                </div>
-
+                {devolutivos.length > 0 &&
+                  <div className='element-info__elements'>
+                    <p style={{ paddingLeft: '1rem' }} className='element-info__title'>Devolutivos</p>
+                    {devolutivos.map((devo) => (
+                      <Info key={devo.elemento_codigo} label={devo.elemento_codigo} value={`${devo.elemento_nombre}`} />
+                    ))}
+                  </div>}
+                {consumibles.length > 0 &&
+                  <div className='element-info__elements'>
+                    <p style={{ paddingLeft: '1rem' }} className='element-info__title'>Consumibles</p>
+                    {consumibles.map((cons) => (
+                      <Info key={cons.elemento_codigo} label={cons.elemento_codigo} value={`${cons.elemento_nombre} - x${cons.elemento_cantidad}`} />
+                    ))}
+                  </div>}
               </div>
 
             </>
-          ) : !typing && (<p className='notFound--message'>No se encontró el prestamo.</p>)}
+            )
+          : !typing && (<p className='notFound--message'>No se encontró ningun prestamo</p>)}
     </>
   )
 }
 
 // Componente reutilizable para mostrar información del elemento
-function Info({ label, value }) {
+function Info ({ label, value }) {
   return (
     <div className='element-info'>
       <span className='element-info__title'>{label}</span>

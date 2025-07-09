@@ -8,7 +8,7 @@ import Alert from '../components/common/Alert'
 import ContextMenu from '../components/common/ContextMenu'
 import '../styles/desktop.css'
 
-export default function Desktop() {
+export default function Desktop () {
   // Estado array con los IDs de las ventanas abiertas y su estado (visible o minimizada)
   // Estado de la ventana que está al frente (ventana abierta o en la que se hizo clic más recientemente)
   // Estado con la alerta (tipo, mensaje y visibilidad)
@@ -27,6 +27,12 @@ export default function Desktop() {
       navigate('/login')
     }
   }, [isAuthenticated])
+
+  useEffect(() => {
+    if (localStorage.getItem('isAuthenticated') !== 'true') {
+      navigate('/login')
+    }
+  }, [])
 
   // Abre una ventana al hacer clic en uno de los iconos del RocketDock y la lleva al frente
   const onIconClick = (name) => {
@@ -85,7 +91,7 @@ export default function Desktop() {
   return (
     <main className='mainScreen' ref={mainScreen}>
       <Navbar windowOnTop={isTop} setIsAuthenticated={setIsAuthenticated} />
-      <ContextMenu mainScreen={mainScreen.current} />
+      {/* <ContextMenu mainScreen={mainScreen.current} /> */}
       <div className='screen'>
         {/* Mapeo de las ventanas abiertas, si la ventana está minimizada no se renderiza */}
         {openWindows.map((window) => (

@@ -8,14 +8,14 @@ import '../../../styles/globals/tables.css'
 import { Icon } from '@iconify/react'
 import { useState } from 'react'
 
-export default function ListarAreas({ setAlert, windowHeight, isMaximized }) {
+export default function ListarAreas ({ setAlert, windowHeight, isMaximized }) {
   const [editingId, setEditingId] = useState(null)
   const [editedName, setEditedName] = useState('')
   const [createModal, setCreateModal] = useState(false)
 
   // Hook para manejar la lista de elementos y su paginación
   const {
-    elements,
+    allElements: elements,
     setElements,
     page,
     setPage,
@@ -107,10 +107,10 @@ export default function ListarAreas({ setAlert, windowHeight, isMaximized }) {
                         autoFocus
                       />
                     </td>
-                  )
+                    )
                   : (
                     <TooltipCell text={nombre} />
-                  )
+                    )
               }
 
               <TooltipCell text={estado} />

@@ -3,6 +3,7 @@ class Permiso
 {
   private $conn;
   private $tabla = 'permisos';
+  private $error_return = "";
 
   public function __construct($db)
   {
@@ -11,28 +12,32 @@ class Permiso
 
   public function obtenerTodosLosPermisos()
   {
-    $sql = "SELECT
+    try {
+      $sql = "SELECT
             permiso_id as id,
             permiso_nombre as nombre,
             permiso_modulo as modulo
             FROM {$this->tabla}
             ORDER BY permiso_modulo, permiso_nombre";
-    $stmt = $this->conn->prepare($sql);
+      $stmt = $this->conn->prepare($sql);
 
 
-    if (!$stmt) {
-      $this->logError("Prepare failed: " . $this->conn->error);
-      return null;
+      if (!$stmt) {
+        throw new Exception("Prepare failed: " . $this->conn->error);
+      }
+
+      if (!$stmt->execute()) {
+        $this->error_return = "error al obtener permisos";
+        throw new Exception("Execute failed (Obtener todos los permisos): " . $stmt->error);
+      }
+
+      $resultado = $stmt->get_result();
+      return ["success" => true, "data" => $resultado->fetch_all(MYSQLI_ASSOC)];
+    } catch (Exception $e) {
+      $this->logError($e->getMessage());
+
+      return !empty($this->error_return) ? ["error" => $this->error_return] : [];
     }
-
-    if ($stmt->execute()) {
-      $result = $stmt->get_result();
-      return $result->fetch_all(MYSQLI_ASSOC);
-    }
-
-    // Registrar error en archivo
-    $this->logError("Execute failed (Obtener todas los permisos): " . $stmt->error);
-    return null;
   }
 
   private function logError($message)

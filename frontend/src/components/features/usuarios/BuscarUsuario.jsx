@@ -6,7 +6,6 @@ import { useEffect, useState } from 'react'
 export default function BuscarUsuario ({ setAlert, searchedItem, setSearchedItem }) {
   const {
     loading,
-    typing,
     element,
     setElement,
     setLoading
@@ -18,7 +17,7 @@ export default function BuscarUsuario ({ setAlert, searchedItem, setSearchedItem
 
   const opciones = elements.map(e => ({
     value: e.documento,
-    label: `${e.documento} - ${e.nombres}`,
+    label: `${e.documento}: ${e.nombres} ${e.apellidos}`,
     data: e
   }))
   const [selectedOption, setSelectedOption] = useState(null)
@@ -44,7 +43,7 @@ export default function BuscarUsuario ({ setAlert, searchedItem, setSearchedItem
       setSelectedOption(option)
     }
   }
-  
+
   return (
     <>
       <span className='title see-title'>
@@ -96,14 +95,15 @@ export default function BuscarUsuario ({ setAlert, searchedItem, setSearchedItem
             <div className='element-info__container'>
               <Info label='Documento' value={element.documento} />
               <Info label='Tipo de documento' value={element.tipoDocumento} />
-              <Info label='Nombre' value={`${element.nombres} ${element.apellidos}`} />
+              <Info label='Nombres' value={element.nombres} />
+              <Info label='Apellidos' value={element.apellidos} />
               <Info label='Telefono' value={element.telefono} />
               <Info label='Correo' value={element.correo} />
               <Info label='Rol' value={element.rolNombre} />
               <Info label='Estado' value={element.estado} />
             </div>
             )
-          : !typing && (<p>No se encontró el usuario.</p>)}
+          : (<p className='notFound--message'>No se encontró ningun usuario usuario</p>)}
     </>
   )
 }
