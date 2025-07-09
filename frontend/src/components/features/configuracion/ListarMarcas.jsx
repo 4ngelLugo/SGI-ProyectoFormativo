@@ -8,7 +8,7 @@ import '../../../styles/globals/tables.css'
 import { Icon } from '@iconify/react'
 import { useState } from 'react'
 
-export default function ListarMarcas({ setAlert, windowHeight, isMaximized }) {
+export default function ListarMarcas ({ setAlert, windowHeight, isMaximized }) {
   const [editingId, setEditingId] = useState(null)
   const [editedName, setEditedName] = useState('')
   const [createModal, setCreateModal] = useState(false)
@@ -107,10 +107,10 @@ export default function ListarMarcas({ setAlert, windowHeight, isMaximized }) {
                         autoFocus
                       />
                     </td>
-                  )
+                    )
                   : (
                     <TooltipCell text={nombre} />
-                  )
+                    )
               }
               <TooltipCell text={estado} />
 

@@ -44,7 +44,7 @@ export default function BuscarUsuario ({ setAlert, searchedItem, setSearchedItem
       setSelectedOption(option)
     }
   }
-  
+
   return (
     <>
       <span className='title see-title'>

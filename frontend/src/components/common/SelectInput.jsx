@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useValidateSelect } from '../../hooks/commonHooks/useValidateSelect'
 import Select from 'react-select'
 
-export default function SelectInput({ options, placeholder, name, defaultValue, required, setTipo, isDisabled }) {
+export default function SelectInput ({ options, placeholder, name, defaultValue, required, setTipo, isDisabled }) {
   const [selectedOption, setSelectedOption] = useState(null)
 
   const opciones = options.map(e => ({
@@ -42,7 +42,7 @@ export default function SelectInput({ options, placeholder, name, defaultValue, 
         value={selectedOption}
         onChange={handleChange}
         onBlur={validate}
-        isDisabled={isDisabled ? true : false}
+        isDisabled={!!isDisabled}
         menuPlacement='auto'
         menuPortalTarget={document.body}
         styles={{

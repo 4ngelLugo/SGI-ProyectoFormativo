@@ -1,6 +1,6 @@
 import { useValidateInput } from '../../hooks/commonHooks/useValidateInput'
 
-export default function Input({ type, placeholder, name, defaultValue, required, direccion }) {
+export default function Input ({ type, placeholder, name, defaultValue, required, direccion }) {
   const { errorLabel, validate, today } = useValidateInput({ required, type, direccion })
 
   return (

@@ -4,7 +4,7 @@ import ConfirmModal from './ConfirmModal'
 import danger from '../../assets/icons/danger.svg'
 import { useState } from 'react'
 
-export default function Navbar({ windowOnTop, setIsAuthenticated }) {
+export default function Navbar ({ windowOnTop, setIsAuthenticated }) {
   // Función que capitaliza la primera letra de la palabra y convierte el resto a minúsculas
   const capitalizeFirstLetter = (str) => {
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
@@ -30,7 +30,7 @@ export default function Navbar({ windowOnTop, setIsAuthenticated }) {
           <span><strong>{formattedWindowOnTop}</strong></span>
         </div>
         <div className='cerrar' onClick={() => setShowModal(true)}>
-          <img src={cerrar} alt="icono de cerrar sesión" />
+          <img src={cerrar} alt='icono de cerrar sesión' />
         </div>
       </nav>
 

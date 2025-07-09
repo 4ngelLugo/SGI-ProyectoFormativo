@@ -4,7 +4,7 @@ import Select from 'react-select'
 import Input from '../../common/Input'
 import '../../../styles/formPrestamos.css'
 
-export default function CrearPrestamo({ setAlert, setActiveView }) {
+export default function CrearPrestamo ({ setAlert, setActiveView }) {
   const [devolutivos, setDevolutivos] = useState([])
   const [consumibles, setConsumibles] = useState([])
   const [seleccionadosDevolutivos, setSeleccionadosDevolutivos] = useState([])
@@ -52,8 +52,8 @@ export default function CrearPrestamo({ setAlert, setActiveView }) {
       <form className='form' ref={formRef} onSubmit={handleSubmit}>
         <p className='message'>Los campos marcados con asterisco (*) son obligatorios.</p>
 
-        <input type="hidden" value='Almacenista' name='usertype' />
-        <input type="hidden" value={usuario.documento} name='usuario_documento' />
+        <input type='hidden' value='Almacenista' name='usertype' />
+        <input type='hidden' value={usuario.documento} name='usuario_documento' />
 
         <section className='prestamo-solicitante'>
           <h3 className='prestamo-seccion-titulo'>Información del solicitante</h3>
@@ -199,7 +199,7 @@ export default function CrearPrestamo({ setAlert, setActiveView }) {
 
         <section>
           <label htmlFor='observaciones' className='prestamo-label'>Observaciones</label>
-          <textarea name='observaciones' id='observaciones' className='prestamo-textarea' placeholder='Escribe observaciones aquí...'></textarea>
+          <textarea name='observaciones' id='observaciones' className='prestamo-textarea' placeholder='Escribe observaciones aquí...' />
         </section>
 
         <button className='form__button' type='submit'>Enviar</button>

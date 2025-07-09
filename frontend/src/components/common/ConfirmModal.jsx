@@ -1,6 +1,6 @@
 import '../../styles/modal.css'
 
-export default function ConfirmModal({ icon, title, message, showModal, setShowModal, action }) {
+export default function ConfirmModal ({ icon, title, message, showModal, setShowModal, action }) {
   return (
     <div className={`modal--container ${showModal ? 'show' : ''}`}>
       <div className='modal'>

@@ -3,7 +3,7 @@ import Select from 'react-select'
 import '../../../styles/globals/lists.css'
 import { useEffect, useState } from 'react'
 
-export default function BuscarPrestamo({ setAlert, searchedItem, setSearchedItem }) {
+export default function BuscarPrestamo ({ setAlert, searchedItem, setSearchedItem }) {
   const {
     loading,
     typing,
@@ -116,13 +116,13 @@ export default function BuscarPrestamo({ setAlert, searchedItem, setSearchedItem
 
               <div className='element-info__container'>
                 <p className='element-info__subtitle'>Elementos</p>
-                <div className="element-info__elements">
+                <div className='element-info__elements'>
                   <p style={{ paddingLeft: '1rem' }} className='element-info__title'>Devolutivos</p>
                   {element.devolutivos && element.devolutivos.map((devo) => (
                     <Info key={devo.elemento_codigo} label={devo.elemento_codigo} value={`${devo.elemento_nombre}`} />
                   ))}
                 </div>
-                <div className="element-info__elements">
+                <div className='element-info__elements'>
                   <p style={{ paddingLeft: '1rem' }} className='element-info__title'>Consumibles</p>
                   {element.consumibles && element.consumibles.map((cons) => (
                     <Info key={cons.elemento_codigo} label={cons.elemento_codigo} value={`${cons.elemento_nombre} - x${cons.elemento_cantidad}`} />
@@ -132,13 +132,14 @@ export default function BuscarPrestamo({ setAlert, searchedItem, setSearchedItem
               </div>
 
             </>
-          ) : !typing && (<p className='notFound--message'>No se encontró el prestamo.</p>)}
+            )
+          : !typing && (<p className='notFound--message'>No se encontró el prestamo.</p>)}
     </>
   )
 }
 
 // Componente reutilizable para mostrar información del elemento
-function Info({ label, value }) {
+function Info ({ label, value }) {
   return (
     <div className='element-info'>
       <span className='element-info__title'>{label}</span>

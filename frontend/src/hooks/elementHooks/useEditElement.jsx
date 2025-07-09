@@ -8,7 +8,7 @@ import { UpdateElementsEndpoint } from '../../config/apiRoutes'
  * @param {Function} setAlert - Función para mostrar alertas.
  * @returns {Object} - Objeto con la referencia al formulario y la función de envío.
  */
-export default function useEditElement(setAlert) {
+export default function useEditElement (setAlert) {
   // Referencia al formulario para acceder a los datos
   const formRef = useRef(null)
 

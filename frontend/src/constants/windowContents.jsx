@@ -151,7 +151,7 @@ export const windowContents = {
           searchedItem={searchedItem}
           setSearchedItem={setSearchedItem}
         />,
-      editarRol: ({ setAlert, searchedEdit,setActiveView }) =>
+      editarRol: ({ setAlert, searchedEdit, setActiveView }) =>
         <EditarRol
           setAlert={setAlert}
           searchedEdit={searchedEdit}
@@ -163,7 +163,7 @@ export const windowContents = {
     sidebar: [
       { key: 'listarPrestamos', icon: iconos.listar, label: 'Listar Prestamos' },
       { key: 'crearPrestamo', icon: iconos.crear, label: 'Solicitar Prestamo' },
-      { key: 'buscarPrestamo', icon: iconos.buscar, label: 'Buscar Prestamo' },
+      { key: 'buscarPrestamo', icon: iconos.buscar, label: 'Buscar Prestamo' }
     ],
     views: {
       listarPrestamos: ({ setAlert, windowHeight, isMaximized, setActiveView, setSearchedItem, setSearchedEdit }) =>
@@ -182,7 +182,7 @@ export const windowContents = {
           setAlert={setAlert}
           searchedItem={searchedItem}
           setSearchedItem={setSearchedItem}
-        />,
+        />
     }
   }
 }

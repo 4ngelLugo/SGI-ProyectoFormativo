@@ -4,7 +4,7 @@ import Input from '../../common/Input'
 import SelectInput from '../../common/SelectInput'
 import '../../../styles/globals/forms.css'
 
-export default function CreateElements({ setAlert, setActiveView }) {
+export default function CreateElements ({ setAlert, setActiveView }) {
   // Hook para manejar la creación de elementos, incluyendo la lógica para el formulario y el tipo de elemento
   const { formRef, handleSubmit } = useCreate({ setAlert, obtener: 'elemento', setActiveView })
 
@@ -33,7 +33,7 @@ export default function CreateElements({ setAlert, setActiveView }) {
         <SelectInput options={filteredCategorias} placeholder='Categoría' name='ele_categoria' required setTipo={setTipo} />
         <SelectInput options={filteredAreas} placeholder='Área' name='ele_area' required />
 
-        <input type="hidden" value={tipo} name='ele_tipo' />
+        <input type='hidden' value={tipo} name='ele_tipo' />
 
         {tipo === 'devolutivo'
           ? (
@@ -43,7 +43,7 @@ export default function CreateElements({ setAlert, setActiveView }) {
               <SelectInput options={filteredMarcas} placeholder='Marca' name='ele_marca' required />
               <Input type='text' placeholder='Modelo' name='ele_modelo' required />
             </>
-          )
+            )
           : tipo === 'consumible' && (
             <>
               <Input type='number' placeholder='Cantidad (numérica)' name='ele_cant' required />

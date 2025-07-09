@@ -17,7 +17,7 @@ export const useCreate = ({ setAlert, obtener, fetchElements, setActiveView }) =
     categoria: GuardarCategoriaEndpoint,
     marca: GuardarMarcaEndpoint,
     tipoDocumento: GuardarTipoDocumentoEndpoint,
-    prestamo: GuardarPrestamoEndpoint,
+    prestamo: GuardarPrestamoEndpoint
   }
 
   const fetchEndpoints = {
@@ -35,7 +35,7 @@ export const useCreate = ({ setAlert, obtener, fetchElements, setActiveView }) =
     elemento: 'listElement',
     usuario: 'listarUsuarios',
     rol: 'listarRoles',
-    prestamo: 'listarPrestamos',
+    prestamo: 'listarPrestamos'
   }
 
   const fetchApiEndpoint = fetchEndpoints[obtener]

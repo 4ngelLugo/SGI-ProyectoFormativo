@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 
-export default function TooltipCell({ text }) {
+export default function TooltipCell ({ text }) {
   // Estado para manejar el overflow del texto
   const [isOverflowed, setIsOverflowed] = useState(false)
 

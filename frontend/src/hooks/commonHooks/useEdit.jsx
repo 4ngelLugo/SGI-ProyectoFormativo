@@ -24,7 +24,7 @@ export const useEdit = ({ setAlert, obtener, setActiveView }) => {
     elemento: 'listElement',
     usuario: 'listarUsuarios',
     rol: 'listarRoles',
-    prestamo: 'listarPrestamos',
+    prestamo: 'listarPrestamos'
   }
 
   const apiEndpoint = endpoints[obtener]
