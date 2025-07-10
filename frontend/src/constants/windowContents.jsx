@@ -97,7 +97,7 @@ export const windowContents = {
         />
     }
   },
-  maps: {
+  estadisticas: {
     sidebar: [
       { key: 'elementosPrestados', icon: iconos.listar, label: 'Elementos Prestados' },
       { key: 'prestamosUsuarios', icon: iconos.listar, label: 'Prestamos por usuario' }
@@ -143,7 +143,7 @@ export const windowContents = {
         />
     }
   },
-  terminal: {
+  roles: {
     sidebar: [
       { key: 'listarRoles', icon: iconos.listar, label: 'Listar roles' },
       { key: 'crearRol', icon: iconos.crear, label: 'Crear rol' },
@@ -178,7 +178,7 @@ export const windowContents = {
   prestamos: {
     sidebar: [
       { key: 'listarPrestamos', icon: iconos.listar, label: 'Listar Prestamos' },
-      { key: 'crearPrestamo', icon: iconos.crear, label: 'Solicitar Prestamo' },
+      { key: 'crearPrestamo', icon: iconos.crear, label: 'Realizar Prestamo' },
       { key: 'buscarPrestamo', icon: iconos.buscar, label: 'Buscar Prestamo' }
     ],
     views: {

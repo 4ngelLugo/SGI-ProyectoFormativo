@@ -33,7 +33,7 @@ export default function CrearPrestamo ({ setAlert, setActiveView }) {
     const consumiblesData = elements.filter(e =>
       (e.tipo === 'consumible' && e.estado === 'disponible')
     )
-    console.log(consumiblesData)
+
     const devolutivaData = elements.filter(e =>
       (e.tipo === 'devolutivo' && e.estado === 'disponible')
     )
@@ -74,7 +74,7 @@ export default function CrearPrestamo ({ setAlert, setActiveView }) {
 
   return (
     <>
-      <span className='title'>Solicitar Prestamo</span>
+      <span className='title'>Realizar Prestamo</span>
       <form className='form' ref={formRef} onSubmit={handleSubmit}>
         <p className='message'>Los campos marcados con asterisco (*) son obligatorios.</p>
 

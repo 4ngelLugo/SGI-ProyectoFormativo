@@ -11,8 +11,6 @@ export default function BuscarRol ({ setAlert, searchedItem, setSearchedItem }) 
     setLoading
   } = useFetchByCode({ setAlert, codeToSearch: searchedItem, obtener: 'rol' })
 
-  console.log(element)
-
   const {
     elements
   } = useFetch({ setAlert, windowHeight: null, isMaximized: null, obtener: 'roles' })
@@ -105,7 +103,7 @@ export default function BuscarRol ({ setAlert, searchedItem, setSearchedItem }) 
 
             </div>
             )
-          : (<p className='notFound--message'>No se encontró ningun tol</p>)}
+          : (<p className='notFound--message'>No se encontró ningun rol</p>)}
     </>
   )
 }

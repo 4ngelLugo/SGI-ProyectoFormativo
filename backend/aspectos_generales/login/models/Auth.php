@@ -1,81 +1,60 @@
 <?php
-
-// POR MARLON REINA
-
-// Clase de conexion a la base de datos para la autenticacion de usuarios.
-
-// PENDIENTE COMENTAR METODOS.
-
-require_once '../../../config/Database.php';
+require_once '../../../usuarios/Model/Usuario.php';
 
 class Auth
 {
-    private $document;
-    private $password;
-    private $userData;
-    private $connection;
+  private $userData;
+  private $usuario_modelo;
+  private $conn;
+  private $error_return = "";
 
-    public function __construct(Int $document, String $password)
-    {
-        $this->document = $document;
-        $this->password = $password;
-        $this->connection = new Database();
+  public function __construct($db)
+  {
+    $this->conn = $db;
+    $this->usuario_modelo = new UsuarioModel($db);
+  }
+
+  public function autenticar(int $documento, string $contrasena)
+  {
+    try {
+      $usuario = $this->usuario_modelo->obtenerUsuarioPorDocumento($documento);
+
+      if (isset($usuario["error"])) {
+        $this->error_return = "error al obtener usuario";
+        throw new Exception("Execute failed (Obtener usuario)");
+      }
+
+      if (!$usuario) {
+        $this->error_return = "error al obtener usuario";
+        throw new Exception("Execute failed (Obtener usuario)");
+      }
+
+      if ($usuario['estado'] != "activo") {
+        $this->error_return = "usuario inactivo";
+        throw new Exception("Execute failed (Usuario inactivo)");
+      }
+
+      if (!password_verify($contrasena, $usuario['contrasena'])) {
+        $this->error_return = "contrasena incorrecta";
+        throw new Exception("Execute failed (Contraseña incorrecta)");
+      }
+
+      $this->userData = $usuario;
+      return ["success" => true];
+    } catch (Exception $e) {
+      $this->logError($e->getMessage());
+
+      return !empty($this->error_return) ? ["error" => $this->error_return] : [];
     }
+  }
 
-    public function authenticate()
-    {
-        $sql = "SELECT * FROM usuarios WHERE usuario_documento = ?";
-        $stmt = $this->connection->executeQuery($sql, [$this->document]);
+  public function obtenerUsuario()
+  {
+    return $this->userData;
+  }
 
-        if (!$stmt) {
-            return false;
-        }
-
-        $result = $stmt->get_result();
-        $user = $result->fetch_assoc();
-
-        if (!$user) {
-            return false;
-        }
-
-        if ($user['usuario_estado'] != 'activo') {
-            file_put_contents('log.txt', "Usuario deshabilitado\n", FILE_APPEND);
-            return false;
-        }
-
-        if (password_verify($this->password, $user['usuario_contrasena'])) {
-            $this->userData = $user;
-            return true;
-        } else {
-            file_put_contents('log.txt', "Password incorrecto\n", FILE_APPEND);
-            return false;
-        }
-    }
-
-
-    public function getUserData()
-    {
-        return $this->userData;
-    }
-
-    public function getUserDbCredentials()
-    {
-        if ($this->userData) {
-            return [
-                'db_username' => $this->userData['usuario_documento'],
-                'db_password' => $this->userData['usuario_contrasena']
-            ];
-        }
-        return null;
-    }
-
-    private function hashPassword($password)
-    {
-        return password_hash($password, PASSWORD_DEFAULT);
-    }
-
-    public function closeConnection()
-    {
-        $this->connection->closeConnection();
-    }
+  private function logError($message)
+  {
+    error_log("[" . date("Y-m-d H:i:s") . "] $message" . PHP_EOL, 3, __DIR__ . "/../../../logs/php_errors.log");
+  }
 }

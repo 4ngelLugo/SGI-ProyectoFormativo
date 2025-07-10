@@ -60,7 +60,7 @@ export const useFetch = ({ setAlert, windowHeight, isMaximized, obtener }) => {
   const [limit, setLimit] = useState(initialLimit)
 
   const screen = document.querySelector('.screen')
-  const screenRect = screen.getBoundingClientRect()
+  const screenRect = screen?.getBoundingClientRect()
 
   // Calcula el espacio para filas segun el tamaño de las ventanas y si estan maximizadas o no
   const prevHeight = useRef(isMaximized ? Math.floor((screenRect.height - 86) / 52) : Math.floor((windowHeight - 86) / 52))

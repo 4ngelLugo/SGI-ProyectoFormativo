@@ -17,7 +17,7 @@ import { Icon } from '@iconify/react'
  * @param {function} setAlert - Función para mostrar alertas.
 */
 
-export default function AppWindow ({
+export default function AppWindow({
   id,
   title,
   isTop,
@@ -25,7 +25,8 @@ export default function AppWindow ({
   onWindowClose,
   onWindowToggle,
   isToggled,
-  setAlert
+  setAlert,
+  permisos
 }) {
   // #region Configuración de la ventana
   // Estados de la ultima posición y tamaño de la ventana. Se inicializan con valores por defecto
@@ -82,28 +83,73 @@ export default function AppWindow ({
   const renderSidebarContent = useCallback(() => {
     if (!content?.sidebar) return null
 
+    const labelToPermisoMap = {
+      listar: 'listar',
+      crear: 'registrar',
+      buscar: 'listar',
+      editar: 'modificar',
+      cargar: 'cargar',
+      examinar: 'examinar',
+      descargar: 'descargar',
+      realizar: 'realizar',
+    }
+
+    const normalizar = texto =>
+      typeof texto === 'string'
+        ? texto
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .replace(/\s+/g, ' ')
+          .trim()
+        : ''
+
     return (
       <ul className='window__menu'>
-        {content.sidebar.map((item, index) => (
-          <li
-            key={item.key}
-            onClick={() => setActiveView(item.key)}
-            className={`window__menu--item ${activeView === item.key ? 'window__menu--item--active' : ''}`}
-          >
-            <Icon
-              icon={item.icon}
-              width='28px'
-              strokeWidth={1.2}
-              className='window__menu--item--icon'
-            />
-            <span ref={el => setSidebarRef(el, index)}>
-              {item.label}
-            </span>
-          </li>
-        ))}
+        {content.sidebar
+          .filter(item => {
+            if (id === 'estadisticas' || id === 'roles')  return item
+
+            const labelNorm = normalizar(item.label)         // ej: "buscar elemento"
+            const [accionLabel, ...rest] = labelNorm.split(' ')
+            const entidadLabel = rest.join(' ')              // ej: "elemento"
+            const verboPermiso = labelToPermisoMap[accionLabel]
+            if (!verboPermiso) return false
+
+            // Permitimos tanto singular como plural
+            const sing = entidadLabel
+            const plur = entidadLabel.endsWith('s')
+              ? entidadLabel
+              : entidadLabel + 's'
+
+            return permisos?.data?.some(p => {
+              const modOk = normalizar(p.modulo) === normalizar(id)
+              const permOk = normalizar(p.permiso) === `${verboPermiso} ${sing}` ||
+                normalizar(p.permiso) === `${verboPermiso} ${plur}`
+              return modOk && permOk
+            })
+          })
+          .map((item, idx) => (
+            <li
+              key={item.key}
+              onClick={() => setActiveView(item.key)}
+              className={`window__menu--item ${activeView === item.key ? 'window__menu--item--active' : ''
+                }`}
+            >
+              <Icon
+                icon={item.icon}
+                width='28px'
+                strokeWidth={1.2}
+                className='window__menu--item--icon'
+              />
+              <span ref={el => setSidebarRef(el, idx)}>
+                {item.label}
+              </span>
+            </li>
+          ))}
       </ul>
     )
-  }, [content?.sidebar, activeView])
+  }, [content?.sidebar, activeView, permisos, id])
 
   // Función para renderizar el contenido principal de la ventana, según la pestaña del manú lateral seleccionada
   const renderMainContent = useCallback(() => {
@@ -183,7 +229,7 @@ export default function AppWindow ({
       }
     }
 
-    if (id === 'terminal') {
+    if (id === 'roles') {
       switch (activeView) {
         case 'listarRoles':
           props.windowHeight = windowSize.height

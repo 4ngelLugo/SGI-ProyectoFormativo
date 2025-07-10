@@ -17,4 +17,14 @@ class PermisoController
 
     return ["error" => "error al obtener permisos"];
   }
+
+  public function obterPermisosPorRol(int $rol_id)
+  {
+    if (empty($rol_id)) return ["error" => "campos vacios"];
+
+    $resultado = $this->permiso_modelo->obterPermisosPorRol($rol_id);
+    if ($resultado) return $resultado;
+
+    return ["error" =>  "error al obtener permisos"];
+  }
 }

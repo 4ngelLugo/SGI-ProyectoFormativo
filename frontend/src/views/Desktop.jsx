@@ -7,8 +7,9 @@ import AppWindow from '../components/layout/AppWindow'
 import Alert from '../components/common/Alert'
 import ContextMenu from '../components/common/ContextMenu'
 import '../styles/desktop.css'
+import { useFetchByCode } from '../hooks'
 
-export default function Desktop () {
+export default function Desktop() {
   // Estado array con los IDs de las ventanas abiertas y su estado (visible o minimizada)
   // Estado de la ventana que está al frente (ventana abierta o en la que se hizo clic más recientemente)
   // Estado con la alerta (tipo, mensaje y visibilidad)
@@ -33,6 +34,15 @@ export default function Desktop () {
       navigate('/login')
     }
   }, [])
+
+  const userString = localStorage.getItem('user')
+  const usuario = userString ? JSON.parse(userString) : null
+
+  const { element: permisos } = useFetchByCode({
+    setAlert,
+    codeToSearch: usuario?.rol ?? '', // Siempre pasas algo
+    obtener: 'permisosUsuario'
+  })
 
   // Abre una ventana al hacer clic en uno de los iconos del RocketDock y la lleva al frente
   const onIconClick = (name) => {
@@ -105,9 +115,14 @@ export default function Desktop () {
             onWindowToggle={() => onWindowToggle(window.id)}
             isToggled={window.isToggled}
             setAlert={setAlert}
+            permisos={permisos}
           />
         ))}
-        <RocketDock onIconClick={onIconClick} openWindows={windowIds} />
+        <RocketDock
+          onIconClick={onIconClick}
+          openWindows={windowIds}
+          permisos={permisos}
+        />
         <Alert
           alertRef={alertRef}
           type={alert.type}

@@ -1,6 +1,6 @@
 export const API_BASE = 'http://localhost/sgi-proyectoformativo/backend'
 
-export const IniciarSesionEndpoint = `${API_BASE}/aspectos_generales/login/controllers/sessionValidate.php`
+export const IniciarSesionEndpoint = `${API_BASE}/aspectos_generales/login/api/sessionValidate.php`
 
 export const SaveElementsEndpoint = `${API_BASE}/elementos/api/guardarAPI.php`
 export const FetchElementsEndpoint = `${API_BASE}/elementos/api/obtenerAPI.php`
@@ -20,6 +20,7 @@ export const GuardarRolEndpoint = `${API_BASE}/aspectos_generales/roles/api/guar
 export const EditarRolEndpoint = `${API_BASE}/aspectos_generales/roles/api/editarAPI.php`
 export const DesactivarRolEndpoint = `${API_BASE}/aspectos_generales/roles/api/desactivarAPI.php`
 export const ObtenerPermisosEndpoint = `${API_BASE}/aspectos_generales/permisos/api/obtenerAPI.php`
+export const ObtenerPermisosPorRolEndpoint = `${API_BASE}/aspectos_generales/permisos/api/obtenerAPI.php?rol=`
 
 export const ObtenerAreasEndpoint = `${API_BASE}/aspectos_generales/areas/api/obtenerAPI.php`
 export const ObtenerAreaPorCodigoEndpoint = `${API_BASE}/aspectos_generales/areas/api/obtenerAPI.php?area_id=`

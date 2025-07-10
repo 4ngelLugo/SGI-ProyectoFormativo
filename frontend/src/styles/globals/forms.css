@@ -190,6 +190,7 @@
 
   transition: all 0.2s ease;
   appearance: none;
+  cursor    : pointer;
 }
 
 .form__check--list__check input[type='checkbox']:checked {

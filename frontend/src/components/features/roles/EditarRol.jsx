@@ -3,7 +3,7 @@ import Input from '../../common/Input'
 import { useEdit, useFetchByCode, useFetch } from '../../../hooks'
 import '../../../styles/globals/forms.css'
 
-export default function EditarRol ({ setAlert, searchedEdit, setActiveView }) {
+export default function EditarRol({ setAlert, searchedEdit, setActiveView }) {
   // Hook para manejar la edición de elementos, incluyendo la lógica para el formulario y su referencia
   const { formRef, handleSubmit } = useEdit({ setAlert, obtener: 'rol', setActiveView })
 
@@ -87,10 +87,10 @@ export default function EditarRol ({ setAlert, searchedEdit, setActiveView }) {
 
                 <button className='form__button' type='submit'>Enviar</button>
               </form>
-              )
+            )
             : (
-              <p>No se encontró el rol</p>
-              )
+              <p className='notFound--message'>No se encontró ningun rol</p>
+            )
       }
     </>
   )

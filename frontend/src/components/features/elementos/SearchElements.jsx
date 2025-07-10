@@ -11,10 +11,6 @@ export default function SearchElements ({ setAlert, searchedItem, setSearchedIte
     setLoading
   } = useFetchByCode({ setAlert, codeToSearch: searchedItem, obtener: 'elemento' })
 
-  useEffect(() => {
-    console.log(element)
-  }, [element])
-
   const {
     allElements: elements
   } = useFetch({ setAlert, windowHeight: null, isMaximized: null, obtener: 'elementos' })
