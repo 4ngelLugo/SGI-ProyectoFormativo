@@ -186,12 +186,12 @@ class UsuarioModel
   {
     try {
       $sql = "UPDATE {$this->tabla} SET
-      tipo_docu_id = ?,
-      usuario_nombre = ?,
-      usuario_apellido = ?,
-      usuario_telefono = ?,
-      usuario_correo = ?,
-      WHERE usuario_documento = ?";
+        tipo_docu_id = ?,
+        usuario_nombre = ?,
+        usuario_apellido = ?,
+        usuario_telefono = ?,
+        usuario_correo = ?
+        WHERE usuario_documento = ?";
       $stmt = $this->conn->prepare($sql);
 
       if (!$stmt) {

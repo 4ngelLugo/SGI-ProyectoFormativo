@@ -151,8 +151,6 @@ export default function AppWindow({
     )
   }, [content?.sidebar, activeView, permisos, id])
 
-  console.log(permisos)
-
   // Función para renderizar el contenido principal de la ventana, según la pestaña del manú lateral seleccionada
   const renderMainContent = useCallback(() => {
     if (!content?.views) return null
