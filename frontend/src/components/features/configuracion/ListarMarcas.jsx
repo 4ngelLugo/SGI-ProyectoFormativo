@@ -8,7 +8,7 @@ import '../../../styles/globals/tables.css'
 import { Icon } from '@iconify/react'
 import { useState } from 'react'
 
-export default function ListarMarcas ({ setAlert, windowHeight, isMaximized }) {
+export default function ListarMarcas({ setAlert, windowHeight, isMaximized, permisos }) {
   const [editingId, setEditingId] = useState(null)
   const [editedName, setEditedName] = useState('')
   const [createModal, setCreateModal] = useState(false)
@@ -49,12 +49,14 @@ export default function ListarMarcas ({ setAlert, windowHeight, isMaximized }) {
     <>
       <p className='title'>
         <span>Listar Marcas</span>
-        <button
-          className='btn_add'
-          onClick={() => setCreateModal(true)}
-        >
-          +
-        </button>
+        {permisos.data.some(p => p.id === 5) && (//3: Registrar marca
+          <button
+            className='btn_add'
+            onClick={() => setCreateModal(true)}
+          >
+            +
+          </button>
+        )}
       </p>
 
       <table className='table'>
@@ -107,31 +109,35 @@ export default function ListarMarcas ({ setAlert, windowHeight, isMaximized }) {
                         autoFocus
                       />
                     </td>
-                    )
+                  )
                   : (
                     <TooltipCell text={nombre} />
-                    )
+                  )
               }
               <TooltipCell text={estado} />
 
               <td className='table__body--actions'>
                 {/* Iconos de acciones para cada elemento */}
-                <div className='tooltip-container'>
-                  <Icon
-                    icon='system-uicons:create'
-                    width='24'
-                    strokeWidth={1.2}
-                    onClick={() => {
-                      setEditingId(id)
-                      setEditedName(nombre)
-                    }}
-                  />
-                  <span className='tooltip'>Editar</span>
-                </div>
-                <div className='tooltip-container'>
-                  <Icon icon='system-uicons:trash' width='24' strokeWidth={1.2} onClick={() => handleAlert(id, nombre)} />
-                  <span className='tooltip'>Deshabilitar</span>
-                </div>
+                {permisos.data.some(p => p.id === 21) && (//21: Editar marca
+                  <div className='tooltip-container'>
+                    <Icon
+                      icon='system-uicons:create'
+                      width='24'
+                      strokeWidth={1.2}
+                      onClick={() => {
+                        setEditingId(id)
+                        setEditedName(nombre)
+                      }}
+                    />
+                    <span className='tooltip'>Editar</span>
+                  </div>
+                )}
+                {permisos.data.some(p => p.id === 29) && (//29: Inhabilitar marca
+                  <div className='tooltip-container'>
+                    <Icon icon='system-uicons:trash' width='24' strokeWidth={1.2} onClick={() => handleAlert(id, nombre)} />
+                    <span className='tooltip'>Deshabilitar</span>
+                  </div>
+                )}
               </td>
             </tr>
           ))}

@@ -7,7 +7,7 @@ import danger from '../../../assets/icons/danger.svg'
 import '../../../styles/globals/tables.css'
 import { Icon } from '@iconify/react'
 
-export default function ListarUsuarios ({ setAlert, windowHeight, isMaximized, setActiveView, setSearchedItem, setSearchedEdit }) {
+export default function ListarUsuarios({ setAlert, windowHeight, isMaximized, setActiveView, setSearchedItem, setSearchedEdit, permisos }) {
   // Hook para manejar la lista de elementos y su paginación
   const {
     setElements,
@@ -126,14 +126,18 @@ export default function ListarUsuarios ({ setAlert, windowHeight, isMaximized, s
                       <Icon icon='system-uicons:eye' width='24' strokeWidth={1.2} onClick={() => handleView(documento, 'buscarUsuario')} />
                       <span className='tooltip'>Ver</span>
                     </div>
-                    <div className='tooltip-container'>
-                      <Icon icon='system-uicons:create' width='24' strokeWidth={1.2} onClick={() => handleView(documento, 'editarUsuario')} />
-                      <span className='tooltip'>Editar</span>
-                    </div>
-                    <div className='tooltip-container'>
-                      <Icon icon='system-uicons:trash' width='24' strokeWidth={1.2} onClick={() => handleAlert(documento, `${nombres} ${apellidos}`)} />
-                      <span className='tooltip'>Deshabilitar</span>
-                    </div>
+                    {permisos.data.some(p => p.id === 16) && (//16: Editar usuarios 
+                      <div className='tooltip-container'>
+                        <Icon icon='system-uicons:create' width='24' strokeWidth={1.2} onClick={() => handleView(documento, 'editarUsuario')} />
+                        <span className='tooltip'>Editar</span>
+                      </div>
+                    )}
+                    {permisos.data.some(p => p.id === 24) && (//24: Deshabilitar usuarios 
+                      <div className='tooltip-container'>
+                        <Icon icon='system-uicons:trash' width='24' strokeWidth={1.2} onClick={() => handleAlert(documento, `${nombres} ${apellidos}`)} />
+                        <span className='tooltip'>Deshabilitar</span>
+                      </div>
+                    )}
                   </td>
                 </tr>
               ))
@@ -152,14 +156,18 @@ export default function ListarUsuarios ({ setAlert, windowHeight, isMaximized, s
                       <Icon icon='system-uicons:eye' width='24' strokeWidth={1.2} onClick={() => handleView(documento, 'buscarUsuario')} />
                       <span className='tooltip'>Ver</span>
                     </div>
-                    <div className='tooltip-container'>
-                      <Icon icon='system-uicons:create' width='24' strokeWidth={1.2} onClick={() => handleView(documento, 'editarUsuario')} />
-                      <span className='tooltip'>Editar</span>
-                    </div>
-                    <div className='tooltip-container'>
-                      <Icon icon='system-uicons:trash' width='24' strokeWidth={1.2} onClick={() => handleAlert(documento, `${nombres} ${apellidos}`)} />
-                      <span className='tooltip'>Deshabilitar</span>
-                    </div>
+                    {permisos.data.some(p => p.id === 16) && (//16: Editar usuarios 
+                      <div className='tooltip-container'>
+                        <Icon icon='system-uicons:create' width='24' strokeWidth={1.2} onClick={() => handleView(documento, 'editarUsuario')} />
+                        <span className='tooltip'>Editar</span>
+                      </div>
+                    )}
+                    {permisos.data.some(p => p.id === 24) && (//24: Deshabilitar usuarios 
+                      <div className='tooltip-container'>
+                        <Icon icon='system-uicons:trash' width='24' strokeWidth={1.2} onClick={() => handleAlert(documento, `${nombres} ${apellidos}`)} />
+                        <span className='tooltip'>Deshabilitar</span>
+                      </div>
+                    )}
                   </td>
                 </tr>
               ))

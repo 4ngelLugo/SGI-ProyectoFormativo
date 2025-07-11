@@ -151,6 +151,8 @@ export default function AppWindow({
     )
   }, [content?.sidebar, activeView, permisos, id])
 
+  console.log(permisos)
+
   // Función para renderizar el contenido principal de la ventana, según la pestaña del manú lateral seleccionada
   const renderMainContent = useCallback(() => {
     if (!content?.views) return null
@@ -168,6 +170,7 @@ export default function AppWindow({
           props.setActiveView = setActiveView
           props.setSearchedItem = setSearchedItem
           props.setSearchedEdit = setSearchedEdit
+          props.permisos = permisos
           break
         case 'createElement':
           props.setActiveView = setActiveView
@@ -191,6 +194,7 @@ export default function AppWindow({
           props.setActiveView = setActiveView
           props.setSearchedItem = setSearchedItem
           props.setSearchedEdit = setSearchedEdit
+          props.permisos = permisos
           break
         case 'crearUsuario':
           props.setActiveView = setActiveView
@@ -214,6 +218,7 @@ export default function AppWindow({
           props.setActiveView = setActiveView
           props.setSearchedItem = setSearchedItem
           props.setSearchedEdit = setSearchedEdit
+          props.permisos = permisos
           break
         case 'crearPrestamo':
           props.setActiveView = setActiveView
@@ -255,6 +260,7 @@ export default function AppWindow({
     if (id === 'configuración') {
       props.windowHeight = windowSize.height
       props.isMaximized = isMaximized
+      props.permisos = permisos
     }
 
     return <ViewComponent {...props} />

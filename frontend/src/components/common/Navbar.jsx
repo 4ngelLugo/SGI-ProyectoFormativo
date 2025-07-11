@@ -1,5 +1,5 @@
 /* global localStorage */
-import appleLogo from '../../assets/images/macIcon.webp'
+import logo from '../../assets/images/logo.svg'
 import cerrar from '../../assets/icons/cerrar.svg'
 import ConfirmModal from './ConfirmModal'
 import danger from '../../assets/icons/danger.svg'
@@ -26,7 +26,7 @@ export default function Navbar ({ windowOnTop, setIsAuthenticated }) {
     <>
       <nav className='topBar'>
         <div className='topBar--fileOptions'>
-          <img src={appleLogo} alt='Logo' />
+          <img src={logo} alt='Logo Lendora' />
 
           <span><strong>{formattedWindowOnTop}</strong></span>
         </div>

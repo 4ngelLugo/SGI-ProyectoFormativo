@@ -6,7 +6,7 @@ import danger from '../../../assets/icons/danger.svg'
 import '../../../styles/globals/tables.css'
 import { Icon } from '@iconify/react'
 
-export default function ListarPrestamos ({ setAlert, windowHeight, isMaximized, setActiveView, setSearchedItem, setSearchedEdit }) {
+export default function ListarPrestamos({ setAlert, windowHeight, isMaximized, setActiveView, setSearchedItem, setSearchedEdit, permisos }) {
   // Hook para manejar la lista de elementos y su paginación
   const {
     elements,
@@ -27,6 +27,9 @@ export default function ListarPrestamos ({ setAlert, windowHeight, isMaximized, 
   } = useDeactivate({ setAlert, obtener: 'prestamo', fetchElements })
 
   const { handlePrestamo } = useManejarPrestamo({ setAlert, fetchElements })
+
+  const userString = localStorage.getItem('user')
+  const usuario = userString ? JSON.parse(userString) : null
 
   // Maneja la activación de la vista para ver detalles de un elemento específico
   const handleView = (codigo, view) => {
@@ -105,38 +108,43 @@ export default function ListarPrestamos ({ setAlert, windowHeight, isMaximized, 
                       <Icon icon='system-uicons:eye' width='24' strokeWidth={1.2} onClick={() => handleView(id, 'buscarPrestamo')} />
                       <span className='tooltip'>Ver más detalles</span>
                     </div>
-                    <div className='tooltip-container'>
-                      <Icon icon='system-uicons:create' width='24' strokeWidth={1.2} onClick={() => handleView(id, 'editarPrestamo')} />
-                      <span className='tooltip'>Editar</span>
-                    </div>
-                    {estadoId !== 4 && estadoId !== 5 && (
-                      <div className='tooltip-container'>
-                        <Icon icon='system-uicons:cross-circle' width='24' strokeWidth={1.2} onClick={() => handleAlert(id, usuarioNombre, solicitanteNombre)} />
-                        <span className='tooltip'>Cancelar</span>
-                      </div>
-                    )}
-                    {estadoId === 1 && (
-                      <div className='tooltip-container'>
-                        <Icon
-                          icon='system-uicons:inbox-alt'
-                          width='24'
-                          strokeWidth={1.2}
-                          onClick={() => handlePrestamo(id, 'entregar')}
-                        />
-                        <span className='tooltip'>Entregar</span>
-                      </div>
-                    )}
+                    {usuario.nombre === `${usuarioNombre} ${usuarioApellido}` && (
+                      <>
+                        <div className='tooltip-container'>
+                          <Icon icon='system-uicons:create' width='24' strokeWidth={1.2} onClick={() => handleView(id, 'editarPrestamo')} />
+                          <span className='tooltip'>Editar</span>
+                        </div>
 
-                    {(estadoId === 2 || estadoId === 3) && (
-                      <div className='tooltip-container'>
-                        <Icon
-                          icon='system-uicons:check-circle-outside'
-                          width='24'
-                          strokeWidth={1.2}
-                          onClick={() => handlePrestamo(id, 'completar')}
-                        />
-                        <span className='tooltip'>Completar</span>
-                      </div>
+                        {estadoId !== 4 && estadoId !== 5 && (
+                          <div className='tooltip-container'>
+                            <Icon icon='system-uicons:cross-circle' width='24' strokeWidth={1.2} onClick={() => handleAlert(id, usuarioNombre, solicitanteNombre)} />
+                            <span className='tooltip'>Cancelar</span>
+                          </div>
+                        )}
+                        {estadoId === 1 && (
+                          <div className='tooltip-container'>
+                            <Icon
+                              icon='system-uicons:inbox-alt'
+                              width='24'
+                              strokeWidth={1.2}
+                              onClick={() => handlePrestamo(id, 'entregar')}
+                            />
+                            <span className='tooltip'>Entregar</span>
+                          </div>
+                        )}
+
+                        {(estadoId === 2 || estadoId === 3) && (
+                          <div className='tooltip-container'>
+                            <Icon
+                              icon='system-uicons:check-circle-outside'
+                              width='24'
+                              strokeWidth={1.2}
+                              onClick={() => handlePrestamo(id, 'completar')}
+                            />
+                            <span className='tooltip'>Completar</span>
+                          </div>
+                        )}
+                      </>
                     )}
                   </td>
                 </tr>
@@ -145,7 +153,7 @@ export default function ListarPrestamos ({ setAlert, windowHeight, isMaximized, 
                 <tr>
                   <td colSpan={7} className='notFound--message'>No se encontró ningun prestamo.</td>
                 </tr>
-                )
+              )
           }
         </tbody>
       </table>

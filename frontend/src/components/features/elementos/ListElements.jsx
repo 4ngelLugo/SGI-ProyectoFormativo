@@ -7,7 +7,7 @@ import danger from '../../../assets/icons/danger.svg'
 import '../../../styles/globals/tables.css'
 import { Icon } from '@iconify/react'
 
-export default function ListElements ({ setAlert, windowHeight, isMaximized, setActiveView, setSearchedItem, setSearchedEdit }) {
+export default function ListElements({ setAlert, windowHeight, isMaximized, setActiveView, setSearchedItem, setSearchedEdit, permisos }) {
   // Hook para manejar la lista de elementos y su paginación
   const {
     elements,
@@ -113,7 +113,38 @@ export default function ListElements ({ setAlert, windowHeight, isMaximized, set
         <tbody className='table__body'>
           {filteredElements && filteredElements.length > 0
             ? (
-                filteredElements.map(({ codigo, nombre, area, tipo, estado, cantidad, unidadMedida }, index) => (
+              filteredElements.map(({ codigo, nombre, area, tipo, estado, cantidad, unidadMedida }, index) => (
+                <tr key={codigo} className={`table__row ${index % 2 === 1 ? 'table__row--alt' : ''}`}>
+                  <TooltipCell text={codigo} />
+                  <TooltipCell text={nombre} />
+                  <TooltipCell text={area} />
+                  <TooltipCell text={tipo} />
+                  <TooltipCell text={estado} />
+                  <TooltipCell text={cantidad ? `${cantidad} ${unidadMedida}` : '1 und'} />
+                  <td className='table__body--actions'>
+                    <div className='tooltip-container'>
+                      <Icon icon='system-uicons:eye' width='24' strokeWidth={1.2} onClick={() => handleView(codigo, 'searchElement')} />
+                      <span className='tooltip'>Ver</span>
+                    </div>
+                    {permisos.data.some(p => p.id === 17) && (//17: Editar elementos 
+                      <div className='tooltip-container'>
+                        <Icon icon='system-uicons:create' width='24' strokeWidth={1.2} onClick={() => handleView(codigo, 'editElement')} />
+                        <span className='tooltip'>Editar</span>
+                      </div>
+                    )}
+                    {permisos.data.some(p => p.id === 25) && (//25: Deshabilitar elementos 
+                      <div className='tooltip-container'>
+                        <Icon icon='system-uicons:trash' width='24' strokeWidth={1.2} onClick={() => handleAlert(codigo, nombre)} />
+                        <span className='tooltip'>Deshabilitar</span>
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              ))
+            )
+            : elements && elements.length > 0
+              ? (
+                elements.map(({ codigo, nombre, area, tipo, estado, cantidad, unidadMedida }, index) => (
                   <tr key={codigo} className={`table__row ${index % 2 === 1 ? 'table__row--alt' : ''}`}>
                     <TooltipCell text={codigo} />
                     <TooltipCell text={nombre} />
@@ -124,52 +155,29 @@ export default function ListElements ({ setAlert, windowHeight, isMaximized, set
                     <td className='table__body--actions'>
                       <div className='tooltip-container'>
                         <Icon icon='system-uicons:eye' width='24' strokeWidth={1.2} onClick={() => handleView(codigo, 'searchElement')} />
-                        <span className='tooltip'>Ver</span>
+                        <span className='tooltip'>Ver más detalles</span>
                       </div>
-                      <div className='tooltip-container'>
-                        <Icon icon='system-uicons:create' width='24' strokeWidth={1.2} onClick={() => handleView(codigo, 'editElement')} />
-                        <span className='tooltip'>Editar</span>
-                      </div>
-                      <div className='tooltip-container'>
-                        <Icon icon='system-uicons:trash' width='24' strokeWidth={1.2} onClick={() => handleAlert(codigo, nombre)} />
-                        <span className='tooltip'>Deshabilitar</span>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )
-            : elements && elements.length > 0
-              ? (
-                  elements.map(({ codigo, nombre, area, tipo, estado, cantidad, unidadMedida }, index) => (
-                    <tr key={codigo} className={`table__row ${index % 2 === 1 ? 'table__row--alt' : ''}`}>
-                      <TooltipCell text={codigo} />
-                      <TooltipCell text={nombre} />
-                      <TooltipCell text={area} />
-                      <TooltipCell text={tipo} />
-                      <TooltipCell text={estado} />
-                      <TooltipCell text={cantidad ? `${cantidad} ${unidadMedida}` : '1 und'} />
-                      <td className='table__body--actions'>
-                        <div className='tooltip-container'>
-                          <Icon icon='system-uicons:eye' width='24' strokeWidth={1.2} onClick={() => handleView(codigo, 'searchElement')} />
-                          <span className='tooltip'>Ver</span>
-                        </div>
+                      {permisos.data.some(p => p.id === 17) && (//17: Editar elementos 
                         <div className='tooltip-container'>
                           <Icon icon='system-uicons:create' width='24' strokeWidth={1.2} onClick={() => handleView(codigo, 'editElement')} />
                           <span className='tooltip'>Editar</span>
                         </div>
+                      )}
+                      {permisos.data.some(p => p.id === 25) && (//25: Deshabilitar elementos 
                         <div className='tooltip-container'>
                           <Icon icon='system-uicons:trash' width='24' strokeWidth={1.2} onClick={() => handleAlert(codigo, nombre)} />
                           <span className='tooltip'>Deshabilitar</span>
                         </div>
-                      </td>
-                    </tr>
-                  ))
-                )
+                      )}
+                    </td>
+                  </tr>
+                ))
+              )
               : (
                 <tr>
                   <td colSpan={7} className='notFound--message'>No se encontró ningun elemento.</td>
                 </tr>
-                )}
+              )}
         </tbody>
       </table>
 
