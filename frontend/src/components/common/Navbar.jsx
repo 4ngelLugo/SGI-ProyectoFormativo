@@ -1,6 +1,6 @@
+import NotificationCenter from './Notifications'
 import appleLogo from '../../assets/images/macIcon.webp'
 import cerrar from '../../assets/icons/cerrar.svg'
-import ConfirmModal from './ConfirmModal'
 import danger from '../../assets/icons/danger.svg'
 import { useState } from 'react'
 
@@ -13,14 +13,6 @@ export default function Navbar({ windowOnTop, setIsAuthenticated }) {
   // Define el nombre que se mostrará en la barra (ventana activa o nombre por defecto)
   const formattedWindowOnTop = windowOnTop ? capitalizeFirstLetter(windowOnTop) : 'LENDORA'
 
-  const [showModal, setShowModal] = useState(false)
-
-  const handleLogOff = () => {
-    localStorage.setItem('isAuthenticated', JSON.stringify(false))
-    localStorage.removeItem('user')
-    setIsAuthenticated(false)
-  }
-
   return (
     <>
       <nav className='topBar'>
@@ -29,18 +21,12 @@ export default function Navbar({ windowOnTop, setIsAuthenticated }) {
 
           <span><strong>{formattedWindowOnTop}</strong></span>
         </div>
-        <div className='cerrar' onClick={() => setShowModal(true)}>
-          <img src={cerrar} alt="icono de cerrar sesión" />
+
+        <div className='topBar--right'>
+          <NotificationCenter rolId={1} setIsAuthenticated={setIsAuthenticated}/>
         </div>
       </nav>
 
-      <ConfirmModal
-        icon={danger}
-        title='¿Está seguro que desea cerrar sesión?'
-        showModal={showModal}
-        setShowModal={setShowModal}
-        action={handleLogOff}
-      />
     </>
   )
 }
