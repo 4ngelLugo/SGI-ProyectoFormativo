@@ -6,7 +6,7 @@ import Input from '../../common/Input'
 import '../../../styles/formPrestamos.css'
 import { Icon } from '@iconify/react'
 
-export default function CrearPrestamo ({ setAlert, setActiveView }) {
+export default function CrearPrestamo({ setAlert, setActiveView }) {
   const [devolutivos, setDevolutivos] = useState([])
   const [consumibles, setConsumibles] = useState([])
   const [seleccionadosDevolutivos, setSeleccionadosDevolutivos] = useState([])
@@ -24,7 +24,7 @@ export default function CrearPrestamo ({ setAlert, setActiveView }) {
   const handleSolicitante = (documento) => {
     if (!solicitantes) return
 
-    const match = solicitantes.find(el => el.documento === documento)
+    const match = solicitantes?.find(el => el.documento == documento)
     setSolicitante(match || null)
   }
 
@@ -78,7 +78,6 @@ export default function CrearPrestamo ({ setAlert, setActiveView }) {
       <form className='form' ref={formRef} onSubmit={handleSubmit}>
         <p className='message'>Los campos marcados con asterisco (*) son obligatorios.</p>
 
-        <input type='hidden' value='Almacenista' name='usertype' />
         <input type='hidden' value={usuario.documento} name='usuario_documento' />
 
         <section className='prestamo-solicitante'>

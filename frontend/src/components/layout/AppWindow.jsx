@@ -71,13 +71,6 @@ export default function AppWindow({
   const [searchedItem, setSearchedItem] = useState(null)
   const [searchedEdit, setSearchedEdit] = useState(null)
 
-  // Abre la ventana mostrando automaticamente el contenido de la primera pestaña del menú lateral
-  useEffect(() => {
-    if (content?.sidebar?.length > 0) {
-      setActiveView(content.sidebar[0].key)
-    }
-  }, [id])
-
   // Función para renderizar el contenido del menú lateral, según lo establecido para cada ventana
   // Se utiliza useCallback para evitar la recreación de la función en cada renderizado
   const renderSidebarContent = useCallback(() => {
@@ -104,49 +97,55 @@ export default function AppWindow({
           .trim()
         : ''
 
+    const filteredLabels = content?.sidebar
+      .filter(item => {
+        if (id === 'estadisticas' || id === 'roles') return item
+
+        const labelNorm = normalizar(item.label)         // ej: "buscar elemento"
+        const [accionLabel, ...rest] = labelNorm.split(' ')
+        const entidadLabel = rest.join(' ')              // ej: "elemento"
+        const verboPermiso = labelToPermisoMap[accionLabel]
+        if (!verboPermiso) return false
+
+        // Permitimos tanto singular como plural
+        const sing = entidadLabel
+        const plur = entidadLabel.endsWith('s')
+          ? entidadLabel
+          : entidadLabel + 's'
+
+        return permisos?.data?.some(p => {
+          const modOk = normalizar(p.modulo) === normalizar(id)
+          const permOk = normalizar(p.permiso) === `${verboPermiso} ${sing}` ||
+            normalizar(p.permiso) === `${verboPermiso} ${plur}`
+          return modOk && permOk
+        })
+      })
+
+    // Abre la ventana mostrando automaticamente el contenido de la primera pestaña del menú lateral para el rol del usuario
+    useEffect(() => {
+      setActiveView(filteredLabels[0].key)
+    }, [id])
+
     return (
       <ul className='window__menu'>
-        {content.sidebar
-          .filter(item => {
-            if (id === 'estadisticas' || id === 'roles')  return item
-
-            const labelNorm = normalizar(item.label)         // ej: "buscar elemento"
-            const [accionLabel, ...rest] = labelNorm.split(' ')
-            const entidadLabel = rest.join(' ')              // ej: "elemento"
-            const verboPermiso = labelToPermisoMap[accionLabel]
-            if (!verboPermiso) return false
-
-            // Permitimos tanto singular como plural
-            const sing = entidadLabel
-            const plur = entidadLabel.endsWith('s')
-              ? entidadLabel
-              : entidadLabel + 's'
-
-            return permisos?.data?.some(p => {
-              const modOk = normalizar(p.modulo) === normalizar(id)
-              const permOk = normalizar(p.permiso) === `${verboPermiso} ${sing}` ||
-                normalizar(p.permiso) === `${verboPermiso} ${plur}`
-              return modOk && permOk
-            })
-          })
-          .map((item, idx) => (
-            <li
-              key={item.key}
-              onClick={() => setActiveView(item.key)}
-              className={`window__menu--item ${activeView === item.key ? 'window__menu--item--active' : ''
-                }`}
-            >
-              <Icon
-                icon={item.icon}
-                width='28px'
-                strokeWidth={1.2}
-                className='window__menu--item--icon'
-              />
-              <span ref={el => setSidebarRef(el, idx)}>
-                {item.label}
-              </span>
-            </li>
-          ))}
+        {filteredLabels.map((item, idx) => (
+          <li
+            key={item.key}
+            onClick={() => setActiveView(item.key)}
+            className={`window__menu--item ${activeView === item.key ? 'window__menu--item--active' : ''
+              }`}
+          >
+            <Icon
+              icon={item.icon}
+              width='28px'
+              strokeWidth={1.2}
+              className='window__menu--item--icon'
+            />
+            <span ref={el => setSidebarRef(el, idx)}>
+              {item.label}
+            </span>
+          </li>
+        ))}
       </ul>
     )
   }, [content?.sidebar, activeView, permisos, id])
