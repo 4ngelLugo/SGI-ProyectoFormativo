@@ -24,7 +24,6 @@
     <span id="clearBtn" class="clear-btn">Limpiar</span>
   </div>
 
-  <div class="notification-section-title">Notificaciones</div>
   <div class="notification-list" id="unreadList"></div>
 
   <div class="separator"></div>
