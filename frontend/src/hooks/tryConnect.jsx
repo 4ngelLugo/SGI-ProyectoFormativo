@@ -22,7 +22,7 @@ export const tryConnect = () => {
       const res = await fetch(IniciarSesionEndpoint, {
         method: 'POST',
         body: formData,
-        credentials: 'include',
+        credentials: 'include'
       })
 
       const response = await res.json()

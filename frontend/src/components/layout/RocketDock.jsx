@@ -17,7 +17,7 @@ const imageList = Object.entries(images)
     return order.indexOf(a.name) - order.indexOf(b.name)
   })
 
-export default function RocketDock({ onIconClick, openWindows, permisos }) {
+export default function RocketDock ({ onIconClick, openWindows, permisos }) {
   // Estado para controlar la visivilidad del RocketDock
   const [isVisible, setIsVisible] = useState(true)
 
@@ -60,7 +60,7 @@ export default function RocketDock({ onIconClick, openWindows, permisos }) {
 }
 
 // Componente para renderizar cada objeto del RocketDock
-function RocketDockItem({ icon, onClick, open, name }) {
+function RocketDockItem ({ icon, onClick, open, name }) {
   return (
     <div
       className={`rocketDock--item tooltip-container ${open ? 'rocketDock--item__open' : ''}`}

@@ -17,7 +17,7 @@ import { Icon } from '@iconify/react'
  * @param {function} setAlert - Función para mostrar alertas.
 */
 
-export default function AppWindow({
+export default function AppWindow ({
   id,
   title,
   isTop,
@@ -84,7 +84,7 @@ export default function AppWindow({
       cargar: 'cargar',
       examinar: 'examinar',
       descargar: 'descargar',
-      realizar: 'realizar',
+      realizar: 'realizar'
     }
 
     const normalizar = texto =>
@@ -101,9 +101,9 @@ export default function AppWindow({
       .filter(item => {
         if (id === 'estadisticas' || id === 'roles') return item
 
-        const labelNorm = normalizar(item.label)         // ej: "buscar elemento"
+        const labelNorm = normalizar(item.label) // ej: "buscar elemento"
         const [accionLabel, ...rest] = labelNorm.split(' ')
-        const entidadLabel = rest.join(' ')              // ej: "elemento"
+        const entidadLabel = rest.join(' ') // ej: "elemento"
         const verboPermiso = labelToPermisoMap[accionLabel]
         if (!verboPermiso) return false
 

@@ -8,7 +8,7 @@ import '../../../styles/globals/tables.css'
 import { Icon } from '@iconify/react'
 import { useState } from 'react'
 
-export default function ListarAreas({ setAlert, windowHeight, isMaximized, permisos }) {
+export default function ListarAreas ({ setAlert, windowHeight, isMaximized, permisos }) {
   const [editingId, setEditingId] = useState(null)
   const [editedName, setEditedName] = useState('')
   const [createModal, setCreateModal] = useState(false)
@@ -49,7 +49,7 @@ export default function ListarAreas({ setAlert, windowHeight, isMaximized, permi
     <>
       <p className='title'>
         <span>Listar Areas</span>
-        {permisos.data.some(p => p.id === 3) && (//3: Registrar area
+        {permisos.data.some(p => p.id === 3) && (// 3: Registrar area
           <button
             className='btn_add'
             onClick={() => setCreateModal(true)}
@@ -109,17 +109,17 @@ export default function ListarAreas({ setAlert, windowHeight, isMaximized, permi
                         autoFocus
                       />
                     </td>
-                  )
+                    )
                   : (
                     <TooltipCell text={nombre} />
-                  )
+                    )
               }
 
               <TooltipCell text={estado} />
 
               <td className='table__body--actions'>
                 {/* Iconos de acciones para cada elemento */}
-                {permisos.data.some(p => p.id === 19) && (//19: Editar area
+                {permisos.data.some(p => p.id === 19) && (// 19: Editar area
                   <div className='tooltip-container'>
                     <Icon
                       icon='system-uicons:create'
@@ -133,7 +133,7 @@ export default function ListarAreas({ setAlert, windowHeight, isMaximized, permi
                     <span className='tooltip'>Editar</span>
                   </div>
                 )}
-                {permisos.data.some(p => p.id === 27) && (//27: Inhabilitar area
+                {permisos.data.some(p => p.id === 27) && (// 27: Inhabilitar area
                   <div className='tooltip-container'>
                     <Icon icon='system-uicons:trash' width='24' strokeWidth={1.2} onClick={() => handleAlert(id, nombre)} />
                     <span className='tooltip'>Deshabilitar</span>

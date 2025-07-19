@@ -8,7 +8,7 @@ import '../../../styles/globals/tables.css'
 import { Icon } from '@iconify/react'
 import { useState } from 'react'
 
-export default function ListarCategorias({ setAlert, windowHeight, isMaximized, permisos }) {
+export default function ListarCategorias ({ setAlert, windowHeight, isMaximized, permisos }) {
   const [editingId, setEditingId] = useState(null)
   const [editedName, setEditedName] = useState('')
   const [createModal, setCreateModal] = useState(false)
@@ -49,7 +49,7 @@ export default function ListarCategorias({ setAlert, windowHeight, isMaximized, 
     <>
       <p className='title'>
         <span>Listar Categorias</span>
-        {permisos.data.some(p => p.id === 4) && (//4: Registrar categoria
+        {permisos.data.some(p => p.id === 4) && (// 4: Registrar categoria
           <button
             className='btn_add'
             onClick={() => setCreateModal(true)}
@@ -109,17 +109,17 @@ export default function ListarCategorias({ setAlert, windowHeight, isMaximized, 
                         autoFocus
                       />
                     </td>
-                  )
+                    )
                   : (
                     <TooltipCell text={nombre} />
-                  )
+                    )
               }
               <TooltipCell text={tipo} />
               <TooltipCell text={estado} />
 
               <td className='table__body--actions'>
                 {/* Iconos de acciones para cada elemento */}
-                {permisos.data.some(p => p.id === 20) && (//20: Editar categoria
+                {permisos.data.some(p => p.id === 20) && (// 20: Editar categoria
                   <div className='tooltip-container'>
                     <Icon
                       icon='system-uicons:create'
@@ -133,7 +133,7 @@ export default function ListarCategorias({ setAlert, windowHeight, isMaximized, 
                     <span className='tooltip'>Editar</span>
                   </div>
                 )}
-                {permisos.data.some(p => p.id === 28) && (//28: Inhabilitar categoria
+                {permisos.data.some(p => p.id === 28) && (// 28: Inhabilitar categoria
                   <div className='tooltip-container'>
                     <Icon icon='system-uicons:trash' width='24' strokeWidth={1.2} onClick={() => handleAlert(id, nombre)} />
                     <span className='tooltip'>Deshabilitar</span>

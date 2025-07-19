@@ -8,7 +8,7 @@ import '../../../styles/globals/tables.css'
 import { Icon } from '@iconify/react'
 import { useState } from 'react'
 
-export default function ListarMarcas({ setAlert, windowHeight, isMaximized, permisos }) {
+export default function ListarMarcas ({ setAlert, windowHeight, isMaximized, permisos }) {
   const [editingId, setEditingId] = useState(null)
   const [editedName, setEditedName] = useState('')
   const [createModal, setCreateModal] = useState(false)
@@ -49,7 +49,7 @@ export default function ListarMarcas({ setAlert, windowHeight, isMaximized, perm
     <>
       <p className='title'>
         <span>Listar Marcas</span>
-        {permisos.data.some(p => p.id === 5) && (//3: Registrar marca
+        {permisos.data.some(p => p.id === 5) && (// 3: Registrar marca
           <button
             className='btn_add'
             onClick={() => setCreateModal(true)}
@@ -109,16 +109,16 @@ export default function ListarMarcas({ setAlert, windowHeight, isMaximized, perm
                         autoFocus
                       />
                     </td>
-                  )
+                    )
                   : (
                     <TooltipCell text={nombre} />
-                  )
+                    )
               }
               <TooltipCell text={estado} />
 
               <td className='table__body--actions'>
                 {/* Iconos de acciones para cada elemento */}
-                {permisos.data.some(p => p.id === 21) && (//21: Editar marca
+                {permisos.data.some(p => p.id === 21) && (// 21: Editar marca
                   <div className='tooltip-container'>
                     <Icon
                       icon='system-uicons:create'
@@ -132,7 +132,7 @@ export default function ListarMarcas({ setAlert, windowHeight, isMaximized, perm
                     <span className='tooltip'>Editar</span>
                   </div>
                 )}
-                {permisos.data.some(p => p.id === 29) && (//29: Inhabilitar marca
+                {permisos.data.some(p => p.id === 29) && (// 29: Inhabilitar marca
                   <div className='tooltip-container'>
                     <Icon icon='system-uicons:trash' width='24' strokeWidth={1.2} onClick={() => handleAlert(id, nombre)} />
                     <span className='tooltip'>Deshabilitar</span>

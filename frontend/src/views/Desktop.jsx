@@ -9,7 +9,7 @@ import ContextMenu from '../components/common/ContextMenu'
 import '../styles/desktop.css'
 import { useFetchByCode } from '../hooks'
 
-export default function Desktop() {
+export default function Desktop () {
   // Estado array con los IDs de las ventanas abiertas y su estado (visible o minimizada)
   // Estado de la ventana que está al frente (ventana abierta o en la que se hizo clic más recientemente)
   // Estado con la alerta (tipo, mensaje y visibilidad)

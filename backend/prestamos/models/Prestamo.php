@@ -163,7 +163,7 @@ class Prestamo
         LEFT JOIN estados_prestamos e ON p.estado_prestamo_id = e.estado_prestamo_id
         LEFT JOIN usuarios u ON p.usuario_documento = u.usuario_documento
         LEFT JOIN {$this->tabla_solicitantes} s ON p.solicitante_documento = s.solicitante_documento
-        ORDER BY p.prestamo_id ASC";
+        ORDER BY p.prestamo_id DESC";
       $stmt = $this->conn->prepare($sql);
 
       if (!$stmt) {

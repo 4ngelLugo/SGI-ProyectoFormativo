@@ -6,7 +6,7 @@ import danger from '../../../assets/icons/danger.svg'
 import '../../../styles/globals/tables.css'
 import { Icon } from '@iconify/react'
 
-export default function ListarPrestamos({ setAlert, windowHeight, isMaximized, setActiveView, setSearchedItem, setSearchedEdit, permisos }) {
+export default function ListarPrestamos ({ setAlert, windowHeight, isMaximized, setActiveView, setSearchedItem, setSearchedEdit, permisos }) {
   // Hook para manejar la lista de elementos y su paginación
   const {
     elements,
@@ -108,7 +108,7 @@ export default function ListarPrestamos({ setAlert, windowHeight, isMaximized, s
                       <Icon icon='system-uicons:eye' width='24' strokeWidth={1.2} onClick={() => handleView(id, 'buscarPrestamo')} />
                       <span className='tooltip'>Ver más detalles</span>
                     </div>
-                    {usuario.nombre === `${usuarioNombre} ${usuarioApellido}` && (
+                    {usuario?.nombre === `${usuarioNombre} ${usuarioApellido}` && (
                       <>
                         <div className='tooltip-container'>
                           <Icon icon='system-uicons:create' width='24' strokeWidth={1.2} onClick={() => handleView(id, 'editarPrestamo')} />
@@ -153,7 +153,7 @@ export default function ListarPrestamos({ setAlert, windowHeight, isMaximized, s
                 <tr>
                   <td colSpan={7} className='notFound--message'>No se encontró ningun prestamo.</td>
                 </tr>
-              )
+                )
           }
         </tbody>
       </table>

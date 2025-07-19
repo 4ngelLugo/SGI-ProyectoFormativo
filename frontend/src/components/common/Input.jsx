@@ -65,6 +65,7 @@ export default function Input ({
         max={max}
         disabled={isDisabled}
         readOnly={readOnly}
+        className={(isDisabled || readOnly) && 'grayText'}
       />
       {errorLabel && <p className='errorLabel'>{errorLabel}</p>}
     </div>
