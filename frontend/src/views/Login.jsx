@@ -1,6 +1,6 @@
 import '../styles/login.css'
 import LoadingScreen from '../components/common/LoadingScreen'
-import logoSena from '../assets/images/logoSena.png'
+import logo from '../assets/images/logo.svg'
 import { useEffect, useRef, useState } from 'react'
 import { tryConnect, useGetTime } from '../hooks'
 
@@ -55,7 +55,7 @@ export default function Login () {
 
         <section className='login-form' ref={form}>
           <div className='login-form__logo'>
-            <img src={logoSena} alt='Logo SENA' />
+            <img src={logo} alt='Logo Lendora' />
           </div>
           <form onSubmit={handleSubmit} ref={formRef}>
             <input

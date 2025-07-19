@@ -1,5 +1,5 @@
 <?php
-include_once '../model/categoria.php';
+require_once '../model/categoria.php';
 
 class CategoriaController
 {
@@ -12,71 +12,83 @@ class CategoriaController
 
   public function guardarCategoria($nombre, $tipo)
   {
-    if (empty($nombre) || empty($tipo)) return ["error" => "campos vacios"];
+    // Validar que los campos requeridos no esten vacios
+    if (empty($nombre)) return ["error" => "no nombre"];
+    if (empty($tipo)) return ["error" => "no tipo"];
 
+    // Validar que no exista un area con el mismo ID en la base de datos antes de crear uno nuevo
     $verificar_categoria = $this->categoria_modelo->obtenerCategoriaPorNombre($nombre);
-    if ($verificar_categoria) return ["error" => "ya existe"];
+    if ($verificar_categoria) return ["error" => "ya existe categoria"];
 
-    $guardar_categoria = $this->categoria_modelo->guardarCategoria($nombre, $tipo);
-    if ($guardar_categoria) return ["success" => true];
+    // Crear la desde el modelo y recibe mensajes de exito o error
+    $resultado = $this->categoria_modelo->guardarCategoria($nombre, $tipo);
+    if ($resultado) return $resultado;
 
-    return ["error" => "error al guardar"];
+    return ["error" => "error al guardar categoria"];
   }
 
   public function obtenerTodasLasCategorias()
   {
-    $todas_las_categorias = $this->categoria_modelo->obtenerTodasLasCategorias();
+    // Obtiene todos las categorias desde el modelo y recibe mensajes de exito o error
+    $resultado = $this->categoria_modelo->obtenerTodasLasCategorias();
+    if ($resultado) return $resultado;
 
-    if ($todas_las_categorias) return $todas_las_categorias;
-
-    return ["error" => "error al obtener"];
+    return ["error" => "error al obtener categorias"];
   }
 
   public function obtenerCategoriaPorId($id)
   {
-    if (empty($id)) return ["error" => "campos vacios"];
+    // Validar que los campos requeridos no esten vacios
+    if (empty($id)) return ["error" => "campos vacios categoria"];
 
-    $categoria = $this->categoria_modelo->obtenerCategoriaPorId($id);
+    // Obtiene la categoria desde el modelo y recibe mensajes de exito o error
+    $resultado = $this->categoria_modelo->obtenerCategoriaPorId($id);
+    if ($resultado) return $resultado;
 
-    if ($categoria) return $categoria;
-
-    return ["error" => "error al obtener por id"];
+    return ["error" => "error al obtener categoria"];
   }
 
   public function obtenerCategoriaPorNombre($nombre)
   {
-    if (empty($nombre)) return ["error" => "campos vacios"];
+    // Validar que los campos requeridos no esten vacios
+    if (empty($nombre)) return ["error" => "campos vacios categoria"];
 
-    $categoria = $this->categoria_modelo->obtenerCategoriaPorNombre($nombre);
+    // Obtiene la categoria desde el modelo y recibe mensajes de exito o error
+    $resultado = $this->categoria_modelo->obtenerCategoriaPorNombre($nombre);
+    if ($resultado) return $resultado;
 
-    if ($categoria) return $categoria;
-
-    return ["error" => "error al obtener por nombre"];
+    return ["error" => "error al obtener categoria"];
   }
 
-  public function editarCategoria($id, $nombre, $tipo)
+  public function editarCategoria($id, $nombre)
   {
-    if (empty($id) || empty($nombre) || empty($tipo)) return ["error" => "campos vacios"];
+    // Validar que los campos requeridos no esten vacios
+    if (empty($id) || empty($nombre)) return ["error" => "campos vacios"];
 
+    // Validar que la categoria a editar exista el la base de datos antes de intentar editarlo
     $verificar_categoria = $this->categoria_modelo->obtenerCategoriaPorId($id);
-    if (!$verificar_categoria) return ["error" => "no existe"];
+    if (!$verificar_categoria) return ["error" => "no existe categoria"];
 
-    $editar_categoria = $this->categoria_modelo->editarCategoria($id, $nombre, $tipo);
-    if ($editar_categoria) return ["success" => true];
+    // Editar la categoria desde el modelo y recibir mensajes de exito o error
+    $resultado = $this->categoria_modelo->editarCategoria($id, $nombre);
+    if ($resultado) return $resultado;
 
-    return ["error" => "error al editar"];
+    return ["error" => "error al editar categoria"];
   }
 
   public function desactivarCategoria($id)
   {
-    if (empty($id)) return ["error" => "campos vacios"];
+    // Validar que los campos requeridos no esten vacios
+    if (empty($id)) return ["error" => "campos vacios categoria"];
 
+    // Validar que la categoria a desactivar exista el la base de datos antes de intentar desactivarla
     $verificar_categoria = $this->categoria_modelo->obtenerCategoriaPorId($id);
-    if (!$verificar_categoria) return ["error" => "no existe"];
+    if (!$verificar_categoria) return ["error" => "no existe categoria"];
 
-    $desactivar_categoria = $this->categoria_modelo->desactivarCategoria($id);
-    if ($desactivar_categoria) return ["success" => true];
+    // Desactivar la categoria desde el modelo y recibir mensajes de exito o error
+    $resultado = $this->categoria_modelo->desactivarCategoria($id);
+    if ($resultado) return $resultado;
 
-    return ["error" => "error al desactivar"];
+    return ["error" => "error al desactivar categoria"];
   }
 }

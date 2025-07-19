@@ -26,9 +26,10 @@ export default function EditarUsuario ({ setAlert, searchedEdit, setActiveView }
           : element
             ? (
               <form className='form form--elements' ref={formRef} onSubmit={handleSubmit}>
+                <p className='message'>El número de documento no es editable.</p>
                 <p className='message'>Los campos marcados con asterisco (*) son obligatorios.</p>
 
-                <Input type='number' placeholder='N° de Documento (numérico)' name='documento' defaultValue={element.documento} required />
+                <Input type='number' placeholder='N° de Documento (numérico)' name='documento' defaultValue={element.documento} required readOnly />
                 <SelectInput
                   options={filteredTipos}
                   placeholder='Tipo de documento'

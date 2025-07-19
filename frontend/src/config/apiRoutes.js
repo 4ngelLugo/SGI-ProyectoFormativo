@@ -1,6 +1,6 @@
 export const API_BASE = 'http://localhost/sgi-proyectoformativo/backend'
 
-export const IniciarSesionEndpoint = `${API_BASE}/aspectos_generales/login/controllers/sessionValidate.php`
+export const IniciarSesionEndpoint = `${API_BASE}/aspectos_generales/login/api/sessionValidate.php`
 
 export const SaveElementsEndpoint = `${API_BASE}/elementos/api/guardarAPI.php`
 export const FetchElementsEndpoint = `${API_BASE}/elementos/api/obtenerAPI.php`
@@ -20,6 +20,7 @@ export const GuardarRolEndpoint = `${API_BASE}/aspectos_generales/roles/api/guar
 export const EditarRolEndpoint = `${API_BASE}/aspectos_generales/roles/api/editarAPI.php`
 export const DesactivarRolEndpoint = `${API_BASE}/aspectos_generales/roles/api/desactivarAPI.php`
 export const ObtenerPermisosEndpoint = `${API_BASE}/aspectos_generales/permisos/api/obtenerAPI.php`
+export const ObtenerPermisosPorRolEndpoint = `${API_BASE}/aspectos_generales/permisos/api/obtenerAPI.php?rol=`
 
 export const ObtenerAreasEndpoint = `${API_BASE}/aspectos_generales/areas/api/obtenerAPI.php`
 export const ObtenerAreaPorCodigoEndpoint = `${API_BASE}/aspectos_generales/areas/api/obtenerAPI.php?area_id=`
@@ -45,8 +46,15 @@ export const GuardarTipoDocumentoEndpoint = `${API_BASE}/aspectos_generales/tipo
 export const EditarTipoDocumentoEndpoint = `${API_BASE}/aspectos_generales/tipoDocumento/api/editarAPI.php`
 export const DesactivarTipoDocumentoEndpoint = `${API_BASE}/aspectos_generales/tipoDocumento/api/desactivarAPI.php`
 
-export const ObtenerPrestamosEndpoint = `${API_BASE}/prestamos/api/listarPrestamos.php`
-export const ObtenerPrestamoPorCodigoEndpoint = `${API_BASE}/prestamos/api/obtenerPrestamoCompleto.php?prestamo_id=`
+export const ObtenerPrestamosEndpoint = `${API_BASE}/prestamos/api/obtenerAPI.php`
+export const ObtenerPrestamoPorCodigoEndpoint = `${API_BASE}/prestamos/api/obtenerAPI.php?prestamo_id=`
 export const GuardarPrestamoEndpoint = `${API_BASE}/prestamos/api/generarPrestamo.php`
-export const EditarPrestamoEndpoint = `${API_BASE}/prestamos/api/actualizarPrestamo.php`
+export const EditarObservacionPrestamo = `${API_BASE}/prestamos/api/editarObservacion.php`
+export const CambiarEstadoPrestamo = `${API_BASE}/prestamos/api/cambiarEstadoPrestamo.php?estado=`
 export const DesactivarPrestamoEndpoint = `${API_BASE}/prestamos/api/inhabilitarPrestamo.php`
+
+export const ObtenerSolicitantesEndpoint = `${API_BASE}/solicitantes/api/obtenerAPI.php`
+export const ObtenerSolicitantesPorDocumentoEndpoint = `${API_BASE}/solicitantes/api/obtenerAPI.php?documento=`
+
+export const CuentaElementosPrestados = `${API_BASE}/reportes/api/cuentaElementosPrestados.php`
+export const CuentaPrestamosUsuario = `${API_BASE}/reportes/api/cuentaPrestamosUsuario.php`

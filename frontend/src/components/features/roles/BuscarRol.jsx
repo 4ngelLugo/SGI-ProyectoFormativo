@@ -6,7 +6,6 @@ import { useEffect, useState } from 'react'
 export default function BuscarRol ({ setAlert, searchedItem, setSearchedItem }) {
   const {
     loading,
-    typing,
     element,
     setElement,
     setLoading
@@ -104,7 +103,7 @@ export default function BuscarRol ({ setAlert, searchedItem, setSearchedItem }) 
 
             </div>
             )
-          : !typing && (<p>No se encontró el rol.</p>)}
+          : (<p className='notFound--message'>No se encontró ningun rol</p>)}
     </>
   )
 }

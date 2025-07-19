@@ -1,7 +1,9 @@
 <?php
 require_once '../../config/Database.php';
-require_once '../controllers/prestamosController.php';
+require_once '../Controller/PrestamoController.php';
 
+// Cabeceras para permitir CORS y definir el tipo de contenido
+// Estas cabeceras permiten que el frontend pueda hacer peticiones a este endpoint desde un origen diferente y el servidor responda con el tipoo de contenido adecuado (.JSON)
 header("Access-Control-Allow-Origin: http://localhost:5173");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
@@ -13,55 +15,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-// Verificar que sea POST
+// Verificar que el metodo por el que se envian los datos sea POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
-    echo json_encode(["error" => "Metodo no permitido"]);
+    echo json_encode(["error" => "metodo invalido"]);
     exit();
 }
 
-// Recibir toda la data enviada en el body
-// $datos = json_decode(file_get_contents("php://input"), true);
-
+// Recibir todos los datos enviados por POST
 $datos = [
-    'usuario_documento' => $_POST['usuario_documento'],
-    'usertype' => $_POST['usertype'],
-    'tipo_prestamo' => $_POST['tipo_prestamo'],
-    'identificacion' => $_POST['identificacion'],
-    'nombre_apellido' => $_POST['nombre_apellido'],
-    'telefono' => $_POST['telefono'],
-    'correo' => $_POST['correo'],
-    'direccion' => $_POST['direccion'],
-    'fecha_entrega' => $_POST['fecha_entrega'],
-    'fecha_devolucion' => $_POST['fecha_devolucion'],
-    'destino_general' => $_POST['destino_general'],
-    'devolutivos' => $_POST['devolutivos'],
-    'consumibles' => $_POST['consumibles'],
-    'observaciones' => $_POST['observaciones']
+    'usuario_documento' => $_POST['usuario_documento'] ?? null,
+    'usertype'          => $_POST['usertype'] ?? null,
+    'identificacion'    => $_POST['identificacion'] ?? null,
+    'nombre_apellido'   => $_POST['nombre_apellido'] ?? null,
+    'telefono'          => $_POST['telefono'] ?? null,
+    'correo'            => $_POST['correo'] ?? null,
+    'direccion'         => $_POST['direccion'] ?? null,
+    'fecha_entrega'     => $_POST['fecha_entrega'] ?? null,
+    'fecha_devolucion'  => $_POST['fecha_devolucion'] ?? null,
+    'destino_general'   => $_POST['destino_general'] ?? null,
+    'devolutivos'       => $_POST['devolutivos'] ?? null,
+    'consumibles'       => $_POST['consumibles'] ?? null,
+    'observaciones'     => $_POST['observaciones'] ?? null
 ];
 
-// print_r($datos);
+// Conectar a la base de datos y verificar que la conexión sea exitosa
+$database = new Database();
+$conexion = $database->connect();
 
-if (!$datos || !is_array($datos)) {
-    http_response_code(400);
-    echo json_encode(["error" => "Datos invalidos"]);
-    exit;
-}
-
-$controller = new prestamosController();
-
-try {
-    // Pasar toda la data al método del controlador
-    $resultado = $controller->crearSolicitud($datos);
-    http_response_code(201);
-    // error_log('[DEBUG] Datos recibidos en generarPrestamo.php: ' . json_encode($datos));
-    echo json_encode([
-        "success" => true,
-        "id_solicitud" => $resultado,
-        "message" => "Solicitud creada correctamente",
-        "data_recibida" => $datos
-    ]);
-} catch (Exception $e) {
+if (!$conexion) {
     http_response_code(500);
-    echo json_encode(["error" => $e->getMessage()]);
+    echo json_encode(["error" => "error de conexion a la base de datos"]);
+    exit();
 }
+
+$controller = new PrestamoController($conexion);
+
+// Pasar toda la data al método del controlador y generar el préstamo. Verificando si hubo algun error
+$resultado = $controller->generarPrestamo($datos);
+
+if (isset($resultado['error'])) {
+    http_response_code(500);
+    echo json_encode($resultado);
+    $database->closeConnection();
+    exit();
+}
+
+http_response_code(201);
+echo json_encode($resultado);
+
+// Cerrar la conexión a la base de datos
+$database->closeConnection();
+
+exit();

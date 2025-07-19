@@ -3,7 +3,7 @@ import '../../styles/globals/forms.css'
 import Input from './Input'
 import SelectInput from './SelectInput'
 
-export default function ConfirmModal({ icon, title, message, showModal, setShowModal, formRef, handleSubmit, inputTipo }) {
+export default function ConfirmModal ({ icon, title, message, showModal, setShowModal, formRef, handleSubmit, inputTipo }) {
   const tipoOptions = [
     {
       id: 'devolutivo',
@@ -23,8 +23,7 @@ export default function ConfirmModal({ icon, title, message, showModal, setShowM
         {message && <span>{message}</span>}
         <Input type='text' placeholder='Nombre' name='nombre' required />
         {inputTipo &&
-          <SelectInput options={tipoOptions} placeholder='Tipo de categoria' name='tipo' required />
-        }
+          <SelectInput options={tipoOptions} placeholder='Tipo de categoria' name='tipo' required />}
         <div className='modal_buttons'>
           {/* Botones para cancelar o confirmar */}
           <button type='button' onClick={() => setShowModal(false)} className='modal--cancel'>Cancelar</button>

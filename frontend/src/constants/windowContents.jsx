@@ -11,6 +11,7 @@ import EditarUsuario from '../components/features/usuarios/EditarUsuario'
 import CrearPrestamo from '../components/features/prestamos/CrearPrestamo'
 import ListarPrestamos from '../components/features/prestamos/ListarPrestamos'
 import BuscarPrestamo from '../components/features/prestamos/BuscarPrestamo'
+import EditarPrestamo from '../components/features/prestamos/EditarPrestamo'
 
 import ListarRoles from '../components/features/roles/ListarRoles'
 import CrearRol from '../components/features/roles/CrearRol'
@@ -21,6 +22,9 @@ import ListarAreas from '../components/features/configuracion/ListarAreas'
 import ListarCategorias from '../components/features/configuracion/ListarCategorias'
 import ListarMarcas from '../components/features/configuracion/ListarMarcas'
 import ListarTipoDocumento from '../components/features/configuracion/ListarTipoDocumento'
+
+import ElementosPrestados from '../components/features/reportes/ElementosPrestados'
+import PrestamosUsuarios from '../components/features/reportes/PrestamosUsuarios'
 
 const iconos = {
   listar: 'system-uicons:clipboard-notes',
@@ -36,7 +40,7 @@ export const windowContents = {
       { key: 'searchElement', icon: iconos.buscar, label: 'Buscar elemento' }
     ],
     views: {
-      listElement: ({ setAlert, windowHeight, isMaximized, setActiveView, setSearchedItem, setSearchedEdit }) =>
+      listElement: ({ setAlert, windowHeight, isMaximized, setActiveView, setSearchedItem, setSearchedEdit, permisos }) =>
         <ListElements
           setAlert={setAlert}
           windowHeight={windowHeight}
@@ -44,6 +48,7 @@ export const windowContents = {
           setActiveView={setActiveView}
           setSearchedItem={setSearchedItem}
           setSearchedEdit={setSearchedEdit}
+          permisos={permisos}
         />,
       createElement: ({ setAlert, setActiveView }) =>
         <CreateElement setAlert={setAlert} setActiveView={setActiveView} />,
@@ -68,7 +73,7 @@ export const windowContents = {
       { key: 'buscarUsuario', icon: iconos.buscar, label: 'Buscar usuario' }
     ],
     views: {
-      listarUsuarios: ({ setAlert, windowHeight, isMaximized, setActiveView, setSearchedItem, setSearchedEdit }) =>
+      listarUsuarios: ({ setAlert, windowHeight, isMaximized, setActiveView, setSearchedItem, setSearchedEdit, permisos }) =>
         <ListarUsuarios
           setAlert={setAlert}
           windowHeight={windowHeight}
@@ -76,6 +81,7 @@ export const windowContents = {
           setActiveView={setActiveView}
           setSearchedItem={setSearchedItem}
           setSearchedEdit={setSearchedEdit}
+          permisos={permisos}
         />,
       crearUsuario: ({ setAlert, setActiveView }) =>
         <CrearUsuario setAlert={setAlert} setActiveView={setActiveView} />,
@@ -93,6 +99,18 @@ export const windowContents = {
         />
     }
   },
+  estadisticas: {
+    sidebar: [
+      { key: 'elementosPrestados', icon: iconos.listar, label: 'Elementos Prestados' },
+      { key: 'prestamosUsuarios', icon: iconos.listar, label: 'Prestamos por usuario' }
+    ],
+    views: {
+      elementosPrestados: ({ setAlert }) =>
+        <ElementosPrestados setAlert={setAlert} />,
+      prestamosUsuarios: ({ setAlert }) =>
+        <PrestamosUsuarios setAlert={setAlert} />
+    }
+  },
   configuración: {
     sidebar: [
       { key: 'listarAreas', icon: iconos.listar, label: 'Listar Areas' },
@@ -101,33 +119,37 @@ export const windowContents = {
       { key: 'listarTipoDocumento', icon: iconos.listar, label: 'Listar Tipos de Documento' }
     ],
     views: {
-      listarAreas: ({ setAlert, windowHeight, isMaximized }) =>
+      listarAreas: ({ setAlert, windowHeight, isMaximized, permisos }) =>
         <ListarAreas
           setAlert={setAlert}
           windowHeight={windowHeight}
           isMaximized={isMaximized}
+          permisos={permisos}
         />,
-      listarCategorias: ({ setAlert, windowHeight, isMaximized }) =>
+      listarCategorias: ({ setAlert, windowHeight, isMaximized, permisos }) =>
         <ListarCategorias
           setAlert={setAlert}
           windowHeight={windowHeight}
           isMaximized={isMaximized}
+          permisos={permisos}
         />,
-      listarMarcas: ({ setAlert, windowHeight, isMaximized }) =>
+      listarMarcas: ({ setAlert, windowHeight, isMaximized, permisos }) =>
         <ListarMarcas
           setAlert={setAlert}
           windowHeight={windowHeight}
           isMaximized={isMaximized}
+          permisos={permisos}
         />,
-      listarTipoDocumento: ({ setAlert, windowHeight, isMaximized }) =>
+      listarTipoDocumento: ({ setAlert, windowHeight, isMaximized, permisos }) =>
         <ListarTipoDocumento
           setAlert={setAlert}
           windowHeight={windowHeight}
           isMaximized={isMaximized}
+          permisos={permisos}
         />
     }
   },
-  terminal: {
+  roles: {
     sidebar: [
       { key: 'listarRoles', icon: iconos.listar, label: 'Listar roles' },
       { key: 'crearRol', icon: iconos.crear, label: 'Crear rol' },
@@ -151,7 +173,7 @@ export const windowContents = {
           searchedItem={searchedItem}
           setSearchedItem={setSearchedItem}
         />,
-      editarRol: ({ setAlert, searchedEdit,setActiveView }) =>
+      editarRol: ({ setAlert, searchedEdit, setActiveView }) =>
         <EditarRol
           setAlert={setAlert}
           searchedEdit={searchedEdit}
@@ -162,11 +184,11 @@ export const windowContents = {
   prestamos: {
     sidebar: [
       { key: 'listarPrestamos', icon: iconos.listar, label: 'Listar Prestamos' },
-      { key: 'crearPrestamo', icon: iconos.crear, label: 'Solicitar Prestamo' },
-      { key: 'buscarPrestamo', icon: iconos.buscar, label: 'Buscar Prestamo' },
+      { key: 'crearPrestamo', icon: iconos.crear, label: 'Realizar Prestamo' },
+      { key: 'buscarPrestamo', icon: iconos.buscar, label: 'Buscar Prestamo' }
     ],
     views: {
-      listarPrestamos: ({ setAlert, windowHeight, isMaximized, setActiveView, setSearchedItem, setSearchedEdit }) =>
+      listarPrestamos: ({ setAlert, windowHeight, isMaximized, setActiveView, setSearchedItem, setSearchedEdit, permisos }) =>
         <ListarPrestamos
           setAlert={setAlert}
           windowHeight={windowHeight}
@@ -174,6 +196,7 @@ export const windowContents = {
           setActiveView={setActiveView}
           setSearchedItem={setSearchedItem}
           setSearchedEdit={setSearchedEdit}
+          permisos={permisos}
         />,
       crearPrestamo: ({ setAlert, setActiveView }) =>
         <CrearPrestamo setAlert={setAlert} setActiveView={setActiveView} />,
@@ -183,6 +206,12 @@ export const windowContents = {
           searchedItem={searchedItem}
           setSearchedItem={setSearchedItem}
         />,
+      editarPrestamo: ({ setAlert, searchedEdit, setActiveView }) =>
+        <EditarPrestamo
+          setAlert={setAlert}
+          searchedEdit={searchedEdit}
+          setActiveView={setActiveView}
+        />
     }
   }
 }

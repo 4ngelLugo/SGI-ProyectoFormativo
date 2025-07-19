@@ -1,5 +1,5 @@
 <?php
-include '../model/Permiso.php';
+require_once '../model/Permiso.php';
 
 class PermisoController
 {
@@ -11,10 +11,20 @@ class PermisoController
   }
   public function obtenerTodosLosPermisos()
   {
-    $todos_los_permisos = $this->permiso_modelo->obtenerTodosLosPermisos();
-
-    if ($todos_los_permisos) return $todos_los_permisos;
+    // Obtiene todas los permisos desde el modelo y recibe mensajes de exito o error
+    $resultado = $this->permiso_modelo->obtenerTodosLosPermisos();
+    if ($resultado) return $resultado;
 
     return ["error" => "error al obtener permisos"];
+  }
+
+  public function obterPermisosPorRol(int $rol_id)
+  {
+    if (empty($rol_id)) return ["error" => "campos vacios"];
+
+    $resultado = $this->permiso_modelo->obterPermisosPorRol($rol_id);
+    if ($resultado) return $resultado;
+
+    return ["error" =>  "error al obtener permisos"];
   }
 }

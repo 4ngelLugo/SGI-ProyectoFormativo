@@ -1,10 +1,11 @@
+/* global localStorage */
 import NotificationCenter from './Notifications'
-import appleLogo from '../../assets/images/macIcon.webp'
+import logo from '../../assets/images/logo.svg'
 import cerrar from '../../assets/icons/cerrar.svg'
 import danger from '../../assets/icons/danger.svg'
 import { useState } from 'react'
 
-export default function Navbar({ windowOnTop, setIsAuthenticated }) {
+export default function Navbar ({ windowOnTop, setIsAuthenticated }) {
   // Función que capitaliza la primera letra de la palabra y convierte el resto a minúsculas
   const capitalizeFirstLetter = (str) => {
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
@@ -17,7 +18,7 @@ export default function Navbar({ windowOnTop, setIsAuthenticated }) {
     <>
       <nav className='topBar'>
         <div className='topBar--fileOptions'>
-          <img src={appleLogo} alt='Logo' />
+          <img src={logo} alt='Logo Lendora' />
 
           <span><strong>{formattedWindowOnTop}</strong></span>
         </div>

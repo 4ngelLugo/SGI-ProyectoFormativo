@@ -3,158 +3,254 @@ class UsuarioModel
 {
   private $conn;
   private $tabla = "usuarios";
+  private $error_return = "";
 
   public function __construct($db)
   {
     $this->conn = $db;
   }
 
-  public function guardarUsuario($documento, $tipo_documento, $nombres, $apellidos, $telefono, $correo, $contrasena, $rol)
+  public function guardarUsuario(array $datos)
   {
-    $query = "INSERT INTO {$this->tabla}
-              (usuario_documento, tipo_docu_id,
-              usuario_nombre, usuario_apellido,
-              usuario_telefono, usuario_correo,
-              usuario_contrasena, rol_id)
-              VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-    $stmt = $this->conn->prepare($query);
+    try {
+      $query = "INSERT INTO {$this->tabla} (
+        usuario_documento,
+        tipo_docu_id,
+        usuario_nombre,
+        usuario_apellido,
+        usuario_telefono,
+        usuario_correo,
+        usuario_contrasena,
+        rol_id)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+      $stmt = $this->conn->prepare($query);
 
-    if (!$stmt) {
-      $this->logError("Prepare failed: " . $this->conn->error);
-      return null;
+      if (!$stmt) {
+        throw new Exception("Prepare failed: " . $this->conn->error);
+      }
+
+      $stmt->bind_param(
+        "iississi",
+        $datos['documento'],
+        $datos['tipo_documento'],
+        $datos['nombres'],
+        $datos['apellidos'],
+        $datos['telefono'],
+        $datos['correo'],
+        $datos['contrasena'],
+        $datos['rol']
+      );
+
+      if (!$stmt->execute()) {
+        $this->error_return = "error al guardar usuario";
+        throw new Exception("Execute failed (Crear usuario): " . $stmt->error);
+      }
+
+      return ["success" => true];
+    } catch (Exception $e) {
+      $this->logError($e->getMessage());
+
+      return !empty($this->error_return) ? ["error" => $this->error_return] : [];
     }
-
-    $stmt->bind_param("iississi", $documento, $tipo_documento, $nombres, $apellidos, $telefono, $correo, $contrasena, $rol);
-
-    if ($stmt->execute()) return true;
-
-    $this->logError("Execute failed (Guardar usuario): " . $stmt->error);
-    return null;
   }
 
-  public function obtenerTodosLosUsuarios($estado = "activo")
+  public function obtenerTodosLosUsuarios()
   {
-    $sql = "SELECT
-            u.usuario_documento as documento,
-            t.tipo_docu_nombre as tipoDocumento,
-            u.usuario_nombre as nombres,
-            u.usuario_apellido as apellidos,
-            u.usuario_telefono as telefono,
-            u.usuario_correo as correo,
-            u.usuario_contrasena as contrasena,
-            r.rol_nombre as rol,
-            u.usuario_estado as estado
-            FROM usuarios u
-            INNER JOIN tipo_documento t
-            ON u.tipo_docu_id = t.tipo_docu_id
-            INNER JOIN roles r
-            ON u.rol_id = r.rol_id
-            -- WHERE u.usuario_estado = ?
-            ORDER BY u.usuario_documento ASC, u.usuario_nombre ASC";
-    $stmt = $this->conn->prepare($sql);
+    try {
+      $sql = "SELECT
+        u.usuario_documento as documento,
+        t.tipo_docu_nombre as tipoDocumento,
+        u.usuario_nombre as nombres,
+        u.usuario_apellido as apellidos,
+        u.usuario_telefono as telefono,
+        u.usuario_correo as correo,
+        u.usuario_contrasena as contrasena,
+        r.rol_nombre as rol,
+        u.usuario_estado as estado
+        FROM usuarios u
+        INNER JOIN tipo_documento t
+        ON u.tipo_docu_id = t.tipo_docu_id
+        INNER JOIN roles r
+        ON u.rol_id = r.rol_id
+        ORDER BY u.usuario_documento ASC, u.usuario_nombre ASC";
+      $stmt = $this->conn->prepare($sql);
 
-    if (!$stmt) {
-      $this->logError("Prepare failed: " . $this->conn->error);
-      return null;
+      if (!$stmt) {
+        throw new Exception("Prepare failed: " . $this->conn->error);
+      }
+
+      if (!$stmt->execute()) {
+        $this->error_return = "error al obtener usuarios";
+        throw new Exception("Execute failed (Obtener todos los usuarios): " . $stmt->error);
+      }
+
+      // Obtiene el resultado de la consulta y verifica si hay filas
+      $resultado = $stmt->get_result();
+      return ["success" => true, "data" => $resultado->fetch_all(MYSQLI_ASSOC)];
+    } catch (Exception $e) {
+      $this->logError($e->getMessage());
+
+      return !empty($this->error_return) ? ["error" => $this->error_return] : [];
     }
-
-    // $stmt->bind_param('s', $estado);
-
-    if ($stmt->execute()) {
-      $result = $stmt->get_result();
-      return $result->fetch_all(MYSQLI_ASSOC);
-    }
-
-    $this->logError("Execute failed (Obtener todos los usuarios): " . $stmt->error);
-    return null;
   }
 
-  public function obtenerUsuarioPorDocumento($documento)
+  public function obtenerUsuarioPorDocumento(int $documento)
   {
-    $sql = "SELECT
-            u.usuario_documento as documento,
-            t.tipo_docu_id as tipoDocumentoId,
-            t.tipo_docu_nombre as tipoDocumento,
-            u.usuario_nombre as nombres,
-            u.usuario_apellido as apellidos,
-            u.usuario_telefono as telefono,
-            u.usuario_correo as correo,
-            u.usuario_contrasena as contrasena,
-            r.rol_id as rol,
-            r.rol_nombre as rolNombre,
-            u.usuario_estado as estado
-            FROM usuarios u
-            INNER JOIN tipo_documento t
-            ON u.tipo_docu_id = t.tipo_docu_id
-            INNER JOIN roles r
-            ON u.rol_id = r.rol_id
-            WHERE u.usuario_documento = ?";
-    $stmt = $this->conn->prepare($sql);
+    try {
+      $sql = "SELECT
+      u.usuario_documento as documento,
+      t.tipo_docu_id as tipoDocumentoId,
+      t.tipo_docu_nombre as tipoDocumento,
+      u.usuario_nombre as nombres,
+      u.usuario_apellido as apellidos,
+      u.usuario_telefono as telefono,
+      u.usuario_correo as correo,
+      u.usuario_contrasena as contrasena,
+      r.rol_id as rol,
+      r.rol_nombre as rolNombre,
+      u.usuario_estado as estado
+      FROM usuarios u
+      INNER JOIN tipo_documento t
+      ON u.tipo_docu_id = t.tipo_docu_id
+      INNER JOIN roles r
+      ON u.rol_id = r.rol_id
+      WHERE u.usuario_documento = ?";
+      $stmt = $this->conn->prepare($sql);
 
-    if (!$stmt) {
-      $this->logError("Prepare failed: " . $this->conn->error);
-      return null;
+      if (!$stmt) {
+        throw new Exception("Prepare failed: " . $this->conn->error);
+      }
+
+      $stmt->bind_param('i', $documento);
+
+      if (!$stmt->execute()) {
+        $this->error_return = "error al obtener usuario";
+        throw new Exception("Execute failed (Obtener usuario por documento): " . $stmt->error);
+      }
+
+      // Obtiene el resultado de la consulta y verifica si hay filas
+      $resultado = $stmt->get_result();
+      if ($resultado->num_rows > 0) return $resultado->fetch_assoc();
+    } catch (Exception $e) {
+      $this->logError($e->getMessage());
+
+      return !empty($this->error_return) ? ["error" => $this->error_return] : [];
     }
-
-    $stmt->bind_param('i', $documento);
-
-    if ($stmt->execute()) {
-      $result = $stmt->get_result();
-
-      if ($result->num_rows > 0) return $result->fetch_assoc();
-    }
-
-    $this->logError("Execute failed (Obtener usuario por documento): " . $stmt->error);
-    return null;
   }
 
-  public function editarUsuario($documento, $tipo_documento, $nombres, $apellidos, $telefono, $correo, $rol)
+    public function obtenerUsuarioPorCorreo(String $correo)
   {
-    $sql = "UPDATE {$this->tabla}
-            SET tipo_docu_id = ?,
-            usuario_nombre = ?,
-            usuario_apellido = ?,
-            usuario_telefono = ?,
-            usuario_correo = ?,
-            rol_id = ?
-            WHERE usuario_documento = ?";
-    $stmt = $this->conn->prepare($sql);
+    try {
+      $sql = "SELECT
+      u.usuario_documento as documento,
+      t.tipo_docu_id as tipoDocumentoId,
+      t.tipo_docu_nombre as tipoDocumento,
+      u.usuario_nombre as nombres,
+      u.usuario_apellido as apellidos,
+      u.usuario_telefono as telefono,
+      u.usuario_correo as correo,
+      u.usuario_contrasena as contrasena,
+      r.rol_id as rol,
+      r.rol_nombre as rolNombre,
+      u.usuario_estado as estado
+      FROM usuarios u
+      INNER JOIN tipo_documento t
+      ON u.tipo_docu_id = t.tipo_docu_id
+      INNER JOIN roles r
+      ON u.rol_id = r.rol_id
+      WHERE u.usuario_correo = ?";
+      $stmt = $this->conn->prepare($sql);
 
-    if (!$stmt) {
-      $this->logError("Prepare failed: " . $this->conn->error);
-      return null;
+      if (!$stmt) {
+        throw new Exception("Prepare failed: " . $this->conn->error);
+      }
+
+      $stmt->bind_param('s', $correo);
+
+      if (!$stmt->execute()) {
+        $this->error_return = "error al obtener usuario";
+        throw new Exception("Execute failed (Obtener usuario por correo): " . $stmt->error);
+      }
+
+      // Obtiene el resultado de la consulta y verifica si hay filas
+      $resultado = $stmt->get_result();
+      if ($resultado->num_rows > 0) return $resultado->fetch_assoc();
+    } catch (Exception $e) {
+      $this->logError($e->getMessage());
+
+      return !empty($this->error_return) ? ["error" => $this->error_return] : [];
     }
-
-    $stmt->bind_param("issisii", $tipo_documento, $nombres, $apellidos, $telefono, $correo, $rol, $documento);
-
-    if ($stmt->execute()) return true;
-
-    $this->logError("Execute failed (Editar datos basicos usuario): " . $stmt->error);
-    return null;
   }
 
-  public function desactivarUsuario($documento)
+  public function editarUsuario(array $datos)
   {
-    $sql = "UPDATE {$this->tabla}
+    try {
+      $sql = "UPDATE {$this->tabla} SET
+        tipo_docu_id = ?,
+        usuario_nombre = ?,
+        usuario_apellido = ?,
+        usuario_telefono = ?,
+        usuario_correo = ?
+        WHERE usuario_documento = ?";
+      $stmt = $this->conn->prepare($sql);
+
+      if (!$stmt) {
+        throw new Exception("Prepare failed: " . $this->conn->error);
+      }
+
+      $stmt->bind_param(
+        "issisi",
+        $datos['tipo_documento'],
+        $datos['nombres'],
+        $datos['apellidos'],
+        $datos['telefono'],
+        $datos['correo'],
+        $datos['documento']
+      );
+
+      if (!$stmt->execute()) {
+        $this->error_return = "error al editar usuario";
+        throw new Exception("Execute failed (Editar usuario): " . $stmt->error);
+      }
+
+      return ["success" => true];
+    } catch (Exception $e) {
+      $this->logError($e->getMessage());
+
+      return !empty($this->error_return) ? ["error" => $this->error_return] : [];
+    }
+  }
+
+  public function desactivarUsuario(int $documento)
+  {
+    try {
+      $sql = "UPDATE {$this->tabla}
             SET usuario_estado = 'inactivo'
             WHERE usuario_documento = ?";
-    $stmt = $this->conn->prepare($sql);
+      $stmt = $this->conn->prepare($sql);
 
-    if (!$stmt) {
-      $this->logError("Prepare failed: " . $this->conn->error);
-      return null;
+      if (!$stmt) {
+        throw new Exception("Prepare failed: " . $this->conn->error);
+      }
+
+      $stmt->bind_param("i", $documento);
+
+      if (!$stmt->execute()) {
+        $this->error_return = "error al desactivar usuario";
+        throw new Exception("Execute failed (Desactivar usuario): " . $stmt->error);
+      }
+
+      return ["success" => true];
+    } catch (Exception $e) {
+      $this->logError($e->getMessage());
+
+      return !empty($this->error_return) ? ["error" => $this->error_return] : [];
     }
-
-    $stmt->bind_param("i", $documento);
-
-    if ($stmt->execute()) return true;
-
-    $this->logError("Execute failed (Editar datos basicos usuario): " . $stmt->error);
-    return null;
   }
 
   // PARA HACER
-  public function cambiarContraseña(){
+  public function cambiarContraseña()
+  {
     return null;
   }
 

@@ -11,13 +11,13 @@ const imageList = Object.entries(images)
   })
   .sort((a, b) => {
     const order = [
-      'elementos', 'usuarios', 'prestamos', 'terminal', 'configuración', 'ayuda'
+      'elementos', 'usuarios', 'prestamos', 'estadisticas', 'roles', 'configuración', 'ayuda'
     ]
 
     return order.indexOf(a.name) - order.indexOf(b.name)
   })
 
-export default function RocketDock ({ onIconClick, openWindows }) {
+export default function RocketDock ({ onIconClick, openWindows, permisos }) {
   // Estado para controlar la visivilidad del RocketDock
   const [isVisible, setIsVisible] = useState(true)
 
@@ -39,28 +39,34 @@ export default function RocketDock ({ onIconClick, openWindows }) {
     <section
       className={`rocketDock ${!isVisible ? 'rocketDock--hidden' : ''}`}
     >
-      {/* Mapeo de los iconos del RocketDock */}
-      {imageList.map(({ name, src }) => (
-        <RocketDockItem
-          key={name}
-          icon={src}
-          onClick={() => onIconClick(name)}
-          open={openWindows.includes(name)}
-          name={name}
-        />
-      ))}
+      {/* Mapeo de los iconos del RocketDock, muestra las ventanas según los permisos del rol. Siempre muestra la ventana de ayuda */}
+      {imageList.map(({ name, src }) => {
+        const mostrar =
+          name === 'ayuda' || permisos?.data?.some(p => p.modulo === name)
+
+        return mostrar && (
+          <RocketDockItem
+            key={name}
+            icon={src}
+            onClick={() => onIconClick(name)}
+            open={openWindows.includes(name)}
+            name={name}
+          />
+        )
+      })}
+
     </section>
   )
 }
 
 // Componente para renderizar cada objeto del RocketDock
-function RocketDockItem({ icon, onClick, open, name }) {
+function RocketDockItem ({ icon, onClick, open, name }) {
   return (
     <div
       className={`rocketDock--item tooltip-container ${open ? 'rocketDock--item__open' : ''}`}
       onClick={onClick}
     >
-      <span className='tooltip' style={{bottom: '170%'}}>{name}</span>
+      <span className='tooltip' style={{ bottom: '170%' }}>{name}</span>
       <img src={icon} alt={`${icon} icon`} className='rocketDock--item__icon' />
       {open && <div className='rocketDock--item__indicator' />}
     </div>

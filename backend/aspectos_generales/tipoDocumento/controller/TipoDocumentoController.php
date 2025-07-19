@@ -12,71 +12,82 @@ class TipoDocumentoController
 
   public function guardarTipoDocumento($nombre)
   {
-    if (empty($nombre)) return ["error" => "campos vacios"];
+    // Validar que los campos requeridos no esten vacios
+    if (empty($nombre)) return ["error" => "no nombre"];
 
+    // Validar que no exista un tipo de documento con el mismo nombre en la base de datos antes de crear uno nuevo
     $verificar_tipo_documento = $this->tipo_documento_modelo->obtenerTipoDocumentoPorNombre($nombre);
-    if ($verificar_tipo_documento) return ["error" => "ya existe"];
+    if ($verificar_tipo_documento) return ["error" => "ya existe tipo documento"];
 
-    $guardar_tipo_documento = $this->tipo_documento_modelo->guardarTipoDocumento($nombre);
-    if ($guardar_tipo_documento) return ["success" => true];
+    // Crear el tipo de documento desde el modelo y recibe mensajes de exito o error
+    $resultado = $this->tipo_documento_modelo->guardarTipoDocumento($nombre);
+    if ($resultado) return $resultado;
 
-    return ["error" => "error al guardar"];
+    return ["error" => "error al guardar tipo documento"];
   }
 
   public function obtenerTodosLosTipoDocumentos()
   {
-    $todas_las_tipo_documentos = $this->tipo_documento_modelo->obtenerTodosLosTipoDocumentos();
+    // Obtiene todos los tipos de documento desde el modelo y recibe mensajes de exito o error
+    $resultado = $this->tipo_documento_modelo->obtenerTodosLosTipoDocumentos();
+    if ($resultado) return $resultado;
 
-    if ($todas_las_tipo_documentos) return $todas_las_tipo_documentos;
-
-    return ["error" => "error al obtener"];
+    return ["error" => "error al obtener tipos documento"];
   }
 
   public function obtenerTipoDocumentoPorId($id)
   {
-    if (empty($id)) return ["error" => "campos vacios"];
+    // Validar que los campos requeridos no esten vacios
+    if (empty($id)) return ["error" => "campos vacios tipo documento"];
 
-    $tipo_documento = $this->tipo_documento_modelo->obtenerTipoDocumentoPorId($id);
+    // Obtiene el tipo de documento desde el modelo y recibe mensajes de exito o error
+    $resultado = $this->tipo_documento_modelo->obtenerTipoDocumentoPorId($id);
+    if ($resultado) return $resultado;
 
-    if ($tipo_documento) return $tipo_documento;
-
-    return ["error" => "error al obtener por id"];
+    return ["error" => "error al obtener tipo documento"];
   }
 
   public function obtenerTipoDocumentoPorNombre($nombre)
   {
-    if (empty($nombre)) return ["error" => "campos vacios"];
+    // Validar que los campos requeridos no esten vacios
+    if (empty($nombre)) return ["error" => "campos vacios tipo documento"];
 
-    $tipo_documento = $this->tipo_documento_modelo->obtenerTipoDocumentoPorNombre($nombre);
+    // Obtiene el tipo de documento desde el modelo y recibe mensajes de exito o error
+    $resultado = $this->tipo_documento_modelo->obtenerTipoDocumentoPorNombre($nombre);
+    if ($resultado) return $resultado;
 
-    if ($tipo_documento) return $tipo_documento;
-
-    return ["error" => "error al obtener por nombre"];
+    return ["error" => "error al obtener tipo documento"];
   }
 
   public function editarTipoDocumento($id, $nombre)
   {
+    // Validar que los campos requeridos no esten vacios
     if (empty($id) || empty($nombre)) return ["error" => "campos vacios"];
 
+    // Validar que el tipo de documento a editar exista el la base de datos antes de intentar editarlaF
     $verificar_tipo_documento = $this->tipo_documento_modelo->obtenerTipoDocumentoPorId($id);
-    if (!$verificar_tipo_documento) return ["error" => "no existe"];
+    if (!$verificar_tipo_documento) return ["error" => "no existe tipo documento"];
 
-    $editar_tipo_documento = $this->tipo_documento_modelo->editarTipoDocumento($id, $nombre);
-    if ($editar_tipo_documento) return ["success" => true];
+    // Editar el tipo de documento desde el modelo y recibir mensajes de exito o error
+    $resultado = $this->tipo_documento_modelo->editarTipoDocumento($id, $nombre);
+    if ($resultado) return $resultado;
 
-    return ["error" => "error al editar"];
+    return ["error" => "error al editar tipo documento"];
   }
 
   public function desactivarTipoDocumento($id)
   {
+    // Validar que los campos requeridos no esten vacios
     if (empty($id)) return ["error" => "campos vacios"];
 
+    // Validar que el tipo de documento a desactivar exista en la base de datos antes de intentar desactivarlo
     $verificar_tipo_documento = $this->tipo_documento_modelo->obtenerTipoDocumentoPorId($id);
-    if (!$verificar_tipo_documento) return ["error" => "no existe"];
+    if (!$verificar_tipo_documento) return ["error" => "no existe tipo documento"];
 
-    $desactivar_tipo_documento = $this->tipo_documento_modelo->desactivarTipoDocumento($id);
-    if ($desactivar_tipo_documento) return ["success" => true];
+    // Desactivar el tipo de documento desde el modelo y recibir mensajes de exito o error
+    $resultado = $this->tipo_documento_modelo->desactivarTipoDocumento($id);
+    if ($resultado) return $resultado;
 
-    return ["error" => "error al desactivar"];
+    return ["error" => "error al desactivar tipo documento"];
   }
 }

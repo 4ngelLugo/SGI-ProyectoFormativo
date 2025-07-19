@@ -89,7 +89,7 @@ export default function EditarRol ({ setAlert, searchedEdit, setActiveView }) {
               </form>
               )
             : (
-              <p>No se encontró el rol</p>
+              <p className='notFound--message'>No se encontró ningun rol</p>
               )
       }
     </>

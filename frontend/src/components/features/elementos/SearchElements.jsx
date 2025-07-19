@@ -6,19 +6,18 @@ import { useEffect, useState } from 'react'
 export default function SearchElements ({ setAlert, searchedItem, setSearchedItem }) {
   const {
     loading,
-    typing,
     element,
     setElement,
     setLoading
   } = useFetchByCode({ setAlert, codeToSearch: searchedItem, obtener: 'elemento' })
 
   const {
-    elements
+    allElements: elements
   } = useFetch({ setAlert, windowHeight: null, isMaximized: null, obtener: 'elementos' })
 
   const opciones = elements.map(e => ({
     value: e.codigo,
-    label: `${e.codigo} - ${e.nombre}`,
+    label: `${e.codigo}: ${e.nombre}`,
     data: e
   }))
   const [selectedOption, setSelectedOption] = useState(null)
@@ -116,7 +115,7 @@ export default function SearchElements ({ setAlert, searchedItem, setSearchedIte
                 <Info label='Estado' value={element.estado} />
               </div>
               )
-            : !typing && (<p className='notFound--message'>No se encontró el elemento.</p>)}
+            : (<p className='notFound--message'>No se encontró ningun elemento</p>)}
     </>
   )
 }
