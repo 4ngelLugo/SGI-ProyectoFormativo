@@ -16,3 +16,6 @@ export { useEdit } from './commonHooks/useEdit'
 export { useDeactivate } from './commonHooks/useDeactivate'
 
 export { useManejarPrestamo } from './useManejarPrestamo'
+
+export { useDescargarPlantilla } from './cargaMasiva/useDescargarPlantilla'
+export { useSubirArchivo } from './cargaMasiva/useSubirArchivo'

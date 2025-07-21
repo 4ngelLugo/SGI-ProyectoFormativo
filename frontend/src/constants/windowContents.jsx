@@ -25,6 +25,7 @@ import ListarTipoDocumento from '../components/features/configuracion/ListarTipo
 
 import ElementosPrestados from '../components/features/reportes/ElementosPrestados'
 import PrestamosUsuarios from '../components/features/reportes/PrestamosUsuarios'
+import CargaMasiva from '../components/features/elementos/CargaMasiva'
 
 const iconos = {
   listar: 'system-uicons:clipboard-notes',
@@ -37,6 +38,7 @@ export const windowContents = {
     sidebar: [
       { key: 'listElement', icon: iconos.listar, label: 'Listar elementos' },
       { key: 'createElement', icon: iconos.crear, label: 'Crear elemento' },
+      { key: 'cargarArchivo', icon: iconos.crear, label: 'Cargar Archivo' },
       { key: 'searchElement', icon: iconos.buscar, label: 'Buscar elemento' }
     ],
     views: {
@@ -52,6 +54,8 @@ export const windowContents = {
         />,
       createElement: ({ setAlert, setActiveView }) =>
         <CreateElement setAlert={setAlert} setActiveView={setActiveView} />,
+      cargarArchivo: ({ setAlert }) =>
+        <CargaMasiva setAlert={setAlert} />,
       searchElement: ({ setAlert, searchedItem, setSearchedItem }) =>
         <SearchElements
           setAlert={setAlert}

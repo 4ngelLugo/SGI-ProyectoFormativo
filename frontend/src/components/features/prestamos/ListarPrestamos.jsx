@@ -1,3 +1,4 @@
+/* global localStorage */
 import { useFetch, useDeactivate, useManejarPrestamo } from '../../../hooks'
 import TooltipCell from '../../common/TooltipCell'
 import ConfirmModal from '../../common/ConfirmModal'

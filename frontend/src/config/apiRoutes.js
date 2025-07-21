@@ -58,3 +58,8 @@ export const ObtenerSolicitantesPorDocumentoEndpoint = `${API_BASE}/solicitantes
 
 export const CuentaElementosPrestados = `${API_BASE}/reportes/api/cuentaElementosPrestados.php`
 export const CuentaPrestamosUsuario = `${API_BASE}/reportes/api/cuentaPrestamosUsuario.php`
+
+export const DescargarPlantilla = `${API_BASE}/cargamasiva/api/descargar_plantilla.php`
+export const SubirArchivo = `${API_BASE}/cargamasiva/api/subir_archivo.php`
+export const ComprobarArchivo = `${API_BASE}/cargamasiva/api/comprobar_datos.php`
+export const CargarArchivo = `${API_BASE}/cargamasiva/api/cargar_datos.php`

@@ -61,26 +61,16 @@
   max-width: fit-content;
 }
 
-.cancelado .td-text{
+.cancelado .td-text {
   color: var(--font-light-color);
 }
 
-.atrasado .td-text{
+.atrasado .td-text {
   color: red;
 }
 
 .table__row--alt {
   background-color: var(--hightlight-bg);
-}
-
-.table__row--alt td:first-child {
-  border-top-left-radius   : 0.5rem;
-  border-bottom-left-radius: 0.5rem;
-}
-
-.table__row--alt td:last-child {
-  border-top-right-radius   : 0.5rem;
-  border-bottom-right-radius: 0.5rem;
 }
 
 .table__body--actions {
@@ -190,4 +180,140 @@
   .table_elementos td:nth-child(6) {
     display: none;
   }
+}
+
+/* Botones de carga de elementos por archivo */
+
+.carga_buttons {
+  display: flex;
+  gap    : 1em;
+}
+
+.carga_buttons button {
+  padding: .6rem .9rem .6rem .5rem;
+
+  display    : flex;
+  align-items: center;
+  gap        : .4rem;
+
+  font-size: .8em;
+}
+
+.descargar {
+  background-color: #2331ca;
+  color           : #fff;
+}
+
+.descargar:hover {
+  background-color: #000DA8;
+}
+
+.subir {
+  background-color: var(--main-color);
+  color           : #fff;
+}
+
+.subir:hover {
+  background-color: var(--main-dark);
+}
+
+/* Contadores de errores carga de archivos */
+
+.status-panel {
+  padding: .5em 0 .5em 1rem;
+
+  display: flex;
+  gap    : 2.5rem;
+
+  border-top   : 1px solid #d9d9d9;
+  border-bottom: 1px solid #d9d9d9;
+
+  font-size: .8em;
+}
+
+.status-text {
+  position: relative;
+}
+
+.status-text::before {
+  content: '';
+  width  : 10px;
+  height : 10px;
+
+  position: absolute;
+  top     : 0;
+  left    : -15px;
+
+  transform: translateY(65%);
+
+  background-color: var(--main-color);
+  border-radius   : 100%;
+}
+
+.status-text.red::before {
+  background-color: #dc3545;
+}
+
+.status-text.orange::before {
+  background-color: #fd7e14;
+}
+
+.status-text.yellow::before {
+  background-color: #ffc107;
+}
+
+/* Estilos de filas con errores */
+
+.table__row--duplicado {
+  background-color: #f8d7da;
+}
+
+.table__row--duplicado td:first-child {
+  border-left: 3px solid #dc3545;
+}
+
+.table__row--dupBase {
+  background-color: #ffe0cd;
+}
+
+.table__row--dupBase td:first-child {
+  border-left: 3px solid #fd7e14;
+}
+
+.table__row--error {
+  background-color: #fff3cd;
+}
+
+.table__row--error td:first-child {
+  border-left: 3px solid #ffc107;
+}
+
+/* Indicadores de estado */
+.center {
+  display        : flex;
+  justify-content: center;
+}
+
+.status-indicator {
+  padding  : .2rem .3rem;
+  font-size: .8em;
+}
+
+.status-indicator.duplicate {
+  background-color: #dc3545;
+  color           : #fff;
+}
+
+.status-indicator.dupBase {
+  background-color: #fd7e14;
+  color           : #fff;
+}
+
+.status-indicator.error {
+  background-color: #ffc107;
+}
+
+.status-indicator.valid {
+  background-color: #28a745;
+  color           : #fff;
 }

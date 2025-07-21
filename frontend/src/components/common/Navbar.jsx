@@ -1,9 +1,6 @@
 /* global localStorage */
 import NotificationCenter from './Notifications'
 import logo from '../../assets/images/logo.svg'
-import cerrar from '../../assets/icons/cerrar.svg'
-import danger from '../../assets/icons/danger.svg'
-import { useState } from 'react'
 
 export default function Navbar ({ windowOnTop, setIsAuthenticated }) {
   // Función que capitaliza la primera letra de la palabra y convierte el resto a minúsculas
@@ -24,7 +21,7 @@ export default function Navbar ({ windowOnTop, setIsAuthenticated }) {
         </div>
 
         <div className='topBar--right'>
-          <NotificationCenter rolId={1} setIsAuthenticated={setIsAuthenticated}/>
+          <NotificationCenter rolId={1} setIsAuthenticated={setIsAuthenticated} />
         </div>
       </nav>
 

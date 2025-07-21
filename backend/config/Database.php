@@ -36,24 +36,6 @@ class Database
     return $this->conn;
   }
 
-  public function executeQuery($sql, $params = [])
-  {
-    try {
-      $stmt = $this->conn->prepare($sql);
-
-      if ($params) {
-        $types = str_repeat('s', count($params));
-        $stmt->bind_param($types, ...$params);
-      }
-
-      $stmt->execute();
-      return $stmt;
-    } catch (Exception $e) {
-      error_log("[" . date("Y-m-d H:i:s") . "] Query error: " . $e->getMessage() . PHP_EOL, 3, __DIR__ . "/../logs/php_errors.log");
-      die("Query execution failed: " . $e->getMessage());
-    }
-  }
-
   public function closeConnection()
   {
     if ($this->conn) {

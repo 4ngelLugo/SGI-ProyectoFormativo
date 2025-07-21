@@ -7,7 +7,7 @@ class CM_Model {
 
     public function __construct() {
         $this->db = new Database();
-        $this->conn = $this->db->getConnection();
+        $this->conn = $this->db->connect();
     }
 
     public function existeElemento($codigo) {

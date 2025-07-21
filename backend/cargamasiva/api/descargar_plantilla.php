@@ -1,4 +1,5 @@
 <?php
+header("Access-Control-Allow-Origin: http://localhost:5173");
 header('Content-Type: text/csv');
 header('Content-Disposition: attachment; filename="plantilla_elementos.csv"');
 header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
