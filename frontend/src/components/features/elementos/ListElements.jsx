@@ -6,6 +6,7 @@ import Pagination from '../../common/Pagination'
 import danger from '../../../assets/icons/danger.svg'
 import '../../../styles/globals/tables.css'
 import { Icon } from '@iconify/react'
+import { FetchElementsEndpoint } from '../../../config/apiRoutes'
 
 export default function ListElements ({ setAlert, windowHeight, isMaximized, setActiveView, setSearchedItem, setSearchedEdit, permisos }) {
   // Hook para manejar la lista de elementos y su paginación
@@ -54,6 +55,17 @@ export default function ListElements ({ setAlert, windowHeight, isMaximized, set
   const handleOnChange = (option) => {
     setFilteredElements(option ? allElements.filter(e => e.codigo === option.value) : undefined)
   }
+
+    useEffect(() => {
+      const fetchApiEndpoint = FetchElementsEndpoint
+      const interval = setInterval(() => {
+        fetchElements(fetchApiEndpoint) // Refresca los elementos cada 20 segundos
+      }, 20000)
+  
+      return () => {
+        clearInterval(interval) // Limpia el intervalo al desmontar el componente
+      }
+    }, [])
 
   return (
     <>

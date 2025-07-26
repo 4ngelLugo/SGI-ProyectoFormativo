@@ -6,8 +6,9 @@ import Pagination from '../../common/Pagination'
 import danger from '../../../assets/icons/danger.svg'
 import '../../../styles/globals/tables.css'
 import { Icon } from '@iconify/react'
+import { ObtenerUsuariosEndpoint } from '../../../config/apiRoutes'
 
-export default function ListarUsuarios ({ setAlert, windowHeight, isMaximized, setActiveView, setSearchedItem, setSearchedEdit, permisos }) {
+export default function ListarUsuarios({ setAlert, windowHeight, isMaximized, setActiveView, setSearchedItem, setSearchedEdit, permisos }) {
   // Hook para manejar la lista de elementos y su paginación
   const {
     setElements,
@@ -53,6 +54,17 @@ export default function ListarUsuarios ({ setAlert, windowHeight, isMaximized, s
   const handleOnChange = (option) => {
     setFilteredElements(option ? allElements.filter(e => e.documento === option.value) : undefined)
   }
+
+  useEffect(() => {
+    const fetchApiEndpoint = ObtenerUsuariosEndpoint
+    const interval = setInterval(() => {
+      fetchElements(fetchApiEndpoint) // Refresca los usuarios cada 20 segundos
+    }, 20000)
+
+    return () => {
+      clearInterval(interval) // Limpia el intervalo al desmontar el componente
+    }
+  }, [])
 
   return (
     <>

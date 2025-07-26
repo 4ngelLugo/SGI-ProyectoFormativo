@@ -109,7 +109,6 @@ export const useFetch = ({ setAlert, windowHeight, isMaximized, obtener }) => {
 
       const response = await res.json()
 
-      // console.log(response)
       if (response.error) {
         setAlert({
           type: 'error',

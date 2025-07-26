@@ -9,7 +9,7 @@ import ContextMenu from '../components/common/ContextMenu'
 import '../styles/desktop.css'
 import { useFetchByCode } from '../hooks'
 
-export default function Desktop () {
+export default function Desktop() {
   // Estado array con los IDs de las ventanas abiertas y su estado (visible o minimizada)
   // Estado de la ventana que está al frente (ventana abierta o en la que se hizo clic más recientemente)
   // Estado con la alerta (tipo, mensaje y visibilidad)
@@ -26,6 +26,29 @@ export default function Desktop () {
   useEffect(() => {
     if (!isAuthenticated) {
       navigate('/login')
+    }
+
+    let timer
+
+    const resetTimer = () => {
+      if (timer) clearTimeout(timer)
+      timer = setTimeout(() => {
+        localStorage.setItem('isAuthenticated', JSON.stringify(false))
+        localStorage.removeItem('user')
+        setIsAuthenticated(false)
+      }, 30 * 60 * 1000) // 30 Minutos
+    }
+
+    if (isAuthenticated) {
+      window.addEventListener('mousemove', resetTimer)
+      window.addEventListener('keydown', resetTimer)
+      resetTimer()
+
+      return () => {
+        clearTimeout(timer)
+        window.removeEventListener('mousemove', resetTimer)
+        window.removeEventListener('keydown', resetTimer)
+      }
     }
   }, [isAuthenticated])
 

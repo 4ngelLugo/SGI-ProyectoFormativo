@@ -25,7 +25,7 @@ class Auth
       }
 
       if (!$usuario) {
-        $this->error_return = "error al obtener usuario";
+        $this->error_return = "no documento";
         throw new Exception("Execute failed (Obtener usuario)");
       }
 

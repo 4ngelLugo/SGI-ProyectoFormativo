@@ -6,6 +6,8 @@ import Pagination from '../../common/Pagination'
 import danger from '../../../assets/icons/danger.svg'
 import '../../../styles/globals/tables.css'
 import { Icon } from '@iconify/react'
+import { useEffect } from 'react'
+import { ObtenerPrestamosEndpoint } from '../../../config/apiRoutes'
 
 export default function ListarPrestamos ({ setAlert, windowHeight, isMaximized, setActiveView, setSearchedItem, setSearchedEdit, permisos }) {
   // Hook para manejar la lista de elementos y su paginación
@@ -62,6 +64,17 @@ export default function ListarPrestamos ({ setAlert, windowHeight, isMaximized, 
 
     return `${dia}, ${mes} de ${anio}`
   }
+
+  useEffect(() => {
+    const fetchApiEndpoint = ObtenerPrestamosEndpoint
+    const interval = setInterval(() => {
+      fetchElements(fetchApiEndpoint) // Refresca los prestamos cada 20 segundos
+    }, 20000)
+
+    return () => {
+      clearInterval(interval) // Limpia el intervalo al desmontar el componente
+    }
+  }, [])
 
   return (
     <>

@@ -159,6 +159,7 @@ const rolMessages = {
 const loginMessages = {
   'metodo invalido': 'Metodo de petición invalido',
   'error de conexion a la base de datos': 'No se pudo conectar con la base de datos',
+  'no documento': 'No se encontro el documento',
   'error al obtener usuario': 'Ocurrió un error al obtener el usuario',
   'usuario inactivo': 'El usuario se encuentra inactivo',
   'contrasena incorrecta': 'La contraseña es incorrecta',
