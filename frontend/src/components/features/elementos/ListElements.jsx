@@ -6,6 +6,7 @@ import Pagination from '../../common/Pagination'
 import danger from '../../../assets/icons/danger.svg'
 import '../../../styles/globals/tables.css'
 import { Icon } from '@iconify/react'
+import { useEffect } from 'react'
 import { FetchElementsEndpoint } from '../../../config/apiRoutes'
 
 export default function ListElements ({ setAlert, windowHeight, isMaximized, setActiveView, setSearchedItem, setSearchedEdit, permisos }) {
