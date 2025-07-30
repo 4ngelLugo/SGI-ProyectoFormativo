@@ -29,9 +29,9 @@ fputcsv($output, $headers);
 
 // Escribir fila de ejemplo
 $ejemplo = [
-    '0999',
+    '099999',
     'Computadora Dell Inspiron',
-    'Equipo de Computo',
+    'devolutivo',
     '1',
     '1',
     '046501',
@@ -47,8 +47,8 @@ fputcsv($output, $ejemplo);
 
 // Escribir más ejemplos
 $ejemplos = [
-    ['11020', 'Mouse Logitech', 'Periférico', '2', '1', '356253', 'MS-987654321', '2', '3', '1', 'Unidad', '1'],
-    ['112020', 'Monitor Samsung', 'Periférico', '2', '2', '32562003', 'SCR-456789123', '3', '4', '1', 'Unidad', '1']
+    ['1165020', 'Mouse Logitech', 'devolutivo', '2', '1', '356253', 'MS-987654321', '2', '3', '1', 'Unidad', '1'],
+    ['112346020', 'Monitor Samsung', 'consumible', '2', '2', '32562003', 'SCR-456789123', '3', '4', '1', 'Unidad', '1']
 ];
 
 foreach ($ejemplos as $ejemplo) {
