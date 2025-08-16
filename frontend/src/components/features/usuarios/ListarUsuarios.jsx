@@ -145,7 +145,7 @@ export default function ListarUsuarios({ setAlert, windowHeight, isMaximized, se
                         <span className='tooltip'>Editar</span>
                       </div>
                     )}
-                    {permisos.data.some(p => p.id === 24) && (// 24: Deshabilitar usuarios
+                    {(permisos.data.some(p => p.id === 24) && estado !== 'inactivo') && (// 24: Deshabilitar usuarios
                       <div className='tooltip-container'>
                         <Icon icon='system-uicons:trash' width='24' strokeWidth={1.2} onClick={() => handleAlert(documento, `${nombres} ${apellidos}`)} />
                         <span className='tooltip'>Deshabilitar</span>
@@ -175,7 +175,7 @@ export default function ListarUsuarios({ setAlert, windowHeight, isMaximized, se
                         <span className='tooltip'>Editar</span>
                       </div>
                     )}
-                    {permisos.data.some(p => p.id === 24) && (// 24: Deshabilitar usuarios
+                    {(permisos.data.some(p => p.id === 24) && estado !== 'inactivo') && (// 24: Deshabilitar usuarios
                       <div className='tooltip-container'>
                         <Icon icon='system-uicons:trash' width='24' strokeWidth={1.2} onClick={() => handleAlert(documento, `${nombres} ${apellidos}`)} />
                         <span className='tooltip'>Deshabilitar</span>

@@ -131,11 +131,12 @@ export const useFetch = ({ setAlert, windowHeight, isMaximized, obtener }) => {
           })
           : []
 
-        setAllElements(data)
-
-        const dataToPage = filteredElements || activeElements
         const offset = (page - 1) * limit
+        
+        const dataToPage = filteredElements || activeElements
         setMaxPage(Math.ceil(dataToPage.length / limit))
+
+        setAllElements(data.slice(offset, offset + limit))
         setElements(dataToPage.slice(offset, offset + limit))
 
         return true
@@ -156,6 +157,8 @@ export const useFetch = ({ setAlert, windowHeight, isMaximized, obtener }) => {
   // Realiza la petición para obtener los elementos de la API
   useEffect(() => {
     fetchElements(apiEndpoint)
+
+    console.log(limit)
   }, [page, limit, apiEndpoint])
 
   return {

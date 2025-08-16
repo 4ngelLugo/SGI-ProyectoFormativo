@@ -1,8 +1,8 @@
 <?php
 class Elemento
 {
-  private $conn;
-  private $tabla = "elementos";
+  protected $conn;
+  protected $tabla = "elementos";
   private $error_return = "";
 
   public function __construct($db)

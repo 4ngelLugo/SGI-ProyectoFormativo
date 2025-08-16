@@ -99,7 +99,7 @@ export default function AppWindow ({
 
     const filteredLabels = content?.sidebar
       .filter(item => {
-        if (id === 'estadisticas' || id === 'roles') return item
+        if (id === 'estadisticas' || id === 'roles' || id === 'ayuda') return item
 
         const labelNorm = normalizar(item.label) // ej: "buscar elemento"
         const [accionLabel, ...rest] = labelNorm.split(' ')

@@ -27,6 +27,9 @@ import ElementosPrestados from '../components/features/reportes/ElementosPrestad
 import PrestamosUsuarios from '../components/features/reportes/PrestamosUsuarios'
 import CargaMasiva from '../components/features/elementos/CargaMasiva'
 
+import Manuales from '../components/features/ayuda/Manuales'
+import VideoGuias from '../components/features/ayuda/VideoGuias'
+
 const iconos = {
   listar: 'system-uicons:clipboard-notes',
   crear: 'system-uicons:clipboard-add',
@@ -216,6 +219,16 @@ export const windowContents = {
           searchedEdit={searchedEdit}
           setActiveView={setActiveView}
         />
+    }
+  },
+  ayuda: {
+    sidebar: [
+      { key: 'manuales', icon: 'system-uicons:book-text', label: 'Manuales' },
+      { key: 'videoGuias', icon: 'tabler:video', label: 'Video guías' }
+    ],
+    views: {
+      manuales: () => <Manuales />,
+      videoGuias: () => <VideoGuias />
     }
   }
 }

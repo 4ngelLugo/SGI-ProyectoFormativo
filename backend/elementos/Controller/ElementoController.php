@@ -1,9 +1,9 @@
 <?php
-require_once '../Model/Elemento.php';
+require_once __DIR__ . '/../Model/Elemento.php';
 
 class ElementoController
 {
-  private $elemento_modelo;
+  protected $elemento_modelo;
 
   public function __construct($db)
   {

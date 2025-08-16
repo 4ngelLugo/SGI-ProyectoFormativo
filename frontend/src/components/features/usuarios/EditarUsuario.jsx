@@ -45,7 +45,7 @@ export default function EditarUsuario ({ setAlert, searchedEdit, setActiveView }
                 <Input type='text' placeholder='Nombres' name='nombres' defaultValue={element.nombres} required />
                 <Input type='text' placeholder='Apellidos' name='apellidos' defaultValue={element.apellidos} required />
                 <Input type='tel' placeholder='Telefono' name='telefono' defaultValue={element.telefono} required />
-                <Input type='email' placeholder='Correo Electronico' defaultValue={element.correo} name='correo' required />
+                <Input type='email' placeholder='Correo Electronico' defaultValue={element.correo} name='correo' required noEspecial />
                 <SelectInput
                   options={filteredRoles}
                   placeholder='Rol'
